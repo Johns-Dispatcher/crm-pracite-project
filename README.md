@@ -14,3 +14,18 @@
 
 ![数据库ER图.png](./attachments/mysql/数据库ER图.svg)
 
+## 前端项目
+
+采用 Vue 作为主要技术开发
+
+目录结构
+
+```
+|- crm-front           -- 项目根目录
+|  |- node_modules     -- js 依赖包
+|  |- public           -- 公共静态资源
+|  |- src              -- 源码文件
+|  |- index.html       -- 项目首页，访问入口
+|  |- package.json     -- 项目依赖库配置，包括启动、构建命令
+|  |- vite.config.js   -- vite 配置文件
+```
