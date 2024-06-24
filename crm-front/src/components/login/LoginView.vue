@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { doPost } from '../../http/httpRequestUtils';
+
 export default {
 	name: "CrmLoginView",
 	data() {
@@ -70,7 +72,22 @@ export default {
 		// 登录函数
 		login() {
 			// 执行定义好的验证规则
-			this.$refs.loginRefForm.validate()
+			this.$refs.loginRefForm.validate((isValid) => {
+				// 使用 FormData 封装数据
+				let fromData = new FormData();
+
+				fromData.append("loginAct", this.user.loginAct)
+				fromData.append("loginPwd", this.user.loginPwd)
+
+				// 验证后调用 传入验证结果
+				if (isValid) {
+					doPost("/apt/login", fromData).then(
+						response => {
+							console.log(response)
+						}
+					)
+				}
+			})
 		}
 	}
 }

@@ -12,7 +12,7 @@
 
 ## 数据库ER图
 
-![数据库ER图.png](./attachments/mysql/数据库ER图.svg)
+![数据库ER图](./attachments/mysql/数据库ER图.png)
 
 ## 前端项目
 
