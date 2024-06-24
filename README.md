@@ -21,11 +21,17 @@
 目录结构
 
 ```
-|- crm-front           -- 项目根目录
-|  |- node_modules     -- js 依赖包
-|  |- public           -- 公共静态资源
-|  |- src              -- 源码文件
-|  |- index.html       -- 项目首页，访问入口
-|  |- package.json     -- 项目依赖库配置，包括启动、构建命令
-|  |- vite.config.js   -- vite 配置文件
+|- crm-front                     -- 项目根目录
+|  |- node_modules               -- js 依赖包
+|  |- public                     -- 公共静态资源
+|  |- src                        -- 源码文件
+|  |  |- assets                  -- 页面资源
+|  |  |- components              -- Vue 组件
+|  |  |  |- login                -- 登录相关组件
+|  |  |  |  |- LoginView.vue     -- 登录页面组件
+|  |  |  |- CrmRoot.vue          -- CRM 项目根组件
+|  |  |- App.vue                 -- Vue 根组件
+|  |- index.html                 -- 项目首页，访问入口
+|  |- package.json               -- 项目依赖库配置，包括启动、构建命令
+|  |- vite.config.js             -- vite 配置文件
 ```
