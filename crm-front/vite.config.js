@@ -8,7 +8,7 @@ export default defineConfig({
 		// IP 地址
 		host: '0.0.0.0',
 		// 启动后的端口号
-		port: 8081,
+		port: 8002,
 		// 是否自动开启浏览器
 		open: false,
 	}

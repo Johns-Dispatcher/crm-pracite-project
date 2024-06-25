@@ -81,7 +81,7 @@ export default {
 
 				// 验证后调用 传入验证结果
 				if (isValid) {
-					doPost("/apt/login", fromData).then(
+					doPost("/api/login", fromData).then(
 						response => {
 							console.log(response)
 						}
