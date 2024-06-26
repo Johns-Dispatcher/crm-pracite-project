@@ -1,7 +1,7 @@
 // 封装 AJAX 请求方式
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:8089"
+axios.defaults.baseURL = "http://localhost:8009"
 
 // 发送 GET 请求
 export function doGet(url, params) {
