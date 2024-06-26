@@ -35,7 +35,7 @@ public class HttpResult implements Serializable {
      */
     private String msg;
     /**
-     * 携带数据
+     *
      */
     private Object data;
 
