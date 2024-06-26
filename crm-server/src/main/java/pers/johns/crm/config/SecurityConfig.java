@@ -12,6 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * ClassName    : SecurityConfig
@@ -34,7 +40,7 @@ public class SecurityConfig {
     private final AuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, CorsConfigurationSource configurationSource)
             throws Exception {
 
         httpSecurity.formLogin(formLoginConfigurer -> formLoginConfigurer
@@ -57,11 +63,41 @@ public class SecurityConfig {
         // 关闭跨域保护
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
+        httpSecurity.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
+                .configurationSource(configurationSource)
+        );
+
         return httpSecurity.build();
     }
 
+    /**
+     * 配置密码编码器
+     * @return {@link PasswordEncoder}
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 配置同源策略，解决 AJAX 跨域问题
+     * @return {@link CorsConfigurationSource} 对象
+     */
+    @Bean
+    public CorsConfigurationSource configurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+
+        // 任何源头都可以访问
+        corsConfiguration.setAllowedOrigins(List.of("*"));
+        // 任何方法都可以访问
+        corsConfiguration.setAllowedMethods(List.of("*"));
+        // 任何请求头都可以访问
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // 配置任意请求路径都可以访问
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
     }
 }
