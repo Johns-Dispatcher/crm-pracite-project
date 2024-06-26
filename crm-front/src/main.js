@@ -11,9 +11,17 @@ import ElementPlus from 'element-plus'
 import router from './router'
 // 导入主程序
 import App from './App.vue'
+// 引入 ElementPlus 提供的图标库
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
+const app = createApp(App)
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+	app.component(key, component)
+}
 
 // 创建 Vue 主程序
-createApp(App)
+// createApp(App)
+app
 	// 让 Vue 使用 ElementPlus
 	.use(ElementPlus)
 	// 让 Vue 使用 路由
