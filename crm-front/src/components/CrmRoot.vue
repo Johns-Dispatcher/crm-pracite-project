@@ -1,5 +1,6 @@
 <template>
-	<Login></Login>
+	<!-- 路由位置的占位符 -->
+	<router-view></router-view>
 </template>
 
 <script>

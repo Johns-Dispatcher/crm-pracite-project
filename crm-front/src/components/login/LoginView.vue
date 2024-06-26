@@ -8,7 +8,6 @@
 				<el-form 
 					ref="loginRefForm"
 					:model="user"
-					:label-position="right"
 					label-width="auto"
 					style="max-width: 400px"
 					:rules="loginRules"
@@ -29,6 +28,8 @@
 
 <script>
 import { doPost } from '../../http/httpRequestUtils';
+import { messageTip } from '../../utils/utils'
+import { useRouter } from 'vue-router'
 
 export default {
 	name: "CrmLoginView",
@@ -44,28 +45,15 @@ export default {
 			// 定义表单规则
 			loginRules: {
 				// 登录用户的校验规则
-				loginAct: [
-					{
-						required: true,
-						message: '请输入登录用户名称',
-						trigger: 'blur'
-					}
-				],
+				loginAct: [ { required: true, message: '请输入登录用户名称', trigger: 'blur' } ],
 				// 登录密码的校验规则
 				loginPwd: [
-					{
-						required: true,
-						message: '请输入登录密码',
-						trigger: 'blur'
-					},
-					{
-						min: 6,
-						max: 16,
-						message: '密码需要在 6 ~ 16 位之间',
-						trigger: 'blur'
-					}
+					{ required: true, message: '请输入登录密码', trigger: 'blur' },
+					{ min: 6, max: 16, message: '密码需要在 6 ~ 16 位之间', trigger: 'blur' }
 				]
-			}
+			},
+			// 获取路由对象
+			router: useRouter()
 		}
 	},
 	methods: {
@@ -84,6 +72,15 @@ export default {
 					doPost("/api/login", fromData).then(
 						response => {
 							console.log(response)
+							if (response.data.code === 200) {
+								// 登录成功
+								messageTip("登录成功", "success")
+								// 进行路由跳转
+								this.router.push('/dashboard')
+							} else {
+								// 登录失败
+								messageTip("登录失败，请检查登录信息", "error")
+							}
 						}
 					)
 				}

@@ -9,6 +9,3 @@ export default {
 	components: { CRMRoot }
 }
 </script>
-
-<style scoped>
-</style>
