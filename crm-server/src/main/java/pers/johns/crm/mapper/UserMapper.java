@@ -68,6 +68,22 @@ public interface UserMapper {
     @ResultMap("UserBaseMap")
     List<User> selectAll();
 
+    @Select("""
+            select
+                id,
+                login_act, login_pwd,
+                name, phone, email,
+                account_no_expired, credentials_no_expired,
+                account_no_locked, account_enabled,
+                create_time, create_by,
+                edit_time, edit_by,
+                last_login_time
+            from t_user
+            where login_act = #{loginAct}
+            """)
+    @ResultMap("UserBaseMap")
+    User selectByLoginAct(String LoginAct);
+
     @Insert("""
             insert into t_user(
                 id,
