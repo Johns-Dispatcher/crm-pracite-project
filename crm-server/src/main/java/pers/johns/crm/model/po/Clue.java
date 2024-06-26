@@ -1,4 +1,4 @@
-package pers.johns.crm.mode.po;
+package pers.johns.crm.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

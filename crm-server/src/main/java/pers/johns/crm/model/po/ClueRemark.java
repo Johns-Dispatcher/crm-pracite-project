@@ -1,4 +1,4 @@
-package pers.johns.crm.mode.po;
+package pers.johns.crm.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * ClassName    : TranRemark
+ * ClassName    : ClueRemark
  * <br/>
- * Description  : 交易备注类，对应数据库表 t_tran_remark
+ * Description  : 线索备注类，对应数据库表 t_clue_remark
  * <br/>
- * CreateTime   : 2024/6/25 22:09
+ * CreateTime   : 2024/6/25 10:56
  * <br/>
  *
  * @author : JohnS
@@ -23,9 +23,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TranRemark {
+public class ClueRemark {
     private Integer id;
-    private Integer tranId;
+    private Integer clueId;
     private Integer noteWay;
     private String noteContent;
     private LocalDateTime createTime;

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-import pers.johns.crm.mode.vo.HttpResult;
+import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.utils.HttpResponseUtils;
 import pers.johns.crm.utils.JsonUtils;
 

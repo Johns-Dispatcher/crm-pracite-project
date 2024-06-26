@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import pers.johns.crm.mode.po.DicType;
+import pers.johns.crm.model.po.DicType;
 
 import java.util.List;
 

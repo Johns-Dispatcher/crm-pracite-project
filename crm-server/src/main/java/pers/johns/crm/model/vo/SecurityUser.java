@@ -1,12 +1,11 @@
-package pers.johns.crm.mode.vo;
+package pers.johns.crm.model.vo;
 
-import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pers.johns.crm.mode.po.Permission;
-import pers.johns.crm.mode.po.Role;
-import pers.johns.crm.mode.po.User;
+import pers.johns.crm.model.po.Permission;
+import pers.johns.crm.model.po.Role;
+import pers.johns.crm.model.po.User;
 
 import java.io.Serial;
 import java.io.Serializable;

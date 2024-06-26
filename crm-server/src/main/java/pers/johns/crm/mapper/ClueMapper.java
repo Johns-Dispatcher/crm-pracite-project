@@ -1,7 +1,7 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
-import pers.johns.crm.mode.po.Clue;
+import pers.johns.crm.model.po.Clue;
 
 import java.util.List;
 

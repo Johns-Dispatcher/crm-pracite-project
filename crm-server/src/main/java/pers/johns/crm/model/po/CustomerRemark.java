@@ -1,4 +1,4 @@
-package pers.johns.crm.mode.po;
+package pers.johns.crm.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,14 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
- * ClassName    : Customer
+ * ClassName    : CustomerRemark
  * <br/>
- * Description  : 客户对象类，对应数据 t_customer
+ * Description  : 客户备注类，对应数据表 t_customer_remark
  * <br/>
- * CreateTime   : 2024/6/25 12:39
+ * CreateTime   : 2024/6/25 13:38
  * <br/>
  *
  * @author : JohnS
@@ -24,15 +23,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Customer {
+public class CustomerRemark {
     private Integer id;
-    private Integer clueId;
-    private Integer product;
-    private String description;
-    private LocalDateTime nextContactTime;
+    private Integer customerId;
+    private Integer noteWay;
+    private String noteContent;
     private LocalDateTime createTime;
     private Integer createBy;
     private LocalDateTime editTime;
     private Integer editBy;
-    private List<CustomerRemark> customerRemarks;
+    private Integer deleted;
 }

@@ -1,7 +1,7 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
-import pers.johns.crm.mode.po.Role;
+import pers.johns.crm.model.po.Role;
 
 import java.util.List;
 

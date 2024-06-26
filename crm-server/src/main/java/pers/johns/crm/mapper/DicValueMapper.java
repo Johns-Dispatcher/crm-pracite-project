@@ -1,7 +1,7 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
-import pers.johns.crm.mode.po.DicValue;
+import pers.johns.crm.model.po.DicValue;
 
 import java.util.List;
 

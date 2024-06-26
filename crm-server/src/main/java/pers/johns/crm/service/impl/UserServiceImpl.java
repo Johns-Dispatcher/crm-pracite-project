@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pers.johns.crm.mapper.UserMapper;
-import pers.johns.crm.mode.po.User;
-import pers.johns.crm.mode.vo.SecurityUser;
+import pers.johns.crm.model.po.User;
+import pers.johns.crm.model.vo.SecurityUser;
 import pers.johns.crm.service.UserService;
 
 /**
