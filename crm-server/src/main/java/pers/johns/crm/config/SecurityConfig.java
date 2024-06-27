@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -42,6 +43,7 @@ public class SecurityConfig {
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
+    private final LogoutSuccessHandler logoutSuccessHandler;
     private final JwtVerifyFilter jwtVerifyFilter;
 
     @Bean
@@ -54,11 +56,16 @@ public class SecurityConfig {
                 // 设置登录地址
                 .loginProcessingUrl(Constants.LOGIN_URI)
                 // 设置用户参数名
-                .usernameParameter("loginAct")
+                .usernameParameter(Constants.LOGIN_USERNAME_PARAMETER)
                 // 设置密码参数名
-                .passwordParameter("loginPwd")
+                .passwordParameter(Constants.LOGIN_PASSWORD_PARAMETER)
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler)
+        );
+
+        httpSecurity.logout(logout -> logout
+                .logoutUrl(Constants.LOGOUT_URI)
+                .logoutSuccessHandler(logoutSuccessHandler)
         );
 
         httpSecurity.authorizeHttpRequests(auth -> auth
