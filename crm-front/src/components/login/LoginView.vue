@@ -29,7 +29,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { doPost } from '../../http/httpRequestUtils';
-import { getTokenKey, messageTip } from '../../utils/utils'
+import { clearToken, getTokenKey, messageTip } from '../../utils/utils'
 import { useRouter } from 'vue-router'
 
 // 绑定登录数据
@@ -67,6 +67,8 @@ function login() {
 					if (response.data.code === 200) {
 						// 登录成功
 						messageTip("登录成功", "success")
+						// 清除历史 Token
+						clearToken()
 						// 存储后端传来的 JWT 串
 						if (user.rememberMe) {
 							window.localStorage.setItem(getTokenKey(), response.data.data)
