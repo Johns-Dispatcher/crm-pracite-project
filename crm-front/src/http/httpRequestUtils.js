@@ -40,7 +40,7 @@ axios.interceptors.response.use(response => {
 				messageTip('跳转至登录页面', 'success')
 				// 清除有错误的 Token
 				clearToken()
-				window.location.href = getServerRoot()
+				window.location.href = "/"
 			},
 			() => {
 				messageTip('取消跳转', 'warning')
