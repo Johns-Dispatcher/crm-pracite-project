@@ -6,7 +6,7 @@
 				<h1>欢迎使用 CRM 客户管理系统</h1>
 				<!-- 登录表单 -->
 				<el-form 
-					ref="loginRefForm"
+					ref="loginForm"
 					:model="user"
 					label-width="auto"
 					style="max-width: 400px"
@@ -26,68 +26,58 @@
 	</div>
 </template>
 
-<script>
+<script setup>
+import { reactive, ref } from 'vue';
 import { doPost } from '../../http/httpRequestUtils';
 import { messageTip } from '../../utils/utils'
 import { useRouter } from 'vue-router'
 
-export default {
-	name: "CrmLoginView",
-	data() {
-		return {
-			// 绑定登录数据
-			user: {
-				// 登录用户 与数据库命名相同
-				loginAct: "",
-				// 登录密码 与数据库命名相同
-				loginPwd: ""
-			},
-			// 定义表单规则
-			loginRules: {
-				// 登录用户的校验规则
-				loginAct: [ { required: true, message: '请输入登录用户名称', trigger: 'blur' } ],
-				// 登录密码的校验规则
-				loginPwd: [
-					{ required: true, message: '请输入登录密码', trigger: 'blur' },
-					{ min: 6, max: 16, message: '密码需要在 6 ~ 16 位之间', trigger: 'blur' }
-				]
-			},
-			// 获取路由对象
-			router: useRouter()
-		}
-	},
-	methods: {
-		// 登录函数
-		login() {
-			// 执行定义好的验证规则
-			this.$refs.loginRefForm.validate((isValid) => {
-				// 使用 FormData 封装数据
-				let fromData = new FormData();
+// 绑定登录数据
+const user = reactive({})
 
-				fromData.append("loginAct", this.user.loginAct)
-				fromData.append("loginPwd", this.user.loginPwd)
-				fromData.append("rememberMe", this.user.rememberMe)
+// 定义表单规则
+const loginRules = reactive({
+	// 登录用户的校验规则
+	loginAct: [ { required: true, message: '请输入登录用户名称', trigger: 'blur' } ],
+	// 登录密码的校验规则
+	loginPwd: [
+		{ required: true, message: '请输入登录密码', trigger: 'blur' },
+		{ min: 6, max: 16, message: '密码需要在 6 ~ 16 位之间', trigger: 'blur' }
+	]
+})
 
-				// 验证后调用 传入验证结果
-				if (isValid) {
-					doPost("/api/login", fromData).then(
-						response => {
-							console.log(response)
-							if (response.data.code === 200) {
-								// 登录成功
-								messageTip("登录成功", "success")
-								// 进行路由跳转
-								this.router.push('/dashboard')
-							} else {
-								// 登录失败
-								messageTip("登录失败，请检查登录信息", "error")
-							}
-						}
-					)
+const loginForm = ref()
+
+const router = useRouter()
+
+function login() {
+	// 执行定义好的验证规则
+	loginForm.value.validate((isValid) => {
+		// 使用 FormData 封装数据
+		let fromData = new FormData();
+
+		fromData.append("loginAct", user.loginAct)
+		fromData.append("loginPwd", user.loginPwd)
+		fromData.append("rememberMe", user.rememberMe)
+
+		// 验证后调用 传入验证结果
+		if (isValid) {
+			doPost("/api/login", fromData).then(
+				response => {
+					console.log(response)
+					if (response.data.code === 200) {
+						// 登录成功
+						messageTip("登录成功", "success")
+						// 进行路由跳转
+						router.push('/dashboard')
+					} else {
+						// 登录失败
+						messageTip("登录失败，请检查登录信息", "error")
+					}
 				}
-			})
+			)
 		}
-	}
+	})
 }
 </script>
 

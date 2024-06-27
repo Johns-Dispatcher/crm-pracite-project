@@ -1,11 +1,7 @@
 <template>
-	<CRMRoot></CRMRoot>
+	<CRMRoot/>
 </template>
 
-<script>
+<script setup>
 import CRMRoot from "./components/CrmRoot.vue"
-export default {
-	name: "App",
-	components: { CRMRoot }
-}
 </script>
