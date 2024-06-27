@@ -163,7 +163,7 @@
 		<div class="dropdown">
 			<el-dropdown :hide-on-click="false" @visible-change="visibleChange">
 				<span class="el-dropdown-link">
-					Myname
+					{{ username }}
 					<el-icon class="el-icon--right" style="vertical-align: middle">
 						<ArrowUp v-if="dropboxVisiable"/>
 						<ArrowDown v-if="!dropboxVisiable" />
@@ -194,6 +194,7 @@ import { doGet } from '../../http/httpRequestUtils';
 const menuFolded = ref(false)
 const menuTransition = ref(true)
 const dropboxVisiable = ref(false)
+const username = ref("")
 
 const asideWidth = computed(() => {
   return (menuFolded.value ? 64 : 200) + 'px'
@@ -211,6 +212,7 @@ function getLoginInfo() {
 	doGet("/api/login/info", {}).then(
 		(response) => {
 			console.log(response);
+			username.value = response.data.data.user.name
 		}
 	)
 }

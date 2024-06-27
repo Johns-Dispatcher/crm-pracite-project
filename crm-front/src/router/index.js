@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 import LoginView from '../components/login/LoginView.vue'
-import Dashboard from '../components/dashboard/Dashboard.vue'
+import DashboardView from '../components/dashboard/DashboardView.vue'
 
 // 创建路由对象
 export default createRouter({
@@ -17,7 +17,7 @@ export default createRouter({
 		},
 		{
 			path: "/dashboard",
-			component: Dashboard
+			component: DashboardView
 		}
 	]
 })

@@ -1,6 +1,6 @@
 // 封装 AJAX 请求方式
 import axios from "axios";
-import { getServerRoot, getTokenKey, messageConfirm, messageTip } from "../utils/utils";
+import { clearToken, getServerRoot, getTokenKey, messageConfirm, messageTip } from "../utils/utils";
 
 /* Axios 初始配置 */
 // 设置默认请求地根址
@@ -38,7 +38,9 @@ axios.interceptors.response.use(response => {
 			"warning",
 			() => {
 				messageTip('跳转至登录页面', 'success')
-				window.location.href = ''
+				// 清除有错误的 Token
+				clearToken()
+				window.location.href = getServerRoot()
 			},
 			() => {
 				messageTip('取消跳转', 'warning')

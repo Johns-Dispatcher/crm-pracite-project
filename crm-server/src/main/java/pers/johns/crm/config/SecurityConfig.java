@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -69,8 +70,14 @@ public class SecurityConfig {
         // 关闭跨域保护
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
+        // 配置同源策略
         httpSecurity.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
                 .configurationSource(configurationSource)
+        );
+
+        // 关闭 Session 机制
+        httpSecurity.sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         return httpSecurity.build();
