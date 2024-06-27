@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pers.johns.crm.constant.Constants;
-import pers.johns.crm.model.po.User;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.HttpResultCode;
 import pers.johns.crm.model.vo.SecurityUser;
