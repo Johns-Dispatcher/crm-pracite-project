@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * ClassName    : LogoutSuccessHandlerImpl
  * <br/>
- * Description  : TODO
+ * Description  : 退出登录处理器
  * <br/>
  * CreateTime   : 2024/6/28 0:25
  * <br/>
