@@ -173,7 +173,7 @@
 					<el-dropdown-menu>
 						<el-dropdown-item>我的资料</el-dropdown-item>
 						<el-dropdown-item>修改密码</el-dropdown-item>
-						<el-dropdown-item divided>退出登录</el-dropdown-item>
+						<el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
 				</template>
 			</el-dropdown>
@@ -188,38 +188,102 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref, watch} from 'vue';
+import {computed, onMounted, reactive, ref, watch} from 'vue';
 import { doGet } from '../../http/httpRequestUtils';
+import { clearToken, messageConfirm, messageTip } from '../../utils/utils';
+import { useRouter } from 'vue-router';
+
+/* == 数据 == */
 
 const menuFolded = ref(false)
 const menuTransition = ref(true)
 const dropboxVisiable = ref(false)
 const username = ref("")
+const router = useRouter()
+
+/* == 计算属性 == */
 
 const asideWidth = computed(() => {
   return (menuFolded.value ? 64 : 200) + 'px'
 })
 
+
+/* == 函数 == */
+
+/**
+ * 折叠状态更新
+ */
 function changeMenuFolded() {
   menuFolded.value = !menuFolded.value
 }
 
+/**
+ * 用于调整图标的切换
+ * @param isOpen 是否处于开启状态
+ */
 function visibleChange(isOpen) {
 	dropboxVisiable.value = isOpen
 }
 
+/**
+ * 向服务器获取登录信息
+ */
 function getLoginInfo() {
 	doGet("/api/login/info", {}).then(
 		(response) => {
-			console.log(response);
 			username.value = response.data.data.user.name
 		}
 	)
 }
 
+/**
+ * 退出登录
+ */
+function logout() {
+	messageConfirm(
+		"您确认要退出该系统吗？",
+		"确认退出",
+		"warning",
+		() => {
+			doGet("/api/logout", {}).then(response => {
+				if (response.data.code === 200) {
+					clearToken()
+					messageTip("退出成功", "success")
+					router.push("/")
+				} else {
+					forceLogout()
+				}
+			})
+		},
+		() => {
+			messageTip("取消退出", "info")
+		}
+	)
+}
+
+function forceLogout() {
+	messageConfirm(
+		"退出异常，是否要强制退出系统",
+		"退出异常",
+		"error",
+		() => {
+			clearToken()
+			messageTip("强制退出成功", "warning")
+			router.push("/")
+		},
+		() => {
+			messageTip("取消强制退出，请稍后重试", "info")
+		}
+	)
+}
+
+/* == 钩子函数 == */
+
 onMounted(() => {
 	getLoginInfo()
 })
+
+/* == 监视器 == */
 
 // 延迟调整过度动画，保证展开没有动画，折叠存在动画
 watch(menuFolded, () => {
