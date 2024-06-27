@@ -19,6 +19,21 @@ public class Constants {
     public static final String LOGIN_URI = "/api/login";
 
     /**
+     * 登录时的用户名参数名称
+     */
+    public static final String LOGIN_USERNAME_PARAMETER = "loginAct";
+
+    /**
+     * 登录时的密码参数名称
+     */
+    public static final String LOGIN_PASSWORD_PARAMETER = "loginPwd";
+
+    /**
+     * 退出的默认请求路径
+     */
+    public static final String LOGOUT_URI = "/api/logout";
+
+    /**
      * 在 Redis 中存储 JWT 的前缀
      */
     public static final String REDIS_JWT_KEY_PREFIX = "crm:user:login:";
