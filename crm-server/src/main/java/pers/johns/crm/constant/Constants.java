@@ -3,7 +3,7 @@ package pers.johns.crm.constant;
 /**
  * ClassName    : Constants
  * <br/>
- * Description  : TODO
+ * Description  : 常量信息类
  * <br/>
  * CreateTime   : 2024/6/27 16:26
  * <br/>

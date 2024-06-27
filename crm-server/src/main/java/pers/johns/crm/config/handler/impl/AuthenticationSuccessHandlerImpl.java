@@ -39,7 +39,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, ServletException {
+            throws IOException {
         // 获取认证后的用户信息
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         String username = securityUser.getUsername();
