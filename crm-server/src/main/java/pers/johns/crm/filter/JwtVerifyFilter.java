@@ -52,14 +52,18 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
                     .trim().replace(Constants.AUTHORIZATION_TOKEN_PREFIX, "").trim();
 
             if (!StringUtils.hasText(jwt)) {
+                // 用户未提交 Token
                 HttpResult result = HttpResult.CustomResult(HttpResultCode.TOKEN_IS_EMPTY);
-                HttpResponseUtils.responseJson(response, JsonUtils.toJson(request));
+                HttpResponseUtils.responseJson(response, JsonUtils.toJson(result));
+                log.info("验证失败 - 用户未提交 Token");
                 return;
             }
 
             if (!JwtUtils.verifyJWT(jwt)) {
+                // Token 校验失败
                 HttpResult result = HttpResult.CustomResult(HttpResultCode.TOKEN_VERIFY_FAILED);
-                HttpResponseUtils.responseJson(response, JsonUtils.toJson(request));
+                HttpResponseUtils.responseJson(response, JsonUtils.toJson(result));
+                log.info("验证失败 - Token 不合法或者已过期");
                 return;
             }
 
@@ -71,14 +75,17 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
             String redisJwt = (String) redisService.getValue(Constants.REDIS_JWT_KEY_PREFIX + username);
 
             if (!StringUtils.hasText(redisJwt)) {
+                // 未能在 Redis 中获取 Token，Token 已经超时或者用户主动下线
                 HttpResult result = HttpResult.CustomResult(HttpResultCode.TOKEN_IS_EXPIRED);
-                HttpResponseUtils.responseJson(response, JsonUtils.toJson(request));
+                HttpResponseUtils.responseJson(response, JsonUtils.toJson(result));
+                log.info("验证失败 - 未能在 Redis 中获取 Token，Token 已经超时或者用户主动下线");
                 return;
             }
 
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(securityUser, null, securityUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            log.info("验证成功 - 将用户信息注册到安全上下文当中");
 
             filterChain.doFilter(request, response);
         }
