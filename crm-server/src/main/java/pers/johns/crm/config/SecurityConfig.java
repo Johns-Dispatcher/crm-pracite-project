@@ -12,9 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import pers.johns.crm.constant.Constants;
+import pers.johns.crm.filter.JwtVerifyFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,14 +41,17 @@ public class SecurityConfig {
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
+    private final JwtVerifyFilter jwtVerifyFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, CorsConfigurationSource configurationSource)
             throws Exception {
 
+        httpSecurity.addFilterBefore(jwtVerifyFilter, UsernamePasswordAuthenticationFilter.class);
+
         httpSecurity.formLogin(formLoginConfigurer -> formLoginConfigurer
                 // 设置登录地址
-                .loginProcessingUrl("/api/login")
+                .loginProcessingUrl(Constants.LOGIN_URI)
                 // 设置用户参数名
                 .usernameParameter("loginAct")
                 // 设置密码参数名
@@ -55,7 +61,7 @@ public class SecurityConfig {
         );
 
         httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/login").permitAll()
+                .requestMatchers(Constants.LOGIN_URI).permitAll()
                 // 任何请求需要认证
                 .anyRequest().authenticated()
         );
