@@ -1,8 +1,10 @@
 // 封装 AJAX 请求方式
 import axios from "axios";
-import { getTokenKey } from "../utils/utils";
+import { getServerRoot, getTokenKey, messageConfirm, messageTip } from "../utils/utils";
 
-axios.defaults.baseURL = "http://localhost:8009"
+/* Axios 初始配置 */
+// 设置默认请求地根址
+axios.defaults.baseURL = getServerRoot()
 
 // 添加请求拦截器
 axios.interceptors.request.use(config => {
@@ -27,6 +29,23 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(response => {
 	// 2xx 范围内的状态码都会触发该函数。
 	// 对响应数据做点什么
+	// 获取响应结果，根据响应结果进行页面跳转
+	if (response.data.code > 900) {
+		// 说明 JWT 验证出现问题
+		messageConfirm(
+			"用户已经过期，是否重新登陆",
+			"登录过期",
+			"warning",
+			() => {
+				messageTip('跳转至登录页面', 'success')
+				window.location.href = ''
+			},
+			() => {
+				messageTip('取消跳转', 'warning')
+			}
+		)
+	}
+
 	return response;
 }, function (error) {
 	// 超出 2xx 范围的状态码都会触发该函数。
@@ -34,7 +53,14 @@ axios.interceptors.response.use(response => {
 	return Promise.reject(error);
 });
 
-// 发送 GET 请求
+/* 封装 Axios 请求方法 */
+
+/**
+ * 发送 GET 请求
+ * @param {string} url 请求地址，相对于服务根的相对路径
+ * @param {*} params 请求参数
+ * @returns axios 请求结果，可以用于后续处理
+ */
 export function doGet(url, params) {
 	return axios({
 		method: "get",
@@ -44,7 +70,12 @@ export function doGet(url, params) {
 	})
 }
 
-// 发送 POST 请求
+/**
+ * 发送 POST 请求
+ * @param {string} url 请求地址，相对于服务根的相对路径
+ * @param {json} data 携带数据
+ * @returns axios 请求结果，可以用于后续处理
+ */
 export function doPost(url, data) {
 	return axios({
 		method: "post",
@@ -54,7 +85,12 @@ export function doPost(url, data) {
 	})
 }
 
-// 发送 PUT 请求
+/**
+ * 发送 PUT 请求
+ * @param {string} url 请求地址，相对于服务根的相对路径
+ * @param {json} data 携带数据
+ * @returns axios 请求结果，可以用于后续处理
+ */
 export function doPut(url, data) {
 	return axios({
 		method: "put",
@@ -64,7 +100,12 @@ export function doPut(url, data) {
 	})
 }
 
-// 发送 DELETE 请求
+/**
+ * 发送 DELETE 请求
+ * @param {string} url 请求地址，相对于服务根的相对路径
+ * @param {*} params 请求参数
+ * @returns axios 请求结果，可以用于后续处理
+ */
 export function doDelete(url, params) {
 	return axios({
 		method: "post",
