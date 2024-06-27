@@ -1,5 +1,6 @@
 package pers.johns.crm.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,7 @@ public record SecurityUser(User user) implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRoles().stream()
                 .map(Role::getPermissions)
@@ -54,21 +56,25 @@ public record SecurityUser(User user) implements UserDetails, Serializable {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return user.getAccountNoExpired() == 1;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return user.getAccountNoLocked() == 1;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return user.getCredentialsNoExpired() == 1;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return user.getAccountEnabled() == 1;
     }

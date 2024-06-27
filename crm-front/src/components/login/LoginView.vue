@@ -17,7 +17,7 @@
 					<el-form-item label=" ">
 						<el-row :gutter="10" justify="space-between">
 							<el-col :span="6"><el-button type="primary" @click="login">登录</el-button></el-col>
-							<el-col :span="6"><el-checkbox label="免登录" name="remberme"/></el-col>
+							<el-col :span="6"><el-checkbox label="免登录" name="rememberMe" v-model="user.rememberMe"/></el-col>
 						</el-row>
 					</el-form-item>
 				</el-form>
@@ -66,6 +66,7 @@ export default {
 
 				fromData.append("loginAct", this.user.loginAct)
 				fromData.append("loginPwd", this.user.loginPwd)
+				fromData.append("rememberMe", this.user.rememberMe)
 
 				// 验证后调用 传入验证结果
 				if (isValid) {

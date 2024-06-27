@@ -40,13 +40,22 @@ public class HttpResult implements Serializable {
     private Object data;
 
     public static HttpResult OK() {
-        return OK(HttpResultCode.OK.getMsg());
+        return OK(HttpResultCode.OK.getMsg(), null);
+    }
+
+    public static HttpResult OK(Object object) {
+        return OK(HttpResultCode.OK.getMsg(), object);
     }
 
     public static HttpResult OK(String msg) {
+        return OK(msg, null);
+    }
+
+    public static HttpResult OK(String msg, Object object) {
         return HttpResult.builder()
                 .code(HttpResultCode.OK.getCode())
                 .msg(msg)
+                .data(object)
                 .build();
     }
 

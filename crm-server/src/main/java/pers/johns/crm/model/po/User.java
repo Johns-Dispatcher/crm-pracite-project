@@ -1,5 +1,6 @@
 package pers.johns.crm.model.po;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,7 @@ import java.util.List;
 public class User {
     private Integer id;
     private String loginAct;
+    @JsonIgnore
     private String loginPwd;
     private String name;
     private String phone;
@@ -40,5 +42,6 @@ public class User {
     private LocalDateTime editTime;
     private Integer editBy;
     private LocalDateTime lastLoginTime;
+    @JsonIgnore
     private List<Role> roles;
 }
