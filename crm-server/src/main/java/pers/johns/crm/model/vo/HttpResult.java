@@ -35,7 +35,7 @@ public class HttpResult implements Serializable {
      */
     private String msg;
     /**
-     *
+     *  响应携带数据
      */
     private Object data;
 
@@ -52,11 +52,7 @@ public class HttpResult implements Serializable {
     }
 
     public static HttpResult OK(String msg, Object object) {
-        return HttpResult.builder()
-                .code(HttpResultCode.OK.getCode())
-                .msg(msg)
-                .data(object)
-                .build();
+        return CustomResult(HttpResultCode.OK.getCode(), msg, object);
     }
 
     public static HttpResult Fail() {
@@ -64,9 +60,18 @@ public class HttpResult implements Serializable {
     }
 
     public static HttpResult Fail(String msg) {
+        return CustomResult(HttpResultCode.FAIL.getCode(), msg, null);
+    }
+
+    public static HttpResult CustomResult(HttpResultCode resultCode) {
+        return CustomResult(resultCode.getCode(), resultCode.getMsg(), null);
+    }
+
+    public static HttpResult CustomResult(Integer code, String msg, Object data) {
         return HttpResult.builder()
-                .code(HttpResultCode.FAIL.getCode())
+                .code(code)
                 .msg(msg)
+                .data(data)
                 .build();
     }
 }

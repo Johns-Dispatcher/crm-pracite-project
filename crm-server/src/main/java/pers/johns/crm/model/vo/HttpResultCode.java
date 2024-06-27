@@ -21,7 +21,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum HttpResultCode {
     OK(200, "请求成功"),
-    FAIL(500, "请求失败");
+    FAIL(500, "请求失败"),
+    TOKEN_IS_EMPTY(901, "请求未提供 Token"),
+    TOKEN_IS_EXPIRED(902, "JWT 已经过期，请重新登录"),
+    TOKEN_VERIFY_FAILED(903, "Token 验证失败，可能是 Token 非法或者已经超时")
+    ;
 
     private final Integer code;
     private final String msg;
