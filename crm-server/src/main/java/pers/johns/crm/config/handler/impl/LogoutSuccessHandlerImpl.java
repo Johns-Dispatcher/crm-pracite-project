@@ -42,11 +42,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
 
-        String jwt = request.getHeader(Constants.AUTHORIZATION_PARAMETER_NAME)
-                .trim().replace(Constants.AUTHORIZATION_TOKEN_PREFIX, "").trim();
-
-        String jsonData = JwtUtils.parsePayloadData(jwt);
-        SecurityUser securityUser = JsonUtils.toBean(jsonData, SecurityUser.class);
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
 
         log.info("用户 {} 退出成功，清除 Redis 中 Token 数据...", securityUser.getUsername());
 
