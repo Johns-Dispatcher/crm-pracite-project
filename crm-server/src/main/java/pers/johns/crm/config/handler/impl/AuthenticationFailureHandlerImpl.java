@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * ClassName    : AuthenticationFailureHandlerImpl
  * <br/>
- * Description  : TODO
+ * Description  : 认证失败处理器
  * <br/>
  * CreateTime   : 2024/6/26 11:13
  * <br/>
