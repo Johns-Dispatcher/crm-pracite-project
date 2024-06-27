@@ -29,7 +29,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { doPost } from '../../http/httpRequestUtils';
-import { messageTip } from '../../utils/utils'
+import { getTokenKey, messageTip } from '../../utils/utils'
 import { useRouter } from 'vue-router'
 
 // 绑定登录数据
@@ -69,9 +69,9 @@ function login() {
 						messageTip("登录成功", "success")
 						// 存储后端传来的 JWT 串
 						if (user.rememberMe) {
-							window.localStorage.setItem("crm_token", response.data.data)
+							window.localStorage.setItem(getTokenKey(), response.data.data)
 						} else {
-							window.sessionStorage.setItem("crm_token", response.data.data)
+							window.sessionStorage.setItem(getTokenKey(), response.data.data)
 						}
 						// 进行路由跳转
 						router.push('/dashboard')
