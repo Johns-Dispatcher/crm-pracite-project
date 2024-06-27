@@ -64,10 +64,15 @@ function login() {
 		if (isValid) {
 			doPost("/api/login", fromData).then(
 				response => {
-					console.log(response)
 					if (response.data.code === 200) {
 						// 登录成功
 						messageTip("登录成功", "success")
+						// 存储后端传来的 JWT 串
+						if (user.rememberMe) {
+							window.localStorage.setItem("crm_token", response.data.data)
+						} else {
+							window.sessionStorage.setItem("crm_token", response.data.data)
+						}
 						// 进行路由跳转
 						router.push('/dashboard')
 					} else {
