@@ -12,7 +12,7 @@
 
 ## 数据库ER图
 
-![数据库ER图](./attachments/mysql/数据库ER图.png)
+![数据库ER图](/attachments/mysql/数据库ER图.png)
 
 ## 前端项目
 
@@ -27,6 +27,8 @@
    |- src                        -- 源码文件
    |  |- assets                  -- 页面资源
    |  |- components              -- Vue 组件
+   |  |  |- dashboard
+   |  |  |  |- DashboardView.vue -- 项目主页面
    |  |  |- login                -- 登录相关组件
    |  |  |  |- LoginView.vue     -- 登录页面组件
    |  |  |- CrmRoot.vue          -- CRM 项目根组件
@@ -59,6 +61,10 @@
    |  |  |  |  |  |- AuthenticationFailureHandlerImpl -- 认证失败处理器实现类，用于处理认证失败后的响应结果
    |  |  |  |  |  |- AuthenticationSuccessHandlerImpl -- 认证成功处理器实现类，用于处理认证成功后的响应结果
    |  |  |  |  |- SecurityConfig.class                -- 安全配置类
+   |  |  |  |- constant
+   |  |  |  |  |- Constant.class                      -- 常量类，定义了项目中需要的常量
+   |  |  |  |- filter
+   |  |  |  |  |- JwtVerifyFilter.class               -- 用于验证 JWT 的过滤器
    |  |  |  |- manager
    |  |  |  |- mapper
    |  |  |  |  |- 对应表的 Mapper 接口，采用全注解方式，接口较多在此不再一一列举
@@ -70,14 +76,18 @@
    |  |  |  |     |- HttpResultCode.class  -- 响应结果的枚举，用于快速构建响应信息
    |  |  |  |     |- SecurityUser.class    -- 安全用户类，对应 PO 中的 User 类，对 User 进行了信息筛选
    |  |  |  |- query
-   |  |  |  |- service                     -- 业务包
-   |  |  |  |  |- impl                     -- 业务实现类
-   |  |  |  |  |  |- UserServiceImpl.class -- 用户业务实现类
-   |  |  |  |  |- UserService.class        -- 用户业务接口
+   |  |  |  |- service                      -- 业务包
+   |  |  |  |  |- impl                      -- 业务实现类
+   |  |  |  |  |  |- UserServiceImpl.class  -- 用户业务实现类
+   |  |  |  |  |  |- RedisServiceImpl.class -- Redis 业务实现类
+   |  |  |  |  |- UserService.class         -- 用户业务接口
+   |  |  |  |  |- RedisService.class        -- Redis 相关业务接口
    |  |  |  |- utils
    |  |  |  |  |- HttpResponseUtils.class  -- 用于向前端响应数据的工具类
    |  |  |  |  |- JsonUtils.class          -- 用于序列化 JSON 的工具类
+   |  |  |  |  |- JwtUtils.class           -- 用于创建、验证、读取 JWT 的工具类
    |  |  |  |- web.controller
+   |  |  |     |- UserController.class     -- 用户相关业务的控制器
    |  |  |- Application.clss               -- 主启动类，整个程序的入口
    |  |- resources
    |     |- application.yml                -- Spring Boot 配置文件
@@ -88,3 +98,7 @@
       |        |- 测试 Mapper 接口的测试类，用于测试 Mapper 接口是否工作正常
       |- resources
 ```
+
+## 项目部分实现流程
+
+![CRM项目-安全登录实现步骤.jpg](/attachments/CRM项目-安全登录实现步骤.jpg)
