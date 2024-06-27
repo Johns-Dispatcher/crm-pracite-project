@@ -27,10 +27,12 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import { doPost } from '../../http/httpRequestUtils';
+import { onMounted, reactive, ref } from 'vue';
+import { doGet, doPost } from '../../http/httpRequestUtils';
 import { clearToken, getTokenKey, messageTip } from '../../utils/utils'
 import { useRouter } from 'vue-router'
+
+/* == 数据 == */
 
 // 绑定登录数据
 const user = reactive({})
@@ -50,6 +52,12 @@ const loginForm = ref()
 
 const router = useRouter()
 
+
+/* == 函数 == */
+
+/**
+ * 登录方法
+ */
 function login() {
 	// 执行定义好的验证规则
 	loginForm.value.validate((isValid) => {
@@ -86,6 +94,29 @@ function login() {
 		}
 	})
 }
+
+/**
+ * 免登录
+ */
+function freeLogin() {
+	// 检查 Local Storage 中是否存储了 Token
+	let token = window.localStorage.getItem(getTokenKey())
+	if (token) {
+		// 存在就直接进行验证
+		doGet("/api/login/free", {}).then(response => {
+			if (response.data.code === 200) {
+				messageTip("免登录验证成功", "success")
+				router.push('/dashboard')
+			}
+		})
+	}
+}
+
+/* == 钩子函数 == */
+
+onMounted(() => {
+	freeLogin()
+})
 </script>
 
 <style scoped>

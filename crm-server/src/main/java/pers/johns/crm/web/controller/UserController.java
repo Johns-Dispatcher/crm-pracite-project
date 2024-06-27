@@ -24,4 +24,9 @@ public class UserController {
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         return HttpResult.OK(securityUser);
     }
+
+    @GetMapping("/api/login/free")
+    public HttpResult loginFree() {
+        return HttpResult.OK("免登录成功");
+    }
 }
