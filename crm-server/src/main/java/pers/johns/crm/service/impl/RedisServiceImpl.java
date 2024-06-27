@@ -2,6 +2,7 @@ package pers.johns.crm.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pers.johns.crm.service.RedisService;
 
@@ -22,15 +23,15 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class RedisServiceImpl implements RedisService {
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
-    public void setValue(String key, Object value) {
+    public void setValue(String key, String value) {
         redisTemplate.opsForValue().set(key, value);
     }
 
     @Override
-    public void setValue(String key, Object value, long expireTime) {
+    public void setValue(String key, String value, long expireTime) {
         redisTemplate.opsForValue().set(key, value, expireTime, TimeUnit.MILLISECONDS);
     }
 

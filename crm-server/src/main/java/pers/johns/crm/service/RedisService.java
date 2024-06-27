@@ -19,14 +19,14 @@ public interface RedisService {
      * @param value 值
      * @param expireTime 过期时间，单位毫秒
      */
-    void setValue(String key, Object value, long expireTime);
+    void setValue(String key, String value, long expireTime);
 
     /**
      * 为指定键指定值
      * @param key 键
      * @param value 值
      */
-    void setValue(String key, Object value);
+    void setValue(String key, String value);
 
     /**
      * 获取对应键的值
