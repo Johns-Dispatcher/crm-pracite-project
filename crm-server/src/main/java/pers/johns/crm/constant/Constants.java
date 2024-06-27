@@ -32,4 +32,15 @@ public class Constants {
      * 当用户不勾选记住登录时，Token 的过期时间，以毫秒为单位，7 天
      */
     public static final long DEFAULT_NOT_REMEMBER_TIME = 1000 * 60 * 30;
+
+    /**
+     * 认证信息头的参数名
+     */
+    public static final String AUTHORIZATION_PARAMETER_NAME = "Authorization";
+
+    /**
+     * Token 的前缀部分
+     */
+    public static final String AUTHORIZATION_TOKEN_PREFIX = "Bearer ";
+
 }
