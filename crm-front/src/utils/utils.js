@@ -14,3 +14,7 @@ export function messageTip(msg, type) {
 		duration: 5000,
 	})
 }
+
+export function getTokenKey() {
+	return "crm_token"
+}
