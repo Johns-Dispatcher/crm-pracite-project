@@ -28,7 +28,6 @@ import java.util.List;
 public class User {
     private Integer id;
     private String loginAct;
-    @JsonIgnore
     private String loginPwd;
     private String name;
     private String phone;

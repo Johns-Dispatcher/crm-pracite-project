@@ -1,6 +1,10 @@
 package pers.johns.crm.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +29,18 @@ import java.util.List;
  * @version : 1.0
  */
 
-public record SecurityUser(User user) implements UserDetails, Serializable {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class SecurityUser implements UserDetails, Serializable {
+
+    private User user;
+    /**
+     * 这里不能直接存储 SimpleGrantedAuthority 集合
+     * 反序列化会出现问题
+     * 如果直接让序列化 User 中的 Role 可能导致请求头过大
+     */
+    private List<String> authorityList;
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -33,17 +48,23 @@ public record SecurityUser(User user) implements UserDetails, Serializable {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(Role::getPermissions)
-                .flatMap(List::stream)
-                .map(Permission::getCode)
-                // 去空 权限为空会报错
-                .filter(s -> s != null && !s.isEmpty())
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        // 第一次调用一定会调用这个获取权限，此时进行集合的初始化
+        // 之后的访问会从 JWT 中反序列化出数据存储在集合当中
+        if (authorityList == null) {
+            authorityList = user.getRoles().stream()
+                    .map(Role::getPermissions)
+                    .flatMap(List::stream)
+                    .map(Permission::getCode)
+                    // 去空 权限为空会报错
+                    .filter(s -> s != null && !s.isEmpty())
+                    .toList();
+        }
+
+        return authorityList.stream().map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         String loginPwd = user.getLoginPwd();
         user.setLoginPwd(null);
@@ -51,6 +72,7 @@ public record SecurityUser(User user) implements UserDetails, Serializable {
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return user.getLoginAct();
     }

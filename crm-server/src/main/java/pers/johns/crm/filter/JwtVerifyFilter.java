@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pers.johns.crm.constant.Constants;
+import pers.johns.crm.model.po.User;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.HttpResultCode;
 import pers.johns.crm.model.vo.SecurityUser;
@@ -67,9 +68,9 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
                 return;
             }
 
-            SecurityUser securityUser = JsonUtils.toBean(
-                    JwtUtils.parsePayloadData(jwt, String.class),
-                    SecurityUser.class);
+            String jsonData = JwtUtils.parsePayloadData(jwt);
+
+            SecurityUser securityUser = JsonUtils.toBean(jsonData, SecurityUser.class);
 
             String username = securityUser.getUsername();
             String redisJwt = (String) redisService.getValue(Constants.REDIS_JWT_KEY_PREFIX + username);

@@ -35,6 +35,6 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("登录账户不存在");
         }
 
-        return new SecurityUser(user);
+        return new SecurityUser(user, null);
     }
 }
