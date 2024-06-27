@@ -60,15 +60,13 @@ public class JwtUtils {
         }
     }
 
-    public static <T> T parsePayloadData(String jwt, Class<T> clazz) {
+    public static String parsePayloadData(String jwt) {
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWT_SECRET)).build();
 
             DecodedJWT decodedJWT = verifier.verify(jwt);
 
-            String dataJson = decodedJWT.getClaim("data").asString();
-
-            return JsonUtils.toBean(dataJson, clazz);
+            return decodedJWT.getClaim("data").asString();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
