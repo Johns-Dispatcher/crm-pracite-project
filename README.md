@@ -28,6 +28,8 @@
    |  |- assets                  -- 页面资源
    |  |- components              -- Vue 组件
    |  |  |- dashboard
+   |  |  |  |- user
+   |  |  |  |  |- UserView.vue   -- 用户管理页面
    |  |  |  |- DashboardView.vue -- 项目主页面
    |  |  |- login                -- 登录相关组件
    |  |  |  |- LoginView.vue     -- 登录页面组件
@@ -75,6 +77,7 @@
    |  |  |  |     |- HttpResult.class      -- 用于封装响应结果
    |  |  |  |     |- HttpResultCode.class  -- 响应结果的枚举，用于快速构建响应信息
    |  |  |  |     |- SecurityUser.class    -- 安全用户类，对应 PO 中的 User 类，对 User 进行了信息筛选
+   |  |  |  |     |- ViewUser.class        -- 视图用户类，对应 PO 中的 User 类，用于前端的信息展示
    |  |  |  |- query
    |  |  |  |- service                      -- 业务包
    |  |  |  |  |- impl                      -- 业务实现类
@@ -87,6 +90,7 @@
    |  |  |  |  |- JsonUtils.class          -- 用于序列化 JSON 的工具类
    |  |  |  |  |- JwtUtils.class           -- 用于创建、验证、读取 JWT 的工具类
    |  |  |  |- web.controller
+   |  |  |     |- LoginController.class    -- 登录相关业务的控制器
    |  |  |     |- UserController.class     -- 用户相关业务的控制器
    |  |  |- Application.clss               -- 主启动类，整个程序的入口
    |  |- resources
@@ -102,3 +106,5 @@
 ## 项目部分实现流程
 
 ![CRM项目-安全登录实现步骤.jpg](/attachments/CRM项目-安全登录实现步骤.jpg)
+
+![CRM项目-Token续签实现步骤.jpg](./attachments/CRM项目-Token续签实现步骤.jpg)
