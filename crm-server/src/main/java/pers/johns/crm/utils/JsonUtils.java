@@ -1,7 +1,6 @@
 package pers.johns.crm.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,7 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class JsonUtils {
     private JsonUtils() {};
 
-    private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
+    public static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
             // 添加日期模块支持
             .addModule(new JavaTimeModule())
             .build();
