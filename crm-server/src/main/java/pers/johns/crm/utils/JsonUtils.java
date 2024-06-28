@@ -17,7 +17,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  * @version : 1.0
  */
 public class JsonUtils {
-    private JsonUtils() {};
+    private JsonUtils() {}
 
     public static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder()
             // 添加日期模块支持
