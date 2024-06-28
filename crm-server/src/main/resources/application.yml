@@ -25,8 +25,8 @@ spring:
         dataSource.userServerPrepStmts: true
   # jackson 日期格式设置
   jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
 
   data:
     redis:
