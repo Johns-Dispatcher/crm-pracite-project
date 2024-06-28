@@ -1,8 +1,11 @@
 package pers.johns.crm.service;
 
+import com.github.pagehelper.PageInfo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import pers.johns.crm.model.vo.ViewUser;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,4 +28,17 @@ public interface UserService extends UserDetailsService {
      *   expireTime - 新生成 Token 的过期时间
      */
     Map<String, Object> renewalToken(Authentication authentication);
+
+    /**
+     * 读取全部的用户信息
+     * @return {@link ViewUser} 视图用户对象集合
+     */
+    List<ViewUser> getAllUsers();
+
+    /**
+     * 分页查询用户信息
+     * @param currentPage 当前页数
+     * @return 分页对象，使用 Object 是为了在方法中切换为视图对象
+     */
+    PageInfo<Object> getUserByPage(Integer currentPage);
 }
