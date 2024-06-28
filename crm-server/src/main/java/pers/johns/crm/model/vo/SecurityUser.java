@@ -1,9 +1,7 @@
 package pers.johns.crm.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,10 +27,13 @@ import java.util.List;
  */
 
 @Data
+// json 反序列化必须提供无参构造
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityUser implements UserDetails, Serializable {
 
+    @NonNull
     private User user;
     /**
      * 这里不能直接存储 SimpleGrantedAuthority 集合
@@ -40,6 +41,10 @@ public class SecurityUser implements UserDetails, Serializable {
      * 如果直接让序列化 User 中的 Role 可能导致请求头过大
      */
     private List<String> authorityList;
+    /**
+     * 认证过期时间，交给前端进行续期判断
+     */
+    private Long expireTime;
 
     @Serial
     private static final long serialVersionUID = 1L;

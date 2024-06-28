@@ -82,6 +82,10 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
                 return;
             }
 
+            // 从 Redis 中更新续期时间
+            Long expireTime = redisService.getExpireTime(Constants.REDIS_JWT_KEY_PREFIX + username);
+            securityUser.setExpireTime(expireTime);
+
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(securityUser, null, securityUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

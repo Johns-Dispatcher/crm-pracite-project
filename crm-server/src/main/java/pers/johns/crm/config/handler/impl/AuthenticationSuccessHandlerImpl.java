@@ -51,6 +51,8 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         // 确认过期时间
         long expireTime = rememberMe ? Constants.DEFAULT_REMEMBER_TIME : Constants.DEFAULT_NOT_REMEMBER_TIME;
         log.info("JWT 过期时间为 {} ms", expireTime);
+        // 为用户添加过期时间属性，用于前端监控是否要进行续期
+        securityUser.setExpireTime(expireTime);
 
         // 设置 JWT 以及 Redis
         String jwt = JwtUtils.createJWT(JsonUtils.toJson(securityUser), expireTime);

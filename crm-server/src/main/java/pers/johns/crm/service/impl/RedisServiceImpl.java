@@ -49,4 +49,9 @@ public class RedisServiceImpl implements RedisService {
     public void setExpireTime(String key, long expireTime) {
         redisTemplate.expire(key, expireTime, TimeUnit.MILLISECONDS);
     }
+
+    @Override
+    public Long getExpireTime(String key) {
+        return redisTemplate.getExpire(key, TimeUnit.MILLISECONDS);
+    }
 }

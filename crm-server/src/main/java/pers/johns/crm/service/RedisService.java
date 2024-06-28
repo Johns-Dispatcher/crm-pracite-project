@@ -48,4 +48,11 @@ public interface RedisService {
      * @param expireTime 过期时间，单位毫秒
      */
     void setExpireTime(String key, long expireTime);
+
+    /**
+     * 获取剩余时间
+     * @param key 键
+     * @return 剩余过期时间
+     */
+    Long getExpireTime(String key);
 }
