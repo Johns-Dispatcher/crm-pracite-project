@@ -23,6 +23,11 @@ spring:
         dataSource.prepStmtCacheSize: 250
         dataSource.prepStmtCacheSqlLimit: 2048
         dataSource.userServerPrepStmts: true
+  # jackson 日期格式设置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
   data:
     redis:
       host: 172.29.255.213
