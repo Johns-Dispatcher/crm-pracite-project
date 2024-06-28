@@ -30,6 +30,12 @@ axios.interceptors.response.use(response => {
 	// 2xx 范围内的状态码都会触发该函数。
 	// 对响应数据做点什么
 	// 获取响应结果，根据响应结果进行页面跳转
+	let responseURL = response.request.responseURL
+	// 退出登录和续约都不做响应
+	if (responseURL.split("/").at(-1) === 'logout' || responseURL.split("/").at(-1) === 'renewal') {
+		return response;
+	}
+
 	if (response.data.code > 900) {
 		// 说明 JWT 验证出现问题
 		messageConfirm(

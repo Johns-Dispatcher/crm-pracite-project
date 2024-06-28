@@ -72,6 +72,7 @@ function login() {
 		if (isValid) {
 			doPost("/api/login", fromData).then(
 				response => {
+					console.log(response)
 					if (response.data.code === 200) {
 						// 登录成功
 						messageTip("登录成功", "success")

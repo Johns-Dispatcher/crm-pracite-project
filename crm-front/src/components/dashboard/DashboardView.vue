@@ -232,7 +232,6 @@ function visibleChange(isOpen) {
 function getLoginInfo() {
 	doGet("/api/login/info", {}).then(
 		(response) => {
-			console.log(response)
 			username.value = response.data.data.user.name
 			exprieTime.value = response.data.data.expireTime
 		}
@@ -285,9 +284,11 @@ function forceLogout() {
 
 /* == 钩子函数 == */
 
+const expireTimer = ref(undefined)
+
 onMounted(() => {
 	getLoginInfo()
-	setInterval(() => {
+	expireTimer.value = setInterval(() => {
 		exprieTime.value -= 500
 	}, 500)
 })
@@ -303,6 +304,8 @@ watch(menuFolded, () => {
 
 watch(exprieTime, () => {
 	if (exprieTime.value <= 1000 * 60 * 5) {
+		console.log("1111");
+		clearInterval(expireTimer.value)
 		// 检测剩余五分钟自动续期
 		// 访问续签接口 获取新 token 以及过期时间
 		doGet("/api/login/renewal", {}).then(response => {
@@ -316,6 +319,9 @@ watch(exprieTime, () => {
 				}
 				// 更新后端给出的过期时间
 				exprieTime.value = response.data.data.expireTime
+				expireTimer.value = setInterval(() => {
+					exprieTime.value -= 500
+				}, 500)
 			}
 		})
 	}
