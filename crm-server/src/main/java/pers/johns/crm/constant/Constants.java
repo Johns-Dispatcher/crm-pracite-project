@@ -58,4 +58,9 @@ public class Constants {
      */
     public static final String AUTHORIZATION_TOKEN_PREFIX = "Bearer ";
 
+    /**
+     * 默认的分页参数
+     */
+    public static final Integer DEFAULT_PAGE_SIZE = 10;
+
 }
