@@ -190,7 +190,7 @@
 <script setup>
 import {computed, onMounted, reactive, ref, watch} from 'vue';
 import { doGet } from '../../http/httpRequestUtils';
-import { clearToken, messageConfirm, messageTip } from '../../utils/utils';
+import { clearToken, getTokenKey, messageConfirm, messageTip } from '../../utils/utils';
 import { useRouter } from 'vue-router';
 
 /* == 数据 == */
@@ -199,6 +199,7 @@ const menuFolded = ref(false)
 const menuTransition = ref(true)
 const dropboxVisiable = ref(false)
 const username = ref("")
+const exprieTime = ref(0)
 const router = useRouter()
 
 /* == 计算属性 == */
@@ -231,7 +232,9 @@ function visibleChange(isOpen) {
 function getLoginInfo() {
 	doGet("/api/login/info", {}).then(
 		(response) => {
+			console.log(response)
 			username.value = response.data.data.user.name
+			exprieTime.value = response.data.data.expireTime
 		}
 	)
 }
@@ -261,6 +264,9 @@ function logout() {
 	)
 }
 
+/**
+ * 强制退出
+ */
 function forceLogout() {
 	messageConfirm(
 		"退出异常，是否要强制退出系统",
@@ -281,6 +287,9 @@ function forceLogout() {
 
 onMounted(() => {
 	getLoginInfo()
+	setInterval(() => {
+		exprieTime.value -= 500
+	}, 500)
 })
 
 /* == 监视器 == */
@@ -290,6 +299,26 @@ watch(menuFolded, () => {
   setTimeout(() => {
     menuTransition.value = !menuFolded.value
   }, 350)
+})
+
+watch(exprieTime, () => {
+	if (exprieTime.value <= 1000 * 60 * 5) {
+		// 检测剩余五分钟自动续期
+		// 访问续签接口 获取新 token 以及过期时间
+		doGet("/api/login/renewal", {}).then(response => {
+			if (response.data.code === 200) {
+				// 如果之前存 local 就存 local
+				if (window.localStorage.getItem(getTokenKey())) {
+					window.localStorage.setItem(getTokenKey(), response.data.data.token)
+				} else {
+					// 如果存 session 就存 session
+					window.sessionStorage.setItem(getTokenKey(), response.data.data.token)
+				}
+				// 更新后端给出的过期时间
+				exprieTime.value = response.data.data.expireTime
+			}
+		})
+	}
 })
 </script>
 
