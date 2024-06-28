@@ -170,7 +170,7 @@
 
 			<!-- 底部 -->
 			<el-footer>@CopyRight 20xx-2xxx ???? | For Super Earth !! | xD</el-footer>
-			
+
 		</el-container>
 	</el-container>
 </template>
@@ -292,7 +292,7 @@ watch(menuFolded, () => {
 
 watch(exprieTime, () => {
 	if (exprieTime.value <= 1000 * 60 * 5) {
-		console.log("1111");
+		console.log("准备续签");
 		clearInterval(expireTimer.value)
 		// 检测剩余五分钟自动续期
 		// 访问续签接口 获取新 token 以及过期时间
