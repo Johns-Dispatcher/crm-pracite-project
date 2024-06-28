@@ -84,6 +84,11 @@ public interface UserMapper {
     @ResultMap("UserBaseMap")
     User selectByLoginAct(String LoginAct);
 
+    @Select("""
+            select count(*) from t_user
+            """)
+    Integer countAll();
+
     @Insert("""
             insert into t_user(
                 id,
