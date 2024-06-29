@@ -153,4 +153,28 @@ public class UserServiceImpl implements UserService {
 
         return true;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean editUser(ViewUser viewUser) {
+        User user = User.builder()
+                .id(viewUser.getId())
+                .loginAct(viewUser.getLoginAct())
+                .loginPwd(viewUser.getLoginPwd() == null ? null : passwordEncoder.encode(viewUser.getLoginPwd()))
+                .phone(viewUser.getPhone())
+                .email(viewUser.getEmail())
+                .name(viewUser.getName())
+                .accountEnabled(viewUser.getAccountEnabled() ? 1 : 0)
+                .accountNoExpired(viewUser.getAccountNoExpired() ? 1 : 0)
+                .accountNoLocked(viewUser.getAccountNoLocked() ? 1 : 0)
+                .credentialsNoExpired(viewUser.getCredentialsNoExpired() ? 1 : 0)
+                .editBy(viewUser.getEditBy())
+                .editTime(LocalDateTime.now()).build();
+
+        Integer count = userMapper.updateUser(user);
+        if (count != 1) {
+            throw new RuntimeException("修改用户失败");
+        }
+        return true;
+    }
 }

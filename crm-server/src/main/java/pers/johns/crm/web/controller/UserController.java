@@ -82,8 +82,9 @@ public class UserController {
      * @return 响应结果对象，能够执行完成表示没有出错
      * 接收 FromData 对象不能使用 @RequestBody 进行接收
      */
-    @PostMapping("/")
+    @PostMapping("")
     public HttpResult addUser(ViewUser viewUser, Authentication authentication) {
+
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         // 为用户增加创建者信息
         viewUser.setCreateBy(securityUser.getUser().getId());
@@ -92,5 +93,19 @@ public class UserController {
         Boolean result = userService.addUser(viewUser);
 
         return HttpResult.OK("添加成功", result);
+    }
+
+    @PutMapping("")
+    public HttpResult editUser(ViewUser viewUser, Authentication authentication) {
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        // 为用户增加创建者信息
+        viewUser.setCreateBy(securityUser.getUser().getId());
+        viewUser.setEditBy(securityUser.getUser().getId());
+        viewUser.setLoginPwd("undefined".equals(viewUser.getLoginPwd()) ? null : viewUser.getLoginPwd());
+
+        log.info(viewUser.toString());
+        Boolean result = userService.editUser(viewUser);
+
+        return HttpResult.OK("修改成功", result);
     }
 }

@@ -62,4 +62,6 @@ public interface UserService extends UserDetailsService {
      * @return 是否添加成功
      */
     Boolean addUser(ViewUser viewUser);
+
+    Boolean editUser(ViewUser viewUser);
 }
