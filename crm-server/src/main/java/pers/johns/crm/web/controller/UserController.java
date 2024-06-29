@@ -10,8 +10,6 @@ import pers.johns.crm.model.vo.SecurityUser;
 import pers.johns.crm.model.vo.ViewUser;
 import pers.johns.crm.service.UserService;
 
-import java.util.List;
-import java.util.Map;
 
 /**
  * ClassName    : UserController
