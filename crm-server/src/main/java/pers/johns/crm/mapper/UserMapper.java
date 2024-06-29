@@ -89,6 +89,12 @@ public interface UserMapper {
             """)
     Integer countAll();
 
+    @Select("""
+            select count(*) from t_user
+            where login_act = #{loginAct}
+            """)
+    Integer checkLoginAct(String loginAct);
+
     @Insert("""
             insert into t_user(
                 id,
