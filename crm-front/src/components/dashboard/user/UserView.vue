@@ -21,9 +21,11 @@
 		<el-table-column prop="createTime" label="创建时间" show-overflow-tooltip />
 
 		<el-table-column label="操作">
-			<el-button type="primary">详情</el-button>
-			<el-button type="primary">修改</el-button>
-			<el-button type="danger">删除</el-button>
+			<template #default="scope">
+				<el-button type="primary" @click="toUserInfo(scope.row.loginAct)">详情</el-button>
+				<el-button type="primary">修改</el-button>
+				<el-button type="danger">删除</el-button>
+			</template>
 		</el-table-column>
   </el-table>
 
@@ -42,12 +44,14 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { doGet } from '../../../http/httpRequestUtils';
+import { useRouter } from 'vue-router';
 
 /* == 数据 == */
 
 const users = ref([])
 const totalCount = ref(0)
 const startRow = ref(1)
+const router = useRouter()
 
 /* == 函数 == */
 
@@ -60,6 +64,11 @@ function queryUsers(current) {
 			startRow.value = response.data.data.startRow
 		}
 	})
+}
+
+function toUserInfo(loginAct) {
+	console.log(loginAct);
+	router.push('/dashboard/user/' + loginAct)
 }
 
 /* == 钩子函数 == */

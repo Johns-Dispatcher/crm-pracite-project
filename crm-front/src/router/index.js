@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import LoginView from '../components/login/LoginView.vue'
 import DashboardView from '../components/dashboard/DashboardView.vue'
 import UserView from '../components/dashboard/user/UserView.vue'
+import UserInfoView from '../components/dashboard/user/UserInfoView.vue'
 
 // 创建路由对象
 export default createRouter({
@@ -23,6 +24,10 @@ export default createRouter({
 				{
 					path: "user",
 					component: UserView,
+				},
+				{
+					path: "user/:loginAct",
+					component: UserInfoView,
 				}
 			]
 		},
