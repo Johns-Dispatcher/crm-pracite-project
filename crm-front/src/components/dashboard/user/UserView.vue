@@ -108,7 +108,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { inject, onMounted, reactive, ref } from 'vue';
 import { doGet, doPost } from '../../../http/httpRequestUtils';
 import { useRouter } from 'vue-router';
 import { messageTip } from '../../../utils/utils';
@@ -121,6 +121,7 @@ const startRow = ref(1)
 const router = useRouter()
 const addUserDialogVisible = ref(false)
 const newUser = reactive({})
+
 const addRules = reactive({
 	// 登录用户的校验规则
 	loginAct: [
@@ -133,13 +134,37 @@ const addRules = reactive({
 		{ min: 6, max: 16, message: '密码需要在 6 ~ 16 位之间', trigger: 'blur' }
 	],
 	loginPwdCheck: [{ validator: validateLoginPwdCheck, trigger: 'blur', required: true }],
-	name: [ { required: true, message: '请输入登录用户名称', trigger: 'blur' } ],
-	phone: [ { required: true, message: '请输入登录用户名称', trigger: 'blur' } ],
-	email: [ { required: true, message: '请输入登录用户名称', trigger: 'blur' } ],
+	name: [
+		{ required: true, message: '请输入登录用户名称', trigger: 'blur' },
+		{ min: 4, message: '姓名最短是 4 位', trigger: 'blur' }
+	],
+	phone: [
+		{ required: true, message: '请输入电话', trigger: 'blur' },
+		{
+			pattern: /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
+			message: '请输入正确的电话格式',
+			trigger: 'blur'
+		}
+	],
+	email: [
+		{ required: true, message: '请输入邮箱', trigger: 'blur' },
+		{
+			pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+			message: '请输入正确的邮箱格式',
+			trigger: 'blur'
+		}
+	],
+	accountEnabled: [ { required: true, message: '请指定账户是否启用', trigger: 'blur' } ],
+	accountNoLocked: [ { required: true, message: '请指定账户是否锁定', trigger: 'blur' } ],
+	accountNoExpired: [ { required: true, message: '请指定账户是否过期', trigger: 'blur' } ],
+	credentialsNoExpired: [ { required: true, message: '请指定凭据是否过期', trigger: 'blur' } ],
 })
+
 const addForm = ref()
 
 /* == 函数 == */
+
+const reload = inject('reload')
 
 /**
  * 查询分页数据
@@ -201,18 +226,28 @@ function validateLoginActExist(rule, value, callback) {
  */
 function addUser() {
 	addForm.value.validate((isValid) => {
-		console.log(isValid);
 		if (isValid) {
-			doPost('/api/user/', newUser).then(response => {
+
+			let fromdata = new FormData()
+
+			fromdata.append("loginAct", newUser.loginAct)
+			fromdata.append("loginPwd", newUser.loginPwd)
+			fromdata.append("name", newUser.name)
+			fromdata.append("phone", newUser.phone)
+			fromdata.append("email", newUser.email)
+			fromdata.append("accountEnabled", newUser.accountEnabled)
+			fromdata.append("accountNoLocked", newUser.accountNoLocked)
+			fromdata.append("accountNoExpired", newUser.accountNoExpired)
+			fromdata.append("credentialsNoExpired", newUser.credentialsNoExpired)
+
+			doPost('/api/user/', fromdata).then(response => {
 				if (response.data.code === 200) {
 					messageTip("新增成功", "success")
-					newUser = {}
+					reload()
 				} else {
 					messageTip("添加出现错误，请稍后重试", "error")
-					newUser = {}
 				}
 			})
-			addUserDialogVisible.value = false
 		}
 	})
 }

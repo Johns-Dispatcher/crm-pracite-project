@@ -166,7 +166,7 @@
 
 			<!-- 主体 -->
 			<!-- 使用路由切换 -->
-			<el-main><router-view/></el-main>
+			<el-main><router-view v-if="isRouterAlive"/></el-main>
 
 			<!-- 底部 -->
 			<el-footer>@CopyRight 20xx-2xxx ???? | For Super Earth !! | xD</el-footer>
@@ -176,7 +176,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref, watch} from 'vue';
+import {computed, nextTick, onMounted, provide, reactive, ref, watch} from 'vue';
 import { doGet } from '../../http/httpRequestUtils';
 import { clearToken, getTokenKey, messageConfirm, messageTip } from '../../utils/utils';
 import { useRouter } from 'vue-router';
@@ -189,6 +189,7 @@ const dropboxVisiable = ref(false)
 const username = ref("")
 const exprieTime = ref(0)
 const router = useRouter()
+const isRouterAlive = ref(true)
 
 /* == 计算属性 == */
 
@@ -279,6 +280,16 @@ onMounted(() => {
 	expireTimer.value = setInterval(() => {
 		exprieTime.value -= 500
 	}, 500)
+})
+
+/**
+ * 对外提供重载函数
+ */
+provide('reload',  () => {
+	isRouterAlive.value = false
+	nextTick(() => {
+		isRouterAlive.value = true
+	})
 })
 
 /* == 监视器 == */
