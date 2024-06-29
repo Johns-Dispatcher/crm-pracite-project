@@ -1,5 +1,5 @@
 <template>
-	<el-button type="primary" @click="addUserDialogVisible = true">添加用户</el-button>
+	<el-button type="primary" @click="showAddDialog">添加用户</el-button>
 	<el-button type="danger">删除所选</el-button>
 
   	<br><br>
@@ -23,7 +23,7 @@
 		<el-table-column label="操作">
 			<template #default="scope">
 				<el-button type="primary" @click="toUserInfo(scope.row.loginAct)">详情</el-button>
-				<el-button type="primary">修改</el-button>
+				<el-button type="success" @click="showEditDialog(scope.row.loginAct)">修改</el-button>
 				<el-button type="danger">删除</el-button>
 			</template>
 		</el-table-column>
@@ -39,68 +39,70 @@
 		@current-change="queryUsers"
 	/>
 
-  	<!-- 新增用户的对话框 -->
+  	<!-- 用户信息对话框 -->
+	<!-- 新增与修改用户共用这个对话框 -->
 	<el-dialog
-		v-model="addUserDialogVisible"
-		title="新增用户"
+		v-model="userDialogVisable"
+		:title="editMode ? '修改用户' : '新增用户'"
 		draggable
 	>
-  		<!-- 新增用户表单 -->
+  		<!-- 用户表单 -->
 		<el-form 
-			:model="newUser" 
+			:model="userForm" 
 			label-width="auto" 
 			style="padding: auto; margin: 20px;"
   			:rules="addRules"
-			ref="addForm"
+			ref="userInfoForm"
 		>
 			<el-form-item label="登录账户名" prop="loginAct">
-				<el-input v-model="newUser.loginAct" />
+				<el-input v-model="userForm.loginAct" />
 			</el-form-item>
-			<el-form-item label="登录密码" prop="loginPwd">
-				<el-input v-model="newUser.loginPwd" type="password"/>
+			<el-form-item :label="editMode ? '登录密码（留空表示不进行修改）' : '登录密码'" prop="loginPwd">
+				<el-input v-model="userForm.loginPwd" type="password"/>
 			</el-form-item>
 			<el-form-item label="确认密码" prop="loginPwdCheck">
-				<el-input v-model="newUser.loginPwdCheck" type="password"/>
+				<el-input v-model="userForm.loginPwdCheck" type="password"/>
 			</el-form-item>
 			<el-form-item label="姓名" prop="name">
-				<el-input v-model="newUser.name" />
+				<el-input v-model="userForm.name" />
 			</el-form-item>
 			<el-form-item label="电话" prop="phone">
-				<el-input v-model="newUser.phone" />
+				<el-input v-model="userForm.phone" />
 			</el-form-item>
 			<el-form-item label="邮箱" prop="email">
-				<el-input v-model="newUser.email" />
+				<el-input v-model="userForm.email" />
 			</el-form-item>
 			<el-form-item label="账户是否启用" prop="accountEnabled">
-				<el-select v-model="newUser.accountEnabled" placeholder="请选择启用状态" >
-					<el-option label="账户已启用" value="true"></el-option>
-					<el-option label="账户未启用" value="false"></el-option>
+				<el-select v-model="userForm.accountEnabled" placeholder="请选择启用状态" >
+					<el-option label="账户已启用" :value="true"></el-option>
+					<el-option label="账户未启用" :value="false"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="账户是否锁定" prop="accountNoLocked">
-				<el-select v-model="newUser.accountNoLocked" placeholder="请选择锁定状态">
-					<el-option label="账户未锁定" value="true"></el-option>
-					<el-option label="账户已锁定" value="false"></el-option>
+				<el-select v-model="userForm.accountNoLocked" placeholder="请选择锁定状态">
+					<el-option label="账户未锁定" :value="true"></el-option>
+					<el-option label="账户已锁定" :value="false"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="账户是否过期" prop="accountNoExpired">
-				<el-select v-model="newUser.accountNoExpired" placeholder="请选择过期状态">
-					<el-option label="账户未过期" value="true"></el-option>
-					<el-option label="账户已过期" value="false"></el-option>
+				<el-select v-model="userForm.accountNoExpired" placeholder="请选择过期状态">
+					<el-option label="账户未过期" :value="true"></el-option>
+					<el-option label="账户已过期" :value="false"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="凭证是否过期" prop="credentialsNoExpired">
-				<el-select v-model="newUser.credentialsNoExpired" placeholder="请选择凭证状态">
-					<el-option label="凭证未过期" value="true"></el-option>
-					<el-option label="凭证已过期" value="false"></el-option>
+				<el-select v-model="userForm.credentialsNoExpired" placeholder="请选择凭证状态">
+					<el-option label="凭证未过期" :value="true"></el-option>
+					<el-option label="凭证已过期" :value="false"></el-option>
 				</el-select> 
 			</el-form-item>
 		</el-form>
 
 		<template #footer>
 			<div class="dialog-footer">
-				<el-button @click="addUserDialogVisible = false">取消</el-button>
-				<el-button type="primary" @click="addUser">确认提交</el-button>
+				<el-button @click="userDialogVisable = false">取消</el-button>
+				<el-button type="primary" @click="addUser" v-if="!editMode">确认提交</el-button>
+				<el-button type="primary" @click="editUser" v-if="editMode">确认修改</el-button>
 			</div>
 		</template>
   </el-dialog>
@@ -109,7 +111,7 @@
 
 <script setup>
 import { inject, onMounted, reactive, ref } from 'vue';
-import { doGet, doPost } from '../../../http/httpRequestUtils';
+import { doGet, doPost, doPut } from '../../../http/httpRequestUtils';
 import { useRouter } from 'vue-router';
 import { messageTip } from '../../../utils/utils';
 
@@ -119,8 +121,9 @@ const users = ref([])
 const totalCount = ref(0)
 const startRow = ref(1)
 const router = useRouter()
-const addUserDialogVisible = ref(false)
-const newUser = reactive({})
+const userDialogVisable = ref(false)
+const userForm = reactive({})
+const editMode = ref(false)
 
 const addRules = reactive({
 	// 登录用户的校验规则
@@ -129,15 +132,14 @@ const addRules = reactive({
 		{ validator: validateLoginActExist, trigger: 'blur'}
 	],
 	// 登录密码的校验规则
-	loginPwd: [
-		{ required: true, message: '请输入登录密码', trigger: 'blur' },
-		{ min: 6, max: 16, message: '密码需要在 6 ~ 16 位之间', trigger: 'blur' }
-	],
-	loginPwdCheck: [{ validator: validateLoginPwdCheck, trigger: 'blur', required: true }],
+	loginPwd: [{ validator: validatePassword, trigger: 'blur' }],
+	// 确认密码的校验规则
+	loginPwdCheck: [{ validator: validateLoginPwdCheck, trigger: 'blur' }],
+	// 用户名
 	name: [
-		{ required: true, message: '请输入登录用户名称', trigger: 'blur' },
-		{ min: 4, message: '姓名最短是 4 位', trigger: 'blur' }
+		{ required: true, message: '请输入登录用户名称', trigger: 'blur' }
 	],
+	// 电话
 	phone: [
 		{ required: true, message: '请输入电话', trigger: 'blur' },
 		{
@@ -146,6 +148,7 @@ const addRules = reactive({
 			trigger: 'blur'
 		}
 	],
+	// 邮箱
 	email: [
 		{ required: true, message: '请输入邮箱', trigger: 'blur' },
 		{
@@ -160,7 +163,7 @@ const addRules = reactive({
 	credentialsNoExpired: [ { required: true, message: '请指定凭据是否过期', trigger: 'blur' } ],
 })
 
-const addForm = ref()
+const userInfoForm = ref()
 
 /* == 函数 == */
 
@@ -181,12 +184,27 @@ function queryUsers(current) {
 }
 
 /**
- * 获取用户信息
- * @param loginAct 账户名称
+ * 跳转至用户详情
+ * @param loginAct 账户名称 
  */
 function toUserInfo(loginAct) {
-	console.log(loginAct);
 	router.push('/dashboard/user/' + loginAct)
+}
+
+/**
+ * 检测密码是否正确
+ * @param rule 
+ * @param value 
+ * @param callback 
+ */
+function validatePassword(rule, value, callback) {
+	if (!editMode.value && !value && value === '') {
+		callback(new Error('密码不能为空'))
+	} else if (value && (value.length <= 6 || value.length >= 16)) {
+		callback(new Error('密码长度应该在 6 - 16 位之间'))
+	} else {
+		callback()
+	}
 }
 
 /**
@@ -196,9 +214,9 @@ function toUserInfo(loginAct) {
  * @param callback 
  */
 function validateLoginPwdCheck(rule, value, callback) {
-	if (!value) {
+	if (!editMode.value && !value && value === '') {
 		callback(new Error("请输入确认密码"))
-	} else if (value !== newUser.loginPwd) {
+	} else if (value !== userForm.loginPwd) {
 		callback(new Error("两次输入密码不一致"))
 	} else {
 		callback()
@@ -212,11 +230,54 @@ function validateLoginPwdCheck(rule, value, callback) {
  * @param callback 
  */
 function validateLoginActExist(rule, value, callback) {
-	doGet('/api/user/checkAct/' + value).then(response => {
-		if (response.data.data) {
-			callback(new Error("用户名已经存在"))
-		} else {
-			callback()
+	// 如果是编辑模式 而且没有改名 不进行检测
+	if (editMode.value && value === userForm.loginActOld) {
+		callback()
+	} else {
+		doGet('/api/user/checkAct/' + value).then(response => {
+			if (response.data.data) {
+				callback(new Error("用户名已经存在"))
+			} else {
+				callback()
+			}
+		})
+	}
+}
+
+
+function showAddDialog() {
+	userForm.loginAct = ''
+	userForm.loginPwd = ''
+	userForm.loginPwdCheck = ''
+	userForm.name = ''
+	userForm.phone = ''
+	userForm.email = ''
+	userForm.accountEnabled = true
+	userForm.accountNoLocked = true
+	userForm.accountNoExpired = true
+	userForm.credentialsNoExpired = true
+
+	editMode.value = false
+	userDialogVisable.value = true
+}
+
+function showEditDialog(loginAct) {
+	doGet('/api/user/' + loginAct, {}).then(response => {
+		if (response.data.code === 200) {
+
+			userForm.id = response.data.data.id
+			userForm.loginAct = response.data.data.loginAct
+			userForm.loginActOld = response.data.data.loginAct
+			userForm.name = response.data.data.name
+			userForm.phone = response.data.data.phone
+			userForm.email = response.data.data.email
+			userForm.accountEnabled = response.data.data.accountEnabled
+			userForm.accountNoLocked = response.data.data.accountNoLocked
+			userForm.accountNoExpired = response.data.data.accountNoExpired
+			userForm.credentialsNoExpired = response.data.data.credentialsNoExpired
+
+			editMode.value = true
+			userDialogVisable.value = true
 		}
 	})
 }
@@ -225,27 +286,58 @@ function validateLoginActExist(rule, value, callback) {
  * 发送请求新增用户
  */
 function addUser() {
-	addForm.value.validate((isValid) => {
+	userInfoForm.value.validate((isValid) => {
 		if (isValid) {
 
 			let fromdata = new FormData()
 
-			fromdata.append("loginAct", newUser.loginAct)
-			fromdata.append("loginPwd", newUser.loginPwd)
-			fromdata.append("name", newUser.name)
-			fromdata.append("phone", newUser.phone)
-			fromdata.append("email", newUser.email)
-			fromdata.append("accountEnabled", newUser.accountEnabled)
-			fromdata.append("accountNoLocked", newUser.accountNoLocked)
-			fromdata.append("accountNoExpired", newUser.accountNoExpired)
-			fromdata.append("credentialsNoExpired", newUser.credentialsNoExpired)
+			fromdata.append("loginAct", userForm.loginAct)
+			fromdata.append("loginPwd", userForm.loginPwd)
+			fromdata.append("name", userForm.name)
+			fromdata.append("phone", userForm.phone)
+			fromdata.append("email", userForm.email)
+			fromdata.append("accountEnabled", userForm.accountEnabled)
+			fromdata.append("accountNoLocked", userForm.accountNoLocked)
+			fromdata.append("accountNoExpired", userForm.accountNoExpired)
+			fromdata.append("credentialsNoExpired", userForm.credentialsNoExpired)
 
-			doPost('/api/user/', fromdata).then(response => {
+
+			doPost('/api/user', fromdata).then(response => {
 				if (response.data.code === 200) {
+					console.log(response);
 					messageTip("新增成功", "success")
 					reload()
 				} else {
 					messageTip("添加出现错误，请稍后重试", "error")
+				}
+			})
+		}
+	})
+}
+
+function editUser() {
+	userInfoForm.value.validate((isValid) => {
+		if (isValid) {
+
+			let fromdata = new FormData()
+
+			fromdata.append("id", userForm.id)
+			fromdata.append("loginAct", userForm.loginAct)
+			fromdata.append("loginPwd", userForm.loginPwd)
+			fromdata.append("name", userForm.name)
+			fromdata.append("phone", userForm.phone)
+			fromdata.append("email", userForm.email)
+			fromdata.append("accountEnabled", userForm.accountEnabled)
+			fromdata.append("accountNoLocked", userForm.accountNoLocked)
+			fromdata.append("accountNoExpired", userForm.accountNoExpired)
+			fromdata.append("credentialsNoExpired", userForm.credentialsNoExpired)
+
+			doPut('/api/user', fromdata).then(response => {
+				if (response.data.code === 200) {
+					messageTip("修改成功", "success")
+					reload()
+				} else {
+					messageTip("修改出现错误，请稍后重试", "error")
 				}
 			})
 		}
