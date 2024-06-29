@@ -48,4 +48,18 @@ public interface UserService extends UserDetailsService {
      * @return 视图用户对象
      */
     ViewUser getUserByLoginAct(String loginAct);
+
+    /**
+     * 查询数据库是否已经存在相同账户
+     * @param loginAct 账户名
+     * @return 是否存在
+     */
+    Boolean checkLoginAct(String loginAct);
+
+    /**
+     * 向数据库中添加用户
+     * @param viewUser 视图用户对象，包含有前端数据
+     * @return 是否添加成功
+     */
+    Boolean addUser(ViewUser viewUser);
 }

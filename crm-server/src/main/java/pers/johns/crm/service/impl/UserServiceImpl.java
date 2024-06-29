@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.johns.crm.constant.Constants;
 import pers.johns.crm.mapper.UserMapper;
 import pers.johns.crm.model.po.User;
@@ -18,6 +20,7 @@ import pers.johns.crm.service.UserService;
 import pers.johns.crm.utils.JsonUtils;
 import pers.johns.crm.utils.JwtUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +45,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final RedisService redisService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String loginAct)
@@ -116,5 +120,37 @@ public class UserServiceImpl implements UserService {
         viewUser.setEditorName(editor == null ? "系统修改" : editor.getName());
 
         return viewUser;
+    }
+
+    @Override
+    public Boolean checkLoginAct(String loginAct) {
+        return userMapper.checkLoginAct(loginAct) != 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean addUser(ViewUser viewUser) {
+        User user = User.builder()
+                .loginAct(viewUser.getLoginAct())
+                .loginPwd(passwordEncoder.encode(viewUser.getLoginPwd()))
+                .phone(viewUser.getPhone())
+                .email(viewUser.getEmail())
+                .name(viewUser.getName())
+                .accountEnabled(viewUser.getAccountEnabled() ? 1 : 0)
+                .accountNoExpired(viewUser.getAccountNoExpired() ? 1 : 0)
+                .accountNoLocked(viewUser.getAccountNoLocked() ? 1 : 0)
+                .credentialsNoExpired(viewUser.getCredentialsNoExpired() ? 1 : 0)
+                .createBy(viewUser.getCreateBy())
+                .createTime(LocalDateTime.now())
+                .editBy(viewUser.getEditBy())
+                .editTime(LocalDateTime.now()).build();
+
+        Integer count = userMapper.insertUser(user);
+
+        if (count != 1) {
+            throw new RuntimeException("添加用户异常");
+        }
+
+        return true;
     }
 }
