@@ -200,7 +200,7 @@ function toUserInfo(loginAct) {
 function validatePassword(rule, value, callback) {
 	if (!editMode.value && !value && value === '') {
 		callback(new Error('密码不能为空'))
-	} else if (value && (value.length <= 6 || value.length >= 16)) {
+	} else if (value && (value.length < 6 || value.length > 16)) {
 		callback(new Error('密码长度应该在 6 - 16 位之间'))
 	} else {
 		callback()
@@ -244,7 +244,10 @@ function validateLoginActExist(rule, value, callback) {
 	}
 }
 
-
+/**
+ * 显示新增对话框
+ * 重置当前对话框的值
+ */
 function showAddDialog() {
 	userForm.loginAct = ''
 	userForm.loginPwd = ''
@@ -261,6 +264,10 @@ function showAddDialog() {
 	userDialogVisable.value = true
 }
 
+/**
+ * 显示修改对话框
+ * @param loginAct 对应的用户登录名
+ */
 function showEditDialog(loginAct) {
 	doGet('/api/user/' + loginAct, {}).then(response => {
 		if (response.data.code === 200) {
