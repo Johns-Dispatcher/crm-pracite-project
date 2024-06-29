@@ -41,4 +41,11 @@ public interface UserService extends UserDetailsService {
      * @return 分页对象，使用 Object 是为了在方法中切换为视图对象
      */
     PageInfo<Object> getUserByPage(Integer currentPage);
+
+    /**
+     * 按照登录名称查询用户
+     * @param loginAct 登录名称
+     * @return 视图用户对象
+     */
+    ViewUser getUserByLoginAct(String loginAct);
 }

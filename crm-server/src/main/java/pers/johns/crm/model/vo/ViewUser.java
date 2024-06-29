@@ -26,6 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class ViewUser {
+    private Integer id;
     private String loginAct;
     private String name;
     private String phone;
@@ -38,9 +39,14 @@ public class ViewUser {
     private Integer editBy;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime lastLoginTime;
+    private Boolean accountNoExpired;
+    private Boolean accountNoLocked;
+    private Boolean accountEnabled;
+    private Boolean credentialsNoExpired;
     private List<String> authentications;
 
     public ViewUser(User user) {
+        this.id = user.getId();
         this.loginAct = user.getLoginAct();
         this.name = user.getName();
         this.phone= user.getPhone();
@@ -50,6 +56,10 @@ public class ViewUser {
         this.editTime = user.getEditTime();
         this.editBy = user.getEditBy();
         this.lastLoginTime = user.getLastLoginTime();
+        this.accountNoExpired = user.getAccountNoExpired() == 1;
+        this.accountNoLocked = user.getAccountNoLocked() == 1;
+        this.accountEnabled = user.getAccountEnabled() == 1;
+        this.credentialsNoExpired = user.getCredentialsNoExpired() == 1;
         this.authentications = user.getRoles().stream()
                 .map(Role::getPermissions)
                 .flatMap(List::stream)

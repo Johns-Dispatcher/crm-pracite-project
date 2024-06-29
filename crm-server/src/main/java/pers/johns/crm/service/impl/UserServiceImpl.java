@@ -101,4 +101,11 @@ public class UserServiceImpl implements UserService {
 
         return userPageInfo;
     }
+
+    @Override
+    public ViewUser getUserByLoginAct(String loginAct) {
+        User user = userMapper.selectByLoginAct(loginAct);
+        if (user == null) return null;
+        return new ViewUser(user);
+    }
 }
