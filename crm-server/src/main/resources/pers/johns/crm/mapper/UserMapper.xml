@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.johns.crm.mapper.UserMapper">
+    <update id="updateUser">
+        update t_user
+        <set>
+            <if test="loginAct != null and loginAct != ''">login_act = #{loginAct},</if>
+            <if test="loginPwd != null and loginPwd != ''">login_pwd = #{loginPwd},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="accountNoExpired != null">account_no_expired = #{accountNoExpired},</if>
+            <if test="credentialsNoExpired != null">credentials_no_expired = #{credentialsNoExpired},</if>
+            <if test="accountNoLocked != null">account_no_locked = #{accountNoLocked},</if>
+            <if test="accountEnabled != null">account_enabled = #{accountEnabled},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="lastLoginTime != null">last_login_time = #{lastLoginTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

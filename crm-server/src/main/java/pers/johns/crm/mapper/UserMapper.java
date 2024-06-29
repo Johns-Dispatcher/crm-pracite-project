@@ -118,20 +118,6 @@ public interface UserMapper {
             """)
     Integer insertUser(User user);
 
-    @Update("""
-            update t_user
-            set
-                login_act = #{loginAct}, login_pwd = #{loginPwd},
-                name = #{name}, phone = #{phone}, email = #{email},
-                account_no_expired = #{accountNoExpired},
-                credentials_no_expired = #{credentialsNoExpired},
-                account_no_locked = #{accountNoLocked},
-                account_enabled = #{accountEnbaled},
-                create_time = #{createTime}, create_by = #{createBy},
-                edit_time = #{editTime}, edit_by = #{editBy},
-                last_login_time = #{lastLoginTime}
-            where id = #{id}
-            """)
     Integer updateUser(User user);
 
     @Delete("""
