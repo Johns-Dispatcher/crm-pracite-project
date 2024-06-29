@@ -80,9 +80,10 @@ public class UserController {
      * @param viewUser 视图用户，用于接收前端数据
      * @param authentication 认证信息，记录谁增加的用户
      * @return 响应结果对象，能够执行完成表示没有出错
+     * 接收 FromData 对象不能使用 @RequestBody 进行接收
      */
     @PostMapping("/")
-    public HttpResult addUser(@RequestBody ViewUser viewUser, Authentication authentication) {
+    public HttpResult addUser(ViewUser viewUser, Authentication authentication) {
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         // 为用户增加创建者信息
         viewUser.setCreateBy(securityUser.getUser().getId());
