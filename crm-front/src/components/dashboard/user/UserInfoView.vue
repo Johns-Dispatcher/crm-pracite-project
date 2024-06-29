@@ -115,6 +115,8 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { doGet } from '../../../http/httpRequestUtils';
 
+/* == 数据 == */
+
 const router = useRouter()
 const route = useRoute()
 const id = ref(1)
@@ -132,29 +134,41 @@ const accountNoExpired = ref(true)
 const accountNoLocked = ref(true)
 const credentialsNoExpired = ref(true)
 
+/* == 函数 == */
+
+/**
+ * 按照登录用户名向后端获取信息
+ * @param loginAct 登录名称
+ */
 function getUser(loginAct) {
 	doGet("/api/user/" + loginAct, {}).then(response => {
-		console.log(response);
-		id.value = response.data.data.id
-		name.value = response.data.data.name
-		loginActno.value = response.data.data.loginAct
-		phone.value = response.data.data.phone
-		email.value = response.data.data.email
-		createBy.value = response.data.data.createBy
-		createTime.value = response.data.data.createTime
-		editBy.value = response.data.data.editBy
-		editTime.value = response.data.data.editTime
-		lastLoginTime.value = response.data.data.lastLoginTime
-		accountEnabled.value = response.data.data.accountEnabled
-		accountNoExpired.value = response.data.data.accountNoExpired
-		accountNoLocked.value = response.data.data.accountNoLocked
-		credentialsNoExpired.value = response.data.data.credentialsNoExpired
+		if (response.data.code === 200) {
+			id.value = response.data.data.id
+			name.value = response.data.data.name
+			loginActno.value = response.data.data.loginAct
+			phone.value = response.data.data.phone
+			email.value = response.data.data.email
+			createBy.value = response.data.data.creatorName
+			createTime.value = response.data.data.createTime
+			editBy.value = response.data.data.editorName
+			editTime.value = response.data.data.editTime
+			lastLoginTime.value = response.data.data.lastLoginTime
+			accountEnabled.value = response.data.data.accountEnabled
+			accountNoExpired.value = response.data.data.accountNoExpired
+			accountNoLocked.value = response.data.data.accountNoLocked
+			credentialsNoExpired.value = response.data.data.credentialsNoExpired
+		}
 	})
 }
 
+/**
+ * 返回上一级
+ */
 function goBack() {
 	router.back()
 }
+
+/* == 钩子函数 == */
 
 onMounted(() => {
 	getUser(route.params.loginAct)

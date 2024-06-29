@@ -106,6 +106,15 @@ public class UserServiceImpl implements UserService {
     public ViewUser getUserByLoginAct(String loginAct) {
         User user = userMapper.selectByLoginAct(loginAct);
         if (user == null) return null;
-        return new ViewUser(user);
+
+        ViewUser viewUser = new ViewUser(user);
+
+        User creator = userMapper.selectById(viewUser.getCreateBy());
+        User editor = userMapper.selectById(viewUser.getEditBy());
+
+        viewUser.setCreatorName(creator == null ? "系统内置" : creator.getName());
+        viewUser.setEditorName(editor == null ? "系统修改" : editor.getName());
+
+        return viewUser;
     }
 }
