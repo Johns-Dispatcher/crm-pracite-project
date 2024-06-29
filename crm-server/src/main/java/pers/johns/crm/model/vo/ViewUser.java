@@ -28,6 +28,7 @@ import java.util.List;
 public class ViewUser {
     private Integer id;
     private String loginAct;
+    private String loginPwd;
     private String name;
     private String phone;
     private String email;
