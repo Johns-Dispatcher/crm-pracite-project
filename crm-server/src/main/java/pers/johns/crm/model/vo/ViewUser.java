@@ -47,6 +47,8 @@ public class ViewUser {
     private Boolean accountEnabled;
     private Boolean credentialsNoExpired;
     private List<String> authentications;
+    private Long expireTime;
+
 
     public ViewUser(User user) {
         this.id = user.getId();
@@ -63,12 +65,12 @@ public class ViewUser {
         this.accountNoLocked = user.getAccountNoLocked() == 1;
         this.accountEnabled = user.getAccountEnabled() == 1;
         this.credentialsNoExpired = user.getCredentialsNoExpired() == 1;
-        this.authentications = user.getRoles().stream()
+        this.authentications = user.getRoles() != null ? user.getRoles().stream()
                 .map(Role::getPermissions)
                 .flatMap(List::stream)
                 .map(Permission::getCode)
                 .filter(code -> code != null && !code.isEmpty())
-                .toList();
+                .toList() : null;
     }
 
     // 这个构造方法是为了在分页查询时进行映射转换使用的

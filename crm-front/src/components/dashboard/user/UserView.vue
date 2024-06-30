@@ -24,7 +24,12 @@
 			<template #default="scope">
 				<el-button type="primary" @click="toUserInfo(scope.row.loginAct)">详情</el-button>
 				<el-button type="success" @click="showEditDialog(scope.row.loginAct)">修改</el-button>
-				<el-button type="danger">删除</el-button>
+				<el-button type="danger" 
+					:disabled="getLoginId() === scope.row.id"
+					@click="deleteUser(scope.row.id)"
+				>
+					删除
+				</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -111,9 +116,9 @@
 
 <script setup>
 import { inject, onMounted, reactive, ref } from 'vue';
-import { doGet, doPost, doPut } from '../../../http/httpRequestUtils';
+import { doDelete, doGet, doPost, doPut } from '../../../http/httpRequestUtils';
 import { useRouter } from 'vue-router';
-import { messageTip } from '../../../utils/utils';
+import { messageConfirm, messageTip } from '../../../utils/utils';
 
 /* == 数据 == */
 
@@ -124,7 +129,6 @@ const router = useRouter()
 const userDialogVisable = ref(false)
 const userForm = reactive({})
 const editMode = ref(false)
-
 const addRules = reactive({
 	// 登录用户的校验规则
 	loginAct: [
@@ -162,12 +166,12 @@ const addRules = reactive({
 	accountNoExpired: [ { required: true, message: '请指定账户是否过期', trigger: 'blur' } ],
 	credentialsNoExpired: [ { required: true, message: '请指定凭据是否过期', trigger: 'blur' } ],
 })
-
 const userInfoForm = ref()
 
 /* == 函数 == */
 
 const reload = inject('reload')
+const getLoginId = inject('getLoginId')
 
 /**
  * 查询分页数据
@@ -322,6 +326,9 @@ function addUser() {
 	})
 }
 
+/**
+ * 发送请求修改用户
+ */
 function editUser() {
 	userInfoForm.value.validate((isValid) => {
 		if (isValid) {
@@ -349,6 +356,21 @@ function editUser() {
 			})
 		}
 	})
+}
+
+function deleteUser(id) {
+	messageConfirm(
+		"确认删除改用户吗",
+		"删除警告",
+		() => {
+			doDelete('/api/user/' + id).then(response => {
+				console.log(response);
+			})
+		},
+		() => {
+			messageTip("删除取消", "info")
+		}
+	)
 }
 
 /* == 钩子函数 == */

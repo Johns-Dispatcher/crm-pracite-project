@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.SecurityUser;
+import pers.johns.crm.model.vo.ViewUser;
 import pers.johns.crm.service.UserService;
 
 import java.util.Map;
@@ -38,7 +39,12 @@ public class LoginController {
     @GetMapping("/info")
     public HttpResult loginInfo(Authentication authentication) {
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-        return HttpResult.OK(securityUser);
+
+        ViewUser viewUser = new ViewUser(securityUser.getUser());
+        viewUser.setExpireTime(securityUser.getExpireTime());
+        viewUser.setAuthentications(securityUser.getAuthorityList());
+
+        return HttpResult.OK("用户信息", viewUser);
     }
 
     /**
