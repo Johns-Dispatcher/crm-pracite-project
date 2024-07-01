@@ -33,6 +33,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityUser implements UserDetails, Serializable {
 
+    /**
+     * 持久化层用户信息
+     */
     @NonNull
     private User user;
     /**
@@ -41,6 +44,9 @@ public class SecurityUser implements UserDetails, Serializable {
      * 如果直接让序列化 User 中的 Role 可能导致请求头过大
      */
     private List<String> authorityList;
+    /**
+     * 角色列表
+     */
     private List<String> roleList;
     /**
      * 认证过期时间，交给前端进行续期判断
@@ -50,6 +56,11 @@ public class SecurityUser implements UserDetails, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 首次调用会帮助初始化权限列表和角色列表
+     * 之后反序列化回来可以之间获取权限列表
+     * @return 权限列表
+     */
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
