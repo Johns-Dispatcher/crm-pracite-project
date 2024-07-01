@@ -116,7 +116,7 @@ export function doPut(url, data) {
  */
 export function doDelete(url, params) {
 	return axios({
-		method: "post",
+		method: "delete",
 		url: url,
 		params: params,
 		dataType: "json"
