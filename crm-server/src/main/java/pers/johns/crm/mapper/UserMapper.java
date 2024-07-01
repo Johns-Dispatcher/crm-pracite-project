@@ -124,4 +124,6 @@ public interface UserMapper {
             delete from t_user where id = #{id}
             """)
     Integer deleteById(Integer id);
+
+    Integer deleteUses(List<Integer> ids);
 }

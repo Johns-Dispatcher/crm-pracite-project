@@ -23,4 +23,12 @@
         </set>
         where id = #{id}
     </update>
+
+    <delete id="deleteUses">
+        delete from t_user
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
