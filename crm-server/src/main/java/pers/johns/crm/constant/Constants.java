@@ -63,4 +63,9 @@ public class Constants {
      */
     public static final Integer DEFAULT_PAGE_SIZE = 10;
 
+    /**
+     * 默认管理员角色名称
+     */
+    public static final String DEFAULT_ADMIN_ROLE_NAME = "admin";
+
 }
