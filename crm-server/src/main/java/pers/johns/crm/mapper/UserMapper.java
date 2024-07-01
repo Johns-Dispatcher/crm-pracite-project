@@ -1,7 +1,9 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.User;
+import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
 
@@ -53,20 +55,8 @@ public interface UserMapper {
     })
     User selectById(Integer id);
 
-    @Select("""
-            select
-                id,
-                login_act, login_pwd,
-                name, phone, email,
-                account_no_expired, credentials_no_expired,
-                account_no_locked, account_enabled,
-                create_time, create_by,
-                edit_time, edit_by,
-                last_login_time
-            from t_user
-            """)
-    @ResultMap("UserBaseMap")
-    List<User> selectAll();
+    @DataScope(tableField = "id")
+    List<User> selectAll(DataFilterQuery dataFilterQuery);
 
     @Select("""
             select
