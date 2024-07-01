@@ -190,6 +190,7 @@ const username = ref("")
 const exprieTime = ref(0)
 const router = useRouter()
 const isRouterAlive = ref(true)
+const loginId = ref(0)
 
 /* == 计算属性 == */
 
@@ -221,8 +222,9 @@ function visibleChange(isOpen) {
 function getLoginInfo() {
 	doGet("/api/login/info", {}).then(
 		(response) => {
-			username.value = response.data.data.user.name
+			username.value = response.data.data.name
 			exprieTime.value = response.data.data.expireTime
+			loginId.value = response.data.data.id
 		}
 	)
 }
@@ -290,6 +292,10 @@ provide('reload',  () => {
 	nextTick(() => {
 		isRouterAlive.value = true
 	})
+})
+
+provide('getLoginId', () => {
+	return loginId.value
 })
 
 /* == 监视器 == */
