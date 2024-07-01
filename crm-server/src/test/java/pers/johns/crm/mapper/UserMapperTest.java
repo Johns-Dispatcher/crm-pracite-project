@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import pers.johns.crm.model.po.Permission;
 import pers.johns.crm.model.po.Role;
 import pers.johns.crm.model.po.User;
+import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class UserMapperTest {
     @Test
     public void testGetUsers() {
         log.info("测试查询表 t_user ...");
-        List<User> users = userMapper.selectAll();
+        List<User> users = userMapper.selectAll(DataFilterQuery.builder().build());
 
         Assertions.assertNotNull(users);
 
