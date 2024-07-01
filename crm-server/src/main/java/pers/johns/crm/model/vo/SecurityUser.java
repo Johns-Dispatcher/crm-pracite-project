@@ -41,6 +41,7 @@ public class SecurityUser implements UserDetails, Serializable {
      * 如果直接让序列化 User 中的 Role 可能导致请求头过大
      */
     private List<String> authorityList;
+    private List<String> roleList;
     /**
      * 认证过期时间，交给前端进行续期判断
      */
@@ -62,6 +63,11 @@ public class SecurityUser implements UserDetails, Serializable {
                     // 去空 权限为空会报错
                     .filter(s -> s != null && !s.isEmpty())
                     .toList();
+        }
+
+        if (roleList == null) {
+            roleList = user.getRoles().stream()
+                    .map(Role::getRole).toList();
         }
 
         return authorityList.stream().map(SimpleGrantedAuthority::new).toList();
