@@ -24,8 +24,20 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Role {
+    /**
+     * 角色 id
+     */
     private Integer id;
+    /**
+     * 角色名称
+     */
     private String role;
+    /**
+     * 角色中文名称/别名
+     */
     private String roleName;
+    /**
+     * 角色拥有权限
+     */
     private List<Permission> permissions;
 }
