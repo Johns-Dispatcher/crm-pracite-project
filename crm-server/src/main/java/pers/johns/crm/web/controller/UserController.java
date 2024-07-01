@@ -10,6 +10,9 @@ import pers.johns.crm.model.vo.SecurityUser;
 import pers.johns.crm.model.vo.ViewUser;
 import pers.johns.crm.service.UserService;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * ClassName    : UserController
@@ -107,5 +110,18 @@ public class UserController {
         Boolean result = userService.editUser(viewUser);
 
         return HttpResult.OK("修改成功", result);
+    }
+
+    @DeleteMapping("/{id}")
+    public HttpResult deleteUser(@PathVariable("id") Integer id) {
+        Boolean result = userService.deleteUser(id);
+        return HttpResult.OK("删除成功", result);
+    }
+
+    @DeleteMapping("/bulk/{ids}")
+    public HttpResult bulkDeleteUsers(@PathVariable("ids") String ids) {
+        List<Integer> idList = Arrays.stream(ids.split("-")).map(Integer::parseInt).toList();
+        Boolean result = userService.deleteUsersByIds(idList);
+        return HttpResult.OK("批量删除成功", result);
     }
 }
