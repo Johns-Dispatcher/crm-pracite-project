@@ -9,9 +9,9 @@ import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.HttpResultCode;
 
 /**
- * ClassName    : GlobalException
+ * ClassName    : GlobalExceptionHandler
  * <br/>
- * Description  : TODO
+ * Description  : 全局异常处理器
  * <br/>
  * CreateTime   : 2024/7/1 10:00
  * <br/>
@@ -21,7 +21,7 @@ import pers.johns.crm.model.vo.HttpResultCode;
  */
 @RestControllerAdvice
 @Slf4j
-public class GlobalException {
+public class GlobalExceptionHandler {
 
     /**
      * 处理数据库异常
