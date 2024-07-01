@@ -1,11 +1,16 @@
 <template>
 	<el-button type="primary" @click="showAddDialog">添加用户</el-button>
-	<el-button type="danger">删除所选</el-button>
+	<el-button type="danger" @click="bulkDelte">删除所选</el-button>
 
   	<br><br>
 
 	<!-- 用户展示表格 -->
-	<el-table :data="users" style="width: 100%" stripe >
+	<el-table 
+		:data="users" 
+		style="width: 100%" 
+		stripe
+		@selection-change="handleSelectionChange"
+	>
 		<el-table-column type="selection" width="50px" />
 
 		<el-table-column type="index" width="50px" :index="startRow"/>
@@ -167,6 +172,7 @@ const addRules = reactive({
 	credentialsNoExpired: [ { required: true, message: '请指定凭据是否过期', trigger: 'blur' } ],
 })
 const userInfoForm = ref()
+let selectedIds = []
 
 /* == 函数 == */
 
@@ -358,19 +364,64 @@ function editUser() {
 	})
 }
 
+/**
+ * 删除指定 id 的用户
+ * @param id 用户 id
+ */
 function deleteUser(id) {
+	console.log(id);
 	messageConfirm(
-		"确认删除改用户吗",
+		"确认删除用户吗",
 		"删除警告",
+		"warning",
 		() => {
-			doDelete('/api/user/' + id).then(response => {
-				console.log(response);
+			doDelete('/api/user/' + id, {}).then(response => {
+				if (response.data.code === 200) {
+					messageTip("删除成功", "success")
+					reload()
+				} else {
+					messageTip("删除出现问题: " + response.data.msg, "warning")
+				}
 			})
 		},
 		() => {
-			messageTip("删除取消", "info")
+			messageTip("取消删除", "info")
 		}
 	)
+}
+
+function bulkDelte() {
+	if (selectedIds.length <= 0) {
+		messageTip("您还没有选择数据", "warning")
+	} else if (selectedIds.indexOf(getLoginId()) != -1) {
+		messageTip("不能选择当前登录用户", "error")
+	} else { 
+		messageConfirm(
+			"确认要删除这些数据吗?",
+			"批量删除确认",
+			"warning",
+			() => {
+				doDelete('/api/user/bulk/' + selectedIds.join("-"), {}).then(response => {
+					if (response.data.code === 200) {
+						messageTip("批量删除成功", "success")
+						reload()
+					} else {
+						messageTip("批量删除出现问题: " + response.data.msg, "warning")
+					}
+				})
+			},
+			() => {
+				messageTip("批量删除取消", "info")
+			}
+		)
+	}
+}
+
+function handleSelectionChange(selectedItems) {
+	selectedIds = []
+	selectedItems.forEach(selceted => {
+		selectedIds.push(selceted.id)
+	});
 }
 
 /* == 钩子函数 == */
