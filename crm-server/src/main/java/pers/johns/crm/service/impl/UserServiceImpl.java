@@ -117,11 +117,11 @@ public class UserServiceImpl implements UserService {
 
         ViewUser viewUser = new ViewUser(user);
 
-        User creator = userMapper.selectById(viewUser.getCreateBy());
-        User editor = userMapper.selectById(viewUser.getEditBy());
+        String creator = viewUser.getCreateBy() == null ? null : userMapper.selectNameById(viewUser.getCreateBy());
+        String editor = viewUser.getEditBy() == null ? null : userMapper.selectNameById(viewUser.getEditBy());
 
-        viewUser.setCreatorName(creator == null ? "系统内置" : creator.getName());
-        viewUser.setEditorName(editor == null ? "系统修改" : editor.getName());
+        viewUser.setCreatorName(creator == null ? "系统内置" : creator);
+        viewUser.setEditorName(editor == null ? "系统修改" : editor);
 
         return viewUser;
     }
