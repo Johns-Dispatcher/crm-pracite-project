@@ -4,6 +4,7 @@ import LoginView from '../components/login/LoginView.vue'
 import DashboardView from '../components/dashboard/DashboardView.vue'
 import UserView from '../components/dashboard/user/UserView.vue'
 import UserInfoView from '../components/dashboard/user/UserInfoView.vue'
+import ActivityView from '../components/dashboard/activity/ActivityView.vue'
 
 // 创建路由对象
 export default createRouter({
@@ -28,6 +29,10 @@ export default createRouter({
 				{
 					path: "user/:loginAct",
 					component: UserInfoView,
+				},
+				{
+					path: "activity",
+					component: ActivityView,
 				}
 			]
 		},
