@@ -1,6 +1,7 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.User;
 import pers.johns.crm.query.DataFilterQuery;
@@ -57,6 +58,11 @@ public interface UserMapper {
 
     @DataScope(tableField = "id")
     List<User> selectAll(DataFilterQuery dataFilterQuery);
+
+    @Select("""
+            select name from t_user where id = #{id}
+            """)
+    String selectNameById(Integer id);
 
     @Select("""
             select
