@@ -60,12 +60,11 @@ public class DataFilterAdvice {
 
             // 获取过滤字段
             String tableField = dataScope.tableField();
-            Object filterParam = proceedingJoinPoint.getArgs()[0];
 
             // 附加过滤条件
             for (Object arg : proceedingJoinPoint.getArgs()) {
                 if (arg instanceof DataFilterQuery dataFilterQuery) {
-                    dataFilterQuery.setFilterSQL(tableField + "=" + securityUser.getUser().getId());
+                    dataFilterQuery.setFilterSQL(tableField + " = " + securityUser.getUser().getId());
                     break;
                 }
             }
