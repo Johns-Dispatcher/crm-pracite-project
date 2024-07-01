@@ -95,7 +95,7 @@
 
 		<el-descriptions-item label-align="left" align="center">
 			<template #label>
-				<el-icon><Timer /></el-icon> 创建时间
+				<el-icon><Timer /></el-icon> 修改时间
 			</template>
 			{{ editTime }}
 		</el-descriptions-item>
