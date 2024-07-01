@@ -63,5 +63,19 @@ public interface UserService extends UserDetailsService {
      */
     Boolean addUser(ViewUser viewUser);
 
+    /**
+     * 编辑指定用户，修改数据库中数据
+     * @param viewUser 视图用户对象
+     * @return 是否修改成功
+     */
     Boolean editUser(ViewUser viewUser);
+
+    /**
+     * 删除指定 ID 的用户
+     * @param id 用户id
+     * @return 是否删除成功
+     */
+    Boolean deleteUser(Integer id);
+
+    Boolean deleteUsersByIds(List<Integer> ids);
 }

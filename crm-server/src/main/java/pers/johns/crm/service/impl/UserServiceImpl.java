@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.johns.crm.constant.Constants;
+import pers.johns.crm.exception.UserException;
 import pers.johns.crm.mapper.UserMapper;
 import pers.johns.crm.model.po.User;
 import pers.johns.crm.model.vo.SecurityUser;
@@ -173,8 +174,30 @@ public class UserServiceImpl implements UserService {
 
         Integer count = userMapper.updateUser(user);
         if (count != 1) {
-            throw new RuntimeException("修改用户失败");
+            throw new UserException("修改用户失败");
         }
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteUser(Integer id) {
+        Integer count = userMapper.deleteById(id);
+
+        if (count != 1) throw new UserException("删除用户失败");
+
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteUsersByIds(List<Integer> ids) {
+        if (ids.isEmpty()) throw new UserException("批量删除数量不正确");
+
+        Integer count = userMapper.deleteUses(ids);
+
+        if (count != ids.size()) throw new UserException("批量删除失败");
+
         return true;
     }
 }
