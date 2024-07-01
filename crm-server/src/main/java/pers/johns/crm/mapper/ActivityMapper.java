@@ -1,7 +1,9 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.Activity;
+import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
 
@@ -46,17 +48,8 @@ public interface ActivityMapper {
     })
     Activity selectById(Integer id);
 
-    @Select("""
-            select
-                id, owner_id, name,
-                start_time, end_time,
-                cost, description,
-                create_time, create_by,
-                edit_time, edit_by
-            from t_activity
-            """)
-    @ResultMap("ActivityBaseMap")
-    List<Activity> selectAll();
+    @DataScope(tableField = "owner_id")
+    List<Activity> selectAll(DataFilterQuery dataFilterQuery);
 
     @Insert("""
             insert into t_activity (
