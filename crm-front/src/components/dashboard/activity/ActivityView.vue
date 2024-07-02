@@ -3,6 +3,7 @@
 	<el-form 
 		:inline="true" 
 		:model="activityForm" 
+		:rules="rules"
 	>
 		<el-form-item label="负责人">
 			<el-select 
@@ -10,13 +11,19 @@
 				placeholder="请选择负责人"
 				clearable
 				style="width: 150px;"
+				@click="loadOwner"
 			>
-				<el-option label="111111111111111" value="111111111111"/>
+				<el-option 
+					v-for="owner in ownerList"
+					:key="owner.ownerId"
+					:label="owner.owner"
+					:value="owner.ownerId"
+				/>
 			</el-select>
 		</el-form-item>
 
 		<el-form-item label="活动名称">
-			<el-input v-model="activityForm.user" placeholder="请输入活动名称" clearable/>
+			<el-input v-mode="activityForm.user" placeholder="请输入活动名称" clearable/>
 		</el-form-item>
 
 		<el-form-item label="活动时间">
@@ -31,7 +38,7 @@
 			/>
 		</el-form-item>
 
-		 <el-form-item label="活动预算">
+		 <el-form-item label="活动预算" prop="cost">
 			<el-input v-model="activityForm.cost" placeholder="请输入活动预算" clearable/>
 		</el-form-item>
 
@@ -109,16 +116,27 @@ const activityForm = reactive({})
 const activities = ref([])
 const totalCount = ref(0)
 const startRow = ref(1)
+const ownerList = ref([])
+const rules = {
+	cost: [ { pattern: /^[0-9]+(.[0-9]{1,2})?$/, trigger: 'blur', message: '请输入两位小数' } ]
+}
 
 /* == 函数 == */
 
 function queryActivies(currentPage) {
 	doGet('/api/activity/page/' + currentPage, {}).then(response => {
 		if (response.data.code === 200) {
-			console.log(response);
 			activities.value = response.data.data.list
 			totalCount.value = response.data.data.total
 			startRow.value = response.data.data.startRow
+		}
+	})
+}
+
+function loadOwner() {
+	doGet('/api/activity/owner', {}).then(response => {
+		if (response.data.code === 200) {
+			ownerList.value = response.data.data
 		}
 	})
 }
