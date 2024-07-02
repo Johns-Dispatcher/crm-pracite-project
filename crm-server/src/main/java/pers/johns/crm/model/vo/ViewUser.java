@@ -1,6 +1,7 @@
 package pers.johns.crm.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import pers.johns.crm.model.po.Permission;
 import pers.johns.crm.model.po.Role;
 import pers.johns.crm.model.po.User;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +30,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
-public class ViewUser {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class ViewUser implements Serializable {
     private Integer id;
     private String loginAct;
     private String loginPwd;
