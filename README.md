@@ -1,9 +1,3 @@
-<style>
-    .center {
-        text-align: center;
-    }
-</style>
-
 # CRM 项目实战练习
 
 ## 简介
@@ -111,14 +105,15 @@
 
 ## 项目部分实现流程
 
+- 安全登录实现
+
 ![CRM项目-安全登录实现步骤.jpg](/attachments/CRM项目-安全登录实现步骤.jpg)
 
-<div class="center"><strong>安全登录实现</strong></div>
+- Token 续签实现
 
 ![CRM项目-Token续签实现步骤.jpg](./attachments/CRM项目-Token续签实现步骤.jpg)
 
-<div class="center"><strong>Token 续签实现</strong></div>
+- 使用 AOP 进行数据权限筛选
 
 ![CRM项目-使用AOP完成数据权限筛选.jpg](./attachments/CRM项目-使用AOP完成数据权限筛选.jpg)
 
-<div class="center"><strong>使用 AOP 进行数据权限筛选</strong></div>
