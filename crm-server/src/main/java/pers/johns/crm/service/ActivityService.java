@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import pers.johns.crm.model.vo.ViewActivity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * InterfaceName : ActivityService
@@ -23,4 +24,6 @@ public interface ActivityService {
      * @return 含有分页信息的活动列表
      */
     PageInfo<Object> getActivitiesByPage(Integer currentPage);
+
+    List<ViewActivity> getActivityOwners();
 }
