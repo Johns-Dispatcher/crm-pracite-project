@@ -3,11 +3,9 @@ package pers.johns.crm.web.controller;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.johns.crm.model.vo.HttpResult;
+import pers.johns.crm.query.ActivitySearchQuery;
 import pers.johns.crm.service.ActivityService;
 
 /**
@@ -44,5 +42,11 @@ public class ActivityController {
     @GetMapping("/owner")
     public HttpResult getActivityOwners() {
         return HttpResult.OK("获取活动拥有者成功", activityService.getActivityOwners());
+    }
+
+    @PostMapping("/search")
+    public HttpResult searchActivities(@RequestBody ActivitySearchQuery activitySearchQuery) {
+        PageInfo<Object> pageInfo = activityService.searchActivitiesByPage(activitySearchQuery);
+        return HttpResult.OK("搜索查询活动成功", pageInfo);
     }
 }
