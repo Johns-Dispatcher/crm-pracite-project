@@ -10,6 +10,7 @@ import pers.johns.crm.model.po.ActivityRemark;
 import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName    : ActivityMapperTest
@@ -54,5 +55,11 @@ public class ActivityMapperTest {
         Assertions.assertNotNull(activityRemarks);
 
         log.info("活动 {} 的活动备注信息为: {}", activity.getName(), activityRemarks);
+    }
+
+    @Test
+    public void testGetOwnerHavingActivity() {
+        List<Map<String, Object>> maps = activityMapper.selectOwnerHavingActivity();
+        log.info(maps.toString());
     }
 }

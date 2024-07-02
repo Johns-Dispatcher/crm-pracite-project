@@ -6,6 +6,7 @@ import pers.johns.crm.model.po.Activity;
 import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * InterfaceName : ActivityMapper
@@ -84,5 +85,17 @@ public interface ActivityMapper {
             delete from t_activity where id = #{id}
             """)
     Integer deleteActivityById(Integer id);
+
+
+    @Select("""
+            SELECT DISTINCT
+            	ta.owner_id as ownerId,
+            	tu.name
+            FROM
+            	t_activity ta
+            INNER JOIN t_user tu
+            ON ta.owner_id = tu.id
+            """)
+    List<Map<String, Object>> selectOwnerHavingActivity();
 
 }
