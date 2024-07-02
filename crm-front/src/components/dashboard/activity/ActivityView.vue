@@ -4,6 +4,7 @@
 		:inline="true" 
 		:model="activityForm" 
 		:rules="rules"
+		ref="activityFilterForm"
 	>
 		<el-form-item label="负责人">
 			<el-select 
@@ -23,7 +24,7 @@
 		</el-form-item>
 
 		<el-form-item label="活动名称">
-			<el-input v-mode="activityForm.user" placeholder="请输入活动名称" clearable/>
+			<el-input v-model="activityForm.name" placeholder="请输入活动名称" clearable/>
 		</el-form-item>
 
 		<el-form-item label="活动时间">
@@ -33,6 +34,7 @@
 				start-placeholder="开始时间"
 				end-placeholder="结束时间"
 				format="YYYY-MM-DD HH:mm:ss"
+				value-format="YYYY-MM-DD HH:mm:ss"
 				date-format="YYYY/MM/DD ddd"
 				time-format="A hh:mm:ss"
 			/>
@@ -50,11 +52,12 @@
 				format="YYYY-MM-DD HH:mm:ss"
 				date-format="MMM DD, YYYY"
 				time-format="HH:mm"
+				value-format="YYYY-MM-DD HH:mm:ss"
 			/>
 		</el-form-item>
 
 		<el-form-item>
-			<el-button type="primary" plain @click="onSearch">搜索</el-button>
+			<el-button type="primary" plain @click="onSearch(1)">搜索</el-button>
 			<el-button type="danger" plain @click="onReset" >重置</el-button>
 		</el-form-item>
 	</el-form>
@@ -94,25 +97,24 @@
 			</template>
 		</el-table-column>
 	</el-table>
-
 	<br/>
-
 	<!-- 分页 -->
 	<el-pagination
 		layout="prev, pager, next"
 		:page-size="10"
 		:total="totalCount"
-		@current-change="queryActivies"
+		@current-change="changePage"
 	/>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
-import { doGet } from '../../../http/httpRequestUtils';
+import { onMounted, ref } from 'vue';
+import { doGet, doPost } from '../../../http/httpRequestUtils';
+import { messageTip } from '../../../utils/utils';
 
 /* == 数据 == */
 
-const activityForm = reactive({})
+const activityForm = ref({})
 const activities = ref([])
 const totalCount = ref(0)
 const startRow = ref(1)
@@ -120,15 +122,22 @@ const ownerList = ref([])
 const rules = {
 	cost: [ { pattern: /^[0-9]+(.[0-9]{1,2})?$/, trigger: 'blur', message: '请输入两位小数' } ]
 }
+const activityFilterForm = ref()
 
 /* == 函数 == */
+
+function changePage(currentPage) {
+	if (Object.keys(activityForm.value).length === 0) {
+		queryActivies(currentPage)
+	} else {
+		onSearch(currentPage)
+	}
+}
 
 function queryActivies(currentPage) {
 	doGet('/api/activity/page/' + currentPage, {}).then(response => {
 		if (response.data.code === 200) {
-			activities.value = response.data.data.list
-			totalCount.value = response.data.data.total
-			startRow.value = response.data.data.startRow
+			updateActivityList(response.data.data)
 		}
 	})
 }
@@ -139,6 +148,42 @@ function loadOwner() {
 			ownerList.value = response.data.data
 		}
 	})
+}
+
+function onSearch(currentPage) {
+	activityFilterForm.value.validate(isValidated => {
+		if (isValidated) {
+			console.log(activityForm.value);
+			if (Object.keys(activityForm.value).length === 0) {
+				messageTip("您还没有选择筛选条件", "info")
+			} else { 
+				doPost("/api/activity/search", {
+					ownerId: activityForm.value.ownerId ? activityForm.value.ownerId : null,
+					name: activityForm.value.name ? activityForm.value.name : null,
+					startTime: activityForm.value.time ? activityForm.value.time[0] : null,
+					endTime: activityForm.value.time ? activityForm.value.time[1] : null,
+					cost: activityForm.value.cost ? activityForm.value.cost : null,
+					createTime: activityForm.value.createTime ? activityForm.value.createTime : null,
+					current: currentPage,
+				}).then(response => {
+					if (response.data.code === 200) {
+						updateActivityList(response.data.data)
+					}
+				})
+			}
+		}
+	})
+}
+
+function updateActivityList(data) {
+	activities.value = data.list
+	totalCount.value = data.total
+	startRow.value = data.startRow
+}
+
+function onReset() {
+	activityForm.value = {}
+	queryActivies(1)
 }
 
 /* == 钩子函数 == */
