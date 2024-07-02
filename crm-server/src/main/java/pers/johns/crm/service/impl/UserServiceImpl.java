@@ -87,13 +87,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ViewUser> getAllUsers() {
-        // 暂时没用上捏~
-        List<User> users = userMapper.selectAll(DataFilterQuery.builder().build());
-        return users.stream().map(ViewUser::new).toList();
-    }
-
-    @Override
     public PageInfo<Object> getUserByPage(Integer currentPage) {
         // 设置分页初始值
         PageHelper.startPage(currentPage, Constants.DEFAULT_PAGE_SIZE);
@@ -103,7 +96,17 @@ public class UserServiceImpl implements UserService {
                 userMapper.selectAll(DataFilterQuery.builder().build())
         );
         // 对将查询出的 User 转换为视图用户对象
-        List<Object> viewUsers = userPageInfo.getList().stream().map(ViewUser::new).collect(Collectors.toList());
+        List<Object> viewUsers = userPageInfo.getList().stream().map(user -> {
+                User u = (User) user;
+                return ViewUser.builder()
+                        .id(u.getId())
+                        .loginAct(u.getLoginAct())
+                        .name(u.getName())
+                        .phone(u.getPhone())
+                        .email(u.getEmail())
+                        .createTime(u.getCreateTime())
+                        .build();
+        }).collect(Collectors.toList());
         // 将视图用户对象列表放回分页信息对象中
         userPageInfo.setList(viewUsers);
 
@@ -120,10 +123,22 @@ public class UserServiceImpl implements UserService {
         String creator = viewUser.getCreateBy() == null ? null : userMapper.selectNameById(viewUser.getCreateBy());
         String editor = viewUser.getEditBy() == null ? null : userMapper.selectNameById(viewUser.getEditBy());
 
-        viewUser.setCreatorName(creator == null ? "系统内置" : creator);
-        viewUser.setEditorName(editor == null ? "系统修改" : editor);
-
-        return viewUser;
+        return ViewUser.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .loginAct(user.getLoginAct())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .accountEnabled(user.getAccountEnabled() == 1)
+                .accountNoExpired(user.getAccountNoExpired() == 1)
+                .accountNoLocked(user.getAccountNoLocked() == 1)
+                .credentialsNoExpired(user.getCredentialsNoExpired() == 1)
+                .createTime(user.getCreateTime())
+                .creatorName(creator == null ? "系统内置" : creator)
+                .editTime(user.getEditTime())
+                .editorName(editor == null ? "系统修改" : editor)
+                .lastLoginTime(user.getLastLoginTime())
+                .build();
     }
 
     @Override
