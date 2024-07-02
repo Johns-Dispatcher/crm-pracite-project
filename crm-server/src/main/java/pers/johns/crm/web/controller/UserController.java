@@ -90,8 +90,8 @@ public class UserController {
 
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         // 为用户增加创建者信息
-        viewUser.setCreateBy(securityUser.getUser().getId());
-        viewUser.setEditBy(securityUser.getUser().getId());
+        viewUser.setCreateBy(securityUser.getId());
+        viewUser.setEditBy(securityUser.getId());
 
         Boolean result = userService.addUser(viewUser);
 
@@ -102,8 +102,8 @@ public class UserController {
     public HttpResult editUser(ViewUser viewUser, Authentication authentication) {
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
         // 为用户增加创建者信息
-        viewUser.setCreateBy(securityUser.getUser().getId());
-        viewUser.setEditBy(securityUser.getUser().getId());
+        viewUser.setCreateBy(securityUser.getId());
+        viewUser.setEditBy(securityUser.getId());
         viewUser.setLoginPwd("undefined".equals(viewUser.getLoginPwd()) ? null : viewUser.getLoginPwd());
 
         log.info(viewUser.toString());

@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pers.johns.crm.model.po.Permission;
 import pers.johns.crm.model.po.Role;
 import pers.johns.crm.model.po.User;
 
@@ -13,6 +12,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * ClassName    : SecurityUser
@@ -27,17 +27,18 @@ import java.util.List;
  */
 
 @Data
-// json 反序列化必须提供无参构造
 @NoArgsConstructor
-@AllArgsConstructor
-@RequiredArgsConstructor
+// json 反序列化必须提供无参构造
 public class SecurityUser implements UserDetails, Serializable {
 
-    /**
-     * 持久化层用户信息
-     */
-    @NonNull
-    private User user;
+    private Integer id;
+    private String loginAct;
+    private String loginPwd;
+    private String name;
+    private Boolean accountNoExpired;
+    private Boolean accountNoLocked;
+    private Boolean accountEnabled;
+    private Boolean credentialsNoExpired;
     /**
      * 这里不能直接存储 SimpleGrantedAuthority 集合
      * 反序列化会出现问题
@@ -53,6 +54,39 @@ public class SecurityUser implements UserDetails, Serializable {
      */
     private Long expireTime;
 
+    /**
+     * 最开始构造 SecurityUser 对象时调用的构造方法
+     * @param user {@link User} 对象
+     */
+    public SecurityUser(User user) {
+        this.id = user.getId();
+        this.loginAct = user.getLoginAct();
+        this.loginPwd = user.getLoginPwd();
+        this.name = user.getName();
+        this.accountEnabled = user.getAccountEnabled() == 1;
+        this.accountNoLocked = user.getAccountNoLocked() == 1;
+        this.accountNoExpired = user.getAccountNoExpired() == 1;
+        this.credentialsNoExpired = user.getCredentialsNoExpired() == 1;
+
+        authorityList = user.getRoles().stream()
+                .map(Role::getPermissions)
+                .flatMap(List::stream)
+                .map(permission -> {
+                    if (permission.getCode() != null) {
+                        return permission.getCode();
+                    } else if (permission.getUrl() != null) {
+                        return permission.getUrl();
+                    } else {
+                        return null;
+                    }
+                }).filter(Objects::nonNull)
+                .filter(authority -> !authority.isEmpty())
+                .toList();
+
+        roleList = user.getRoles().stream()
+                .map(Role::getRole).toList();
+    }
+
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -64,61 +98,44 @@ public class SecurityUser implements UserDetails, Serializable {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // 第一次调用一定会调用这个获取权限，此时进行集合的初始化
-        // 之后的访问会从 JWT 中反序列化出数据存储在集合当中
-        if (authorityList == null) {
-            authorityList = user.getRoles().stream()
-                    .map(Role::getPermissions)
-                    .flatMap(List::stream)
-                    .map(Permission::getCode)
-                    // 去空 权限为空会报错
-                    .filter(s -> s != null && !s.isEmpty())
-                    .toList();
-        }
-
-        if (roleList == null) {
-            roleList = user.getRoles().stream()
-                    .map(Role::getRole).toList();
-        }
-
         return authorityList.stream().map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override
     @JsonIgnore
     public String getPassword() {
-        String loginPwd = user.getLoginPwd();
-        user.setLoginPwd(null);
+        String loginPwd = this.loginPwd;
+        this.loginPwd = null;
         return loginPwd;
     }
 
     @Override
     @JsonIgnore
     public String getUsername() {
-        return user.getLoginAct();
+        return loginAct;
     }
 
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {
-        return user.getAccountNoExpired() == 1;
+        return accountNoExpired;
     }
 
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-        return user.getAccountNoLocked() == 1;
+        return accountNoLocked;
     }
 
     @Override
     @JsonIgnore
     public boolean isCredentialsNonExpired() {
-        return user.getCredentialsNoExpired() == 1;
+        return credentialsNoExpired;
     }
 
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return user.getAccountEnabled() == 1;
+        return accountEnabled;
     }
 }

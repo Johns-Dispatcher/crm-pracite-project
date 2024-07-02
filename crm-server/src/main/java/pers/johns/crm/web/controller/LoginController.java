@@ -40,7 +40,10 @@ public class LoginController {
     public HttpResult loginInfo(Authentication authentication) {
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
 
-        ViewUser viewUser = new ViewUser(securityUser.getUser());
+        ViewUser viewUser = ViewUser.builder()
+                .id(securityUser.getId())
+                .name(securityUser.getName())
+                .build();
         viewUser.setExpireTime(securityUser.getExpireTime());
         viewUser.setAuthentications(securityUser.getAuthorityList());
 

@@ -1,6 +1,8 @@
 package pers.johns.crm.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pers.johns.crm.model.po.Permission;
@@ -23,6 +25,8 @@ import java.util.List;
  */
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Data
 public class ViewUser {
     private Integer id;

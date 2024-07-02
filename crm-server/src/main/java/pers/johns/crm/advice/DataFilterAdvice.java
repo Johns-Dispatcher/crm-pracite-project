@@ -64,7 +64,7 @@ public class DataFilterAdvice {
             // 附加过滤条件
             for (Object arg : proceedingJoinPoint.getArgs()) {
                 if (arg instanceof DataFilterQuery dataFilterQuery) {
-                    dataFilterQuery.setFilterSQL(tableField + " = " + securityUser.getUser().getId());
+                    dataFilterQuery.setFilterSQL(tableField + " = " + securityUser.getId());
                     break;
                 }
             }
