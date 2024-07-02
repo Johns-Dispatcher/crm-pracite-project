@@ -118,10 +118,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectByLoginAct(loginAct);
         if (user == null) return null;
 
-        ViewUser viewUser = new ViewUser(user);
-
-        String creator = viewUser.getCreateBy() == null ? null : userMapper.selectNameById(viewUser.getCreateBy());
-        String editor = viewUser.getEditBy() == null ? null : userMapper.selectNameById(viewUser.getEditBy());
+        String creator = user.getCreateBy() == null ? null : userMapper.selectNameById(user.getCreateBy());
+        String editor = user.getEditBy() == null ? null : userMapper.selectNameById(user.getEditBy());
 
         return ViewUser.builder()
                 .id(user.getId())

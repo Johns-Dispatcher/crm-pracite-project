@@ -51,33 +51,4 @@ public class ViewUser {
     private Boolean credentialsNoExpired;
     private List<String> authentications;
     private Long expireTime;
-
-
-    public ViewUser(User user) {
-        this.id = user.getId();
-        this.loginAct = user.getLoginAct();
-        this.name = user.getName();
-        this.phone= user.getPhone();
-        this.email = user.getEmail();
-        this.createTime = user.getCreateTime();
-        this.createBy = user.getCreateBy();
-        this.editTime = user.getEditTime();
-        this.editBy = user.getEditBy();
-        this.lastLoginTime = user.getLastLoginTime();
-        this.accountNoExpired = user.getAccountNoExpired() == 1;
-        this.accountNoLocked = user.getAccountNoLocked() == 1;
-        this.accountEnabled = user.getAccountEnabled() == 1;
-        this.credentialsNoExpired = user.getCredentialsNoExpired() == 1;
-        this.authentications = user.getRoles() != null ? user.getRoles().stream()
-                .map(Role::getPermissions)
-                .flatMap(List::stream)
-                .map(Permission::getCode)
-                .filter(code -> code != null && !code.isEmpty())
-                .toList() : null;
-    }
-
-    // 这个构造方法是为了在分页查询时进行映射转换使用的
-    public ViewUser(Object user) {
-        this((User) user);
-    }
 }
