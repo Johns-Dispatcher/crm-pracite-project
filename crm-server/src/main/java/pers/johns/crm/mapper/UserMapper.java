@@ -51,7 +51,8 @@ public interface UserMapper {
             @Result(column = "edit_by", property = "editBy"),
             @Result(column = "last_login_time", property = "lastLoginTime"),
             @Result(column = "id", property = "roles", one = @One(
-                    select = "pers.johns.crm.mapper.RoleMapper.selectRolesByUserId"
+                    select = "pers.johns.crm.mapper.RoleMapper.selectRolesByUserId",
+                    fetchType = FetchType.LAZY
             ))
     })
     User selectById(Integer id);
