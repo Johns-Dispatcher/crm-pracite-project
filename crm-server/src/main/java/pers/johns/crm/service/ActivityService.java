@@ -2,6 +2,7 @@ package pers.johns.crm.service;
 
 import com.github.pagehelper.PageInfo;
 import pers.johns.crm.model.vo.ViewActivity;
+import pers.johns.crm.query.ActivitySearchQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -25,5 +26,11 @@ public interface ActivityService {
      */
     PageInfo<Object> getActivitiesByPage(Integer currentPage);
 
+    /**
+     * 查询目前负责项目的项目人列表
+     * @return 视图活动 {@link ViewActivity} 列表，仅含有负责人与负责人 ID
+     */
     List<ViewActivity> getActivityOwners();
+
+    PageInfo<Object> searchActivitiesByPage(ActivitySearchQuery activitySearchQuery);
 }
