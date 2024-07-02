@@ -37,8 +37,12 @@ public class ActivityController {
      */
     @GetMapping("/page/{page}")
     public HttpResult getActivitiesByPage(@PathVariable(value = "page", required = false) Integer currentPage) {
-        log.info("正在获取活动数据，页码: {}", currentPage);
         PageInfo<Object> activitiesByPage = activityService.getActivitiesByPage(currentPage == null ? 1 : currentPage);
         return HttpResult.OK("获取活动成功", activitiesByPage);
+    }
+
+    @GetMapping("/owner")
+    public HttpResult getActivityOwners() {
+        return HttpResult.OK("获取活动拥有者成功", activityService.getActivityOwners());
     }
 }
