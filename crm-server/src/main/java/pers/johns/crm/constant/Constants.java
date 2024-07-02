@@ -13,10 +13,20 @@ package pers.johns.crm.constant;
  */
 
 public class Constants {
+
+    /* == 请求路径相关 == */
+
     /**
      * 登录的默认请求路径
      */
     public static final String LOGIN_URI = "/api/login";
+
+    /**
+     * 退出的默认请求路径
+     */
+    public static final String LOGOUT_URI = "/api/logout";
+
+    /* == 请求参数相关 == */
 
     /**
      * 登录时的用户名参数名称
@@ -28,10 +38,7 @@ public class Constants {
      */
     public static final String LOGIN_PASSWORD_PARAMETER = "loginPwd";
 
-    /**
-     * 退出的默认请求路径
-     */
-    public static final String LOGOUT_URI = "/api/logout";
+    /* == JWT 缓存相关 == */
 
     /**
      * 在 Redis 中存储 JWT 的前缀
@@ -48,6 +55,8 @@ public class Constants {
      */
     public static final long DEFAULT_NOT_REMEMBER_TIME = 1000 * 60 * 30;
 
+    /* == JWT 认证请求相关 == */
+
     /**
      * 认证信息头的参数名
      */
@@ -58,14 +67,25 @@ public class Constants {
      */
     public static final String AUTHORIZATION_TOKEN_PREFIX = "Bearer ";
 
+    /* == 分页查询径相关 == */
+
     /**
      * 默认的分页参数
      */
     public static final Integer DEFAULT_PAGE_SIZE = 10;
 
+    /* == 角色相关 == */
+
     /**
      * 默认管理员角色名称
      */
     public static final String DEFAULT_ADMIN_ROLE_NAME = "admin";
+
+    /* == Redis 缓存键值相关 == */
+
+    /**
+     * 活动拥有者缓存存储字段
+     */
+    public static final String ACTIVITY_OWNER_REDIS_KEY = "crm:activity:owners";
 
 }
