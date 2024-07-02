@@ -52,6 +52,11 @@
 		</el-form-item>
 	</el-form>
 
+	<el-button type="primary">录入市场活动信息</el-button>
+	<el-button type="danger">批量删除市场活动信息</el-button>
+
+	<br/><br/>
+
 	<!-- 活动数据展示表格 -->
 	<el-table 
 		:data="activities" 
@@ -82,6 +87,8 @@
 			</template>
 		</el-table-column>
 	</el-table>
+
+	<br/>
 
 	<!-- 分页 -->
 	<el-pagination
