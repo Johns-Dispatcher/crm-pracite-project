@@ -1,9 +1,12 @@
 package pers.johns.crm.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import java.util.List;
 
 /**
  * ClassName    : JsonUtils
@@ -47,6 +50,20 @@ public class JsonUtils {
     public static <T> T toBean(String json, Class<T> clazz) {
         try {
             return OBJECT_MAPPER.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 将指定 json 数据转换为对应的 List 集合，使用 TypeReference 保证转换检测
+     * @param json json 数据字符串
+     * @return {@link List} 集合
+     * @param <T> 集合中元素类型
+     */
+    public static <T> List<T> toList(String json) {
+        try {
+            return OBJECT_MAPPER.readValue(json, new TypeReference<List<T>>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
