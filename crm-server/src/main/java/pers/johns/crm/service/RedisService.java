@@ -33,7 +33,7 @@ public interface RedisService {
      * @param key 键
      * @return 对应值
      */
-    Object getValue(String key);
+    String getValue(String key);
 
     /**
      * 移除指定键
