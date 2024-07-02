@@ -3,6 +3,7 @@ package pers.johns.crm.mapper;
 import org.apache.ibatis.annotations.*;
 import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.Activity;
+import pers.johns.crm.query.ActivitySearchQuery;
 import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
@@ -97,5 +98,7 @@ public interface ActivityMapper {
             ON ta.owner_id = tu.id
             """)
     List<Map<String, Object>> selectOwnerHavingActivity();
+
+    List<Activity> selectActivitiesOnSearchCondition(ActivitySearchQuery activitySearchQuery);
 
 }
