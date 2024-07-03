@@ -56,4 +56,8 @@ public class RedisManager {
         String jsonData = JsonUtils.toJson(object);
         redisService.setValue(key, jsonData, expireTime);
     }
+
+    public void deleteValue(String key) {
+        redisService.removeValue(key);
+    }
 }
