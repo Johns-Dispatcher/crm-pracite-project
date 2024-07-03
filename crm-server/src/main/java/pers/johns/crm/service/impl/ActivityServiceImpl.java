@@ -6,16 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pers.johns.crm.constant.Constants;
+import pers.johns.crm.exception.ActivityException;
 import pers.johns.crm.manager.RedisManager;
 import pers.johns.crm.mapper.ActivityMapper;
 import pers.johns.crm.mapper.UserMapper;
 import pers.johns.crm.model.po.Activity;
 import pers.johns.crm.model.vo.ViewActivity;
 import pers.johns.crm.query.ActivitySearchQuery;
-import pers.johns.crm.query.DataFilterQuery;
 import pers.johns.crm.service.ActivityService;
 import pers.johns.crm.utils.CacheUtils;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,57 @@ public class ActivityServiceImpl implements ActivityService {
         return pageInfo;
     }
 
+    @Override
+    public Boolean addActivity(ViewActivity viewActivity) {
+        Integer count = activityMapper.insertActivity(Activity
+                .builder()
+                .ownerId(viewActivity.getOwnerId())
+                .name(viewActivity.getName())
+                .cost(viewActivity.getCost())
+                .startTime(viewActivity.getStartTime())
+                .endTime(viewActivity.getEndTime())
+                .description(viewActivity.getDescription())
+                .createBy(viewActivity.getCreateBy())
+                .createTime(LocalDateTime.now())
+                .editBy(viewActivity.getEditBy())
+                .editTime(LocalDateTime.now())
+                .build());
+
+        if (count != 1) throw new ActivityException("创建活动出错");
+
+        CacheUtils.removeCacheData(redisManager::deleteValue, Constants.ACTIVITY_OWNER_REDIS_KEY);
+
+        return true;
+    }
+
+    @Override
+    public ViewActivity getActivity(Integer id) {
+        Activity activity = activityMapper.selectById(id);
+        return convertToViewActivity(activity);
+    }
+
+    @Override
+    public Boolean editActivity(ViewActivity viewActivity) {
+        Integer count = activityMapper.insertActivity(Activity
+                .builder()
+                .id(viewActivity.getId())
+                .ownerId(viewActivity.getOwnerId())
+                .name(viewActivity.getName())
+                .cost(viewActivity.getCost())
+                .startTime(viewActivity.getStartTime())
+                .endTime(viewActivity.getEndTime())
+                .description(viewActivity.getDescription())
+                .editBy(viewActivity.getEditBy())
+                .editTime(LocalDateTime.now())
+                .build());
+
+        if (count != 1) throw new ActivityException("修改活动出错");
+
+        CacheUtils.removeCacheData(redisManager::deleteValue, Constants.ACTIVITY_OWNER_REDIS_KEY);
+
+        return null;
+    }
+
     /**
      * 将一个 {@link Activity} 对象转换为 {@link ViewActivity} 对象，用于前端展示
      * @param item {@link Activity} 对象
@@ -102,6 +154,7 @@ public class ActivityServiceImpl implements ActivityService {
                 .endTime(activity.getEndTime())
                 .cost(activity.getCost())
                 .createTime(activity.getCreateTime())
+                .description(activity.getDescription())
                 .build();
     }
 }

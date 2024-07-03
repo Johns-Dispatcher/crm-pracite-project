@@ -5,7 +5,6 @@ import pers.johns.crm.model.vo.ViewActivity;
 import pers.johns.crm.query.ActivitySearchQuery;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * InterfaceName : ActivityService
@@ -33,4 +32,10 @@ public interface ActivityService {
     List<ViewActivity> getActivityOwners();
 
     PageInfo<Object> searchActivitiesByPage(ActivitySearchQuery activitySearchQuery);
+
+    Boolean addActivity(ViewActivity viewActivity);
+
+    ViewActivity getActivity(Integer id);
+
+    Boolean editActivity(ViewActivity viewActivity);
 }
