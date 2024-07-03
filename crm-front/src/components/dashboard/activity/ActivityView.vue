@@ -62,7 +62,7 @@
 		</el-form-item>
 	</el-form>
 
-	<el-button type="primary">录入市场活动信息</el-button>
+	<el-button type="primary" @click="addActivity">录入市场活动信息</el-button>
 	<el-button type="danger">批量删除市场活动信息</el-button>
 
 	<br/><br/>
@@ -92,7 +92,7 @@
 		<el-table-column label="操作">
 			<template #default="scope">
 				<el-button type="primary">详情</el-button>
-				<el-button type="success">修改</el-button>
+				<el-button type="success" @click="editActivity(scope.row.id)">修改</el-button>
 				<el-button type="danger">删除</el-button>
 			</template>
 		</el-table-column>
@@ -111,6 +111,7 @@
 import { onMounted, ref } from 'vue';
 import { doGet, doPost } from '../../../http/httpRequestUtils';
 import { messageTip } from '../../../utils/utils';
+import { useRouter } from 'vue-router';
 
 /* == 数据 == */
 
@@ -123,6 +124,7 @@ const rules = {
 	cost: [ { pattern: /^[0-9]+(.[0-9]{1,2})?$/, trigger: 'blur', message: '请输入两位小数' } ]
 }
 const activityFilterForm = ref()
+const router = useRouter()
 
 /* == 函数 == */
 
@@ -184,6 +186,14 @@ function updateActivityList(data) {
 function onReset() {
 	activityForm.value = {}
 	queryActivies(1)
+}
+
+function addActivity() {
+	router.push('/dashboard/activity/add')
+}
+
+function editActivity(id) {
+	router.push('/dashboard/activity/edit/' + id)
 }
 
 /* == 钩子函数 == */
