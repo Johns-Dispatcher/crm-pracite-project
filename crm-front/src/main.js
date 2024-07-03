@@ -13,6 +13,8 @@ import router from './router'
 import App from './App.vue'
 // 引入 ElementPlus 提供的图标库
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// 引入国际化 中文语言
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -23,7 +25,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // createApp(App)
 app
 	// 让 Vue 使用 ElementPlus
-	.use(ElementPlus)
+	.use(ElementPlus, {
+		locale: zhCn,
+	})
 	// 让 Vue 使用 路由
 	.use(router)
 	// Vue 的挂载一定是最后一步
