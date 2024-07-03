@@ -1,6 +1,7 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.Activity;
 import pers.johns.crm.query.ActivitySearchQuery;
@@ -44,7 +45,8 @@ public interface ActivityMapper {
             @Result(column = "edit_time", property = "editTime"),
             @Result(column = "edit_by", property = "editBy"),
             @Result(column = "id", property = "activityRemarks", one = @One(
-                    select = "pers.johns.crm.mapper.ActivityRemarkMapper.selectByActivityId"
+                    select = "pers.johns.crm.mapper.ActivityRemarkMapper.selectByActivityId",
+                    fetchType = FetchType.LAZY
             ))
     })
     Activity selectById(Integer id);
