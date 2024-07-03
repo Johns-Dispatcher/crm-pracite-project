@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.*;
 import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.Activity;
 import pers.johns.crm.query.ActivitySearchQuery;
-import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,7 @@ public interface ActivityMapper {
     Activity selectById(Integer id);
 
     @DataScope(tableField = "owner_id")
-    List<Activity> selectAll(DataFilterQuery dataFilterQuery);
+    List<Activity> selectAll(ActivitySearchQuery activitySearchQuery);
 
     @Insert("""
             insert into t_activity (
@@ -98,7 +97,4 @@ public interface ActivityMapper {
             ON ta.owner_id = tu.id
             """)
     List<Map<String, Object>> selectOwnerHavingActivity();
-
-    List<Activity> selectActivitiesOnSearchCondition(ActivitySearchQuery activitySearchQuery);
-
 }

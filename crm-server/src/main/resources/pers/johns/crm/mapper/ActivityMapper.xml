@@ -12,20 +12,6 @@
             edit_time, edit_by
         from t_activity
         <where>
-            <if test="filterSQL != null and filterSQL != ''">
-                and ${filterSQL}
-            </if>
-        </where>
-    </select>
-    <select id="selectActivitiesOnSearchCondition" resultMap="ActivityBaseMap">
-        select
-        id, owner_id, name,
-        start_time, end_time,
-        cost, description,
-        create_time, create_by,
-        edit_time, edit_by
-        from t_activity
-        <where>
             <if test="ownerId != null">
                 and owner_id = #{ownerId}
             </if>
@@ -33,7 +19,7 @@
                 and 'name' like "%"#{name}"%"
             </if>
             <if test="createTime != null">
-                and create_time = #{createTime}
+                and create_time >= #{createTime}
             </if>
             <if test="startTime != null and endTime != null">
                 and start_time between #{startTime} and #{endTime}
@@ -41,6 +27,9 @@
             </if>
             <if test="cost != null">
                 and cost >= #{cost}
+            </if>
+            <if test="filterSQL != null and filterSQL != ''">
+                and ${filterSQL}
             </if>
         </where>
     </select>
