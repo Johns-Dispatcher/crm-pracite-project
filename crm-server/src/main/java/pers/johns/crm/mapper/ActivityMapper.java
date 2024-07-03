@@ -60,25 +60,15 @@ public interface ActivityMapper {
                 create_time, create_by,
                 edit_time, edit_by
             ) values (
-                null, owner_id = #{ownerId}, name = #{name},
-                start_time = #{startTime}, end_time = #{endTime},
-                cost = #{cost}, description = #{description},
-                create_time = #{createTime}, create_by = #{createBy},
-                edit_time = #{editTime}, edit_by = #{editBy}
+                null, #{ownerId}, #{name},
+                #{startTime}, #{endTime},
+                #{cost}, #{description},
+                #{createTime}, #{createBy},
+                #{editTime}, #{editBy}
             )
             """)
     Integer insertActivity(Activity activity);
 
-    @Update("""
-            update t_activity
-            set
-                owner_id = #{ownerId}, name = #{name},
-                start_time = #{startTime}, end_time = #{endTime},
-                cost = #{cost}, description = #{description},
-                create_time = #{createTime}, create_by = #{createBy},
-                edit_time = #{editTime}, edit_by = #{editBy}
-            where id = #{id}
-            """)
     Integer updateActivity(Activity activity);
 
     @Delete("""

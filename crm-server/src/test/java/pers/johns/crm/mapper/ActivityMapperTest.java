@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import pers.johns.crm.model.po.Activity;
 import pers.johns.crm.model.po.ActivityRemark;
+import pers.johns.crm.query.ActivitySearchQuery;
 import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class ActivityMapperTest {
     @Test
     public void testGetActivities() {
         log.info("测试查询表 t_activity ...");
-        List<Activity> activities = activityMapper.selectAll(DataFilterQuery.builder().build());
+        List<Activity> activities = activityMapper.selectAll(new ActivitySearchQuery());
 
         Assertions.assertNotNull(activities);
 

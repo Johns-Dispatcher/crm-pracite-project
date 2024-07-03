@@ -33,4 +33,21 @@
             </if>
         </where>
     </select>
+
+    <update id="updateActivity">
+        update t_activity
+        <set>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="name != null and name != ''">'name' = #{name},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="description != null and description != ''">'description' = #{description},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="editBy != null">edit_by = #{editBy}</if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>
