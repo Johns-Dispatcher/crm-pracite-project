@@ -28,13 +28,13 @@
 		<el-table-column label="操作">
 			<template #default="scope">
 				<el-button type="primary" @click="toUserInfo(scope.row.loginAct)">详情</el-button>
+
 				<el-button type="success" @click="showEditDialog(scope.row.loginAct)">修改</el-button>
+
 				<el-button type="danger" 
 					:disabled="getLoginId() === scope.row.id"
 					@click="deleteUser(scope.row.id)"
-				>
-					删除
-				</el-button>
+				>删除</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -127,13 +127,27 @@ import { messageConfirm, messageTip } from '../../../utils/utils';
 
 /* == 数据 == */
 
+// 用户信息列表
 const users = ref([])
+// 数据总数
 const totalCount = ref(0)
+// 当前开始行
 const startRow = ref(1)
+// 当前选择 id
+let selectedIds = []
+
+// 路由器
 const router = useRouter()
+
+// 对话框是否可见
 const userDialogVisable = ref(false)
+// 用户表单信息
 const userForm = reactive({})
+// 用户表单对象
+const userInfoForm = ref()
+// 编辑模式
 const editMode = ref(false)
+// 检测规则
 const addRules = reactive({
 	// 登录用户的校验规则
 	loginAct: [
@@ -171,12 +185,13 @@ const addRules = reactive({
 	accountNoExpired: [ { required: true, message: '请指定账户是否过期', trigger: 'blur' } ],
 	credentialsNoExpired: [ { required: true, message: '请指定凭据是否过期', trigger: 'blur' } ],
 })
-const userInfoForm = ref()
-let selectedIds = []
+
 
 /* == 函数 == */
 
+// 重载函数
 const reload = inject('reload')
+// 获取当前登录用户 id
 const getLoginId = inject('getLoginId')
 
 /**
@@ -390,6 +405,9 @@ function deleteUser(id) {
 	)
 }
 
+/**
+ * 批量删除
+ */
 function bulkDelte() {
 	if (selectedIds.length <= 0) {
 		messageTip("您还没有选择数据", "warning")
@@ -417,6 +435,9 @@ function bulkDelte() {
 	}
 }
 
+/**
+ * 当选择项修改时触发的函数
+ */
 function handleSelectionChange(selectedItems) {
 	selectedIds = []
 	selectedItems.forEach(selceted => {

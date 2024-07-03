@@ -117,21 +117,37 @@ import { doGet } from '../../../http/httpRequestUtils';
 
 /* == 数据 == */
 
+// 路由器
 const router = useRouter()
+// 路由
 const route = useRoute()
+// 用户 id
 const id = ref(1)
+// 用户名称
 const name = ref("")
+// 登录名
 const loginActno = ref("")
+// 手机
 const phone = ref("")
+// 邮箱
 const email = ref("")
+// 创建者 id
 const createBy = ref("")
+// 创建人
 const createTime = ref("")
+// 修改者 id
 const editBy = ref("")
+// 修改人
 const editTime = ref("")
+// 最后登录信息
 const lastLoginTime = ref("")
+// 账户是否启用
 const accountEnabled = ref(true)
+// 账户是否过期
 const accountNoExpired = ref(true)
+// 账户是否锁定
 const accountNoLocked = ref(true)
+// 凭证是否过期
 const credentialsNoExpired = ref(true)
 
 /* == 函数 == */

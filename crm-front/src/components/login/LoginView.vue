@@ -1,29 +1,40 @@
 <template>
-	<div class="bg">
-		<el-container>
-			<el-aside></el-aside>
-			<el-main>
-				<h1>欢迎使用 CRM 客户管理系统</h1>
-				<!-- 登录表单 -->
-				<el-form 
-					ref="loginForm"
-					:model="user"
-					label-width="auto"
-					style="max-width: 400px"
-					:rules="loginRules"
-				>
-					<el-form-item label="用户名" prop="loginAct"><el-input v-model="user.loginAct"/></el-form-item>
-					<el-form-item label="密码" prop="loginPwd"><el-input v-model="user.loginPwd" type="password"/></el-form-item>
-					<el-form-item label=" ">
-						<el-row :gutter="10" justify="space-between">
-							<el-col :span="6"><el-button type="primary" @click="login">登录</el-button></el-col>
-							<el-col :span="6"><el-checkbox label="免登录" name="rememberMe" v-model="user.rememberMe"/></el-col>
-						</el-row>
-					</el-form-item>
-				</el-form>
-			</el-main>
-		</el-container>
-	</div>
+	<div class="bg"><el-container>
+		<el-aside></el-aside>
+
+		<el-main>
+			<h1>欢迎使用 CRM 客户管理系统</h1>
+			<!-- 登录表单 -->
+			<el-form 
+				ref="loginForm"
+				:model="user"
+				label-width="auto"
+				style="max-width: 400px"
+				:rules="loginRules"
+			>
+				<el-form-item label="用户名" prop="loginAct">
+					<el-input v-model="user.loginAct"/>
+				</el-form-item>
+
+				<el-form-item label="密码" prop="loginPwd">
+					<el-input v-model="user.loginPwd" type="password"/>
+				</el-form-item>
+				
+				<el-form-item label=" ">
+					<el-row :gutter="10" justify="space-between">
+						<el-col :span="6">
+							<el-button type="primary" @click="login">登录</el-button>
+						</el-col>
+
+						<el-col :span="6">
+							<el-checkbox label="免登录" name="rememberMe" v-model="user.rememberMe"/>
+						</el-col>
+					</el-row>
+				</el-form-item>
+
+			</el-form>
+		</el-main>
+	</el-container></div>
 </template>
 
 <script setup>
@@ -36,7 +47,6 @@ import { useRouter } from 'vue-router'
 
 // 绑定登录数据
 const user = reactive({})
-
 // 定义表单规则
 const loginRules = reactive({
 	// 登录用户的校验规则
@@ -47,9 +57,9 @@ const loginRules = reactive({
 		{ min: 6, max: 16, message: '密码需要在 6 ~ 16 位之间', trigger: 'blur' }
 	]
 })
-
+// 登录表单
 const loginForm = ref()
-
+// 路由器
 const router = useRouter()
 
 

@@ -176,24 +176,36 @@
 </template>
 
 <script setup>
-import {computed, nextTick, onMounted, provide, reactive, ref, watch} from 'vue';
+import { computed, nextTick, onMounted, provide, ref, watch } from 'vue';
 import { doGet } from '../../http/httpRequestUtils';
 import { clearToken, getTokenKey, messageConfirm, messageTip } from '../../utils/utils';
 import { useRouter } from 'vue-router';
 
 /* == 数据 == */
 
+// 菜单是否折叠
 const menuFolded = ref(false)
+// 用于设置折叠动画
 const menuTransition = ref(true)
+
+// 下拉栏是否打开
 const dropboxVisiable = ref(false)
-const username = ref("")
-const exprieTime = ref(0)
+
+// 获取路由器
 const router = useRouter()
+// 是否启用路由显示，用于实现路由部分的刷新
 const isRouterAlive = ref(true)
+
+// 当前登录用户名
+const username = ref("")
+// 当前登录用户 id
 const loginId = ref(0)
+// 当前用户剩余过期时间
+const exprieTime = ref(0)
 
 /* == 计算属性 == */
 
+// 计算侧边宽度，用于折叠动画
 const asideWidth = computed(() => {
   return (menuFolded.value ? 64 : 200) + 'px'
 })
@@ -275,6 +287,7 @@ function forceLogout() {
 
 /* == 钩子函数 == */
 
+// 过期时间更新使用的定时器
 const expireTimer = ref(undefined)
 
 onMounted(() => {
@@ -294,12 +307,16 @@ provide('reload',  () => {
 	})
 })
 
+/**
+ * 对外提供获取当前登录 id 方法
+ */
 provide('getLoginId', () => {
 	return loginId.value
 })
 
 /* == 监视器 == */
 
+// 监视是否折叠
 // 延迟调整过度动画，保证展开没有动画，折叠存在动画
 watch(menuFolded, () => {
   setTimeout(() => {
@@ -307,6 +324,7 @@ watch(menuFolded, () => {
   }, 350)
 })
 
+// 监视过期时间
 watch(exprieTime, () => {
 	if (exprieTime.value <= 1000 * 60 * 5) {
 		console.log("准备续签");

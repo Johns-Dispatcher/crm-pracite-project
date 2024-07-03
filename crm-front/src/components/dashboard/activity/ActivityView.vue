@@ -2,13 +2,13 @@
 	<!-- 筛选数据表单 -->
 	<el-form 
 		:inline="true" 
-		:model="activityForm" 
+		:model="searchData" 
 		:rules="rules"
-		ref="activityFilterForm"
+		ref="searchForm"
 	>
 		<el-form-item label="负责人">
 			<el-select 
-				v-model="activityForm.ownerId" 
+				v-model="searchData.ownerId" 
 				placeholder="请选择负责人"
 				clearable
 				style="width: 150px;"
@@ -24,12 +24,12 @@
 		</el-form-item>
 
 		<el-form-item label="活动名称">
-			<el-input v-model="activityForm.name" placeholder="请输入活动名称" clearable/>
+			<el-input v-model="searchData.name" placeholder="请输入活动名称" clearable/>
 		</el-form-item>
 
 		<el-form-item label="活动时间">
 			<el-date-picker
-				v-model="activityForm.time"
+				v-model="searchData.time"
 				type="datetimerange"
 				start-placeholder="开始时间"
 				end-placeholder="结束时间"
@@ -41,12 +41,12 @@
 		</el-form-item>
 
 		 <el-form-item label="活动预算" prop="cost">
-			<el-input v-model="activityForm.cost" placeholder="请输入活动预算" clearable/>
+			<el-input v-model="searchData.cost" placeholder="请输入活动预算" clearable/>
 		</el-form-item>
 
 		<el-form-item label="创建时间">
 			<el-date-picker
-				v-model="activityForm.createTime"
+				v-model="searchData.createTime"
 				type="datetime"
 				placeholder="选择创建时间"
 				format="YYYY-MM-DD HH:mm:ss"
@@ -115,27 +115,44 @@ import { useRouter } from 'vue-router';
 
 /* == 数据 == */
 
-const activityForm = ref({})
+// 查询的活动信息列表
 const activities = ref([])
+// 查询总数
 const totalCount = ref(0)
+// 开始行
 const startRow = ref(1)
+// 负责人列表
 const ownerList = ref([])
+// 验证规则
 const rules = {
 	cost: [ { pattern: /^[0-9]+(.[0-9]{1,2})?$/, trigger: 'blur', message: '请输入两位小数' } ]
 }
-const activityFilterForm = ref()
+
+// 搜索表单
+const searchForm = ref()
+// 搜索数据
+const searchData = ref({})
+
+// 路由器
 const router = useRouter()
 
 /* == 函数 == */
 
+/**
+ * 翻页，修改页数后触发
+ */
 function changePage(currentPage) {
-	if (Object.keys(activityForm.value).length === 0) {
+	// 没有筛选数据就直接查
+	if (Object.keys(searchData.value).length === 0) {
 		queryActivies(currentPage)
 	} else {
 		onSearch(currentPage)
 	}
 }
 
+/**
+ * 查询当前页信息
+ */
 function queryActivies(currentPage) {
 	doGet('/api/activity/page/' + currentPage, {}).then(response => {
 		if (response.data.code === 200) {
@@ -143,29 +160,23 @@ function queryActivies(currentPage) {
 		}
 	})
 }
-
-function loadOwner() {
-	doGet('/api/activity/owner', {}).then(response => {
-		if (response.data.code === 200) {
-			ownerList.value = response.data.data
-		}
-	})
-}
-
+/**
+ * 进行搜索查询
+ */
 function onSearch(currentPage) {
-	activityFilterForm.value.validate(isValidated => {
+	searchForm.value.validate(isValidated => {
 		if (isValidated) {
-			console.log(activityForm.value);
-			if (Object.keys(activityForm.value).length === 0) {
+			console.log(searchData.value);
+			if (Object.keys(searchData.value).length === 0) {
 				messageTip("您还没有选择筛选条件", "info")
 			} else { 
 				doPost("/api/activity/search", {
-					ownerId: activityForm.value.ownerId ? activityForm.value.ownerId : null,
-					name: activityForm.value.name ? activityForm.value.name : null,
-					startTime: activityForm.value.time ? activityForm.value.time[0] : null,
-					endTime: activityForm.value.time ? activityForm.value.time[1] : null,
-					cost: activityForm.value.cost ? activityForm.value.cost : null,
-					createTime: activityForm.value.createTime ? activityForm.value.createTime : null,
+					ownerId: searchData.value.ownerId ? searchData.value.ownerId : null,
+					name: searchData.value.name ? searchData.value.name : null,
+					startTime: searchData.value.time ? searchData.value.time[0] : null,
+					endTime: searchData.value.time ? searchData.value.time[1] : null,
+					cost: searchData.value.cost ? searchData.value.cost : null,
+					createTime: searchData.value.createTime ? searchData.value.createTime : null,
 					current: currentPage,
 				}).then(response => {
 					if (response.data.code === 200) {
@@ -176,22 +187,45 @@ function onSearch(currentPage) {
 		}
 	})
 }
-
+/**
+ * 重置搜索表单
+ */
+function onReset() {
+	searchData.value = {}
+	queryActivies(1)
+}
+/**
+ * 更新活动信息列表
+ * @param data 响应的数据结果
+ */
 function updateActivityList(data) {
 	activities.value = data.list
 	totalCount.value = data.total
 	startRow.value = data.startRow
 }
 
-function onReset() {
-	activityForm.value = {}
-	queryActivies(1)
+
+
+/**
+ * 获取负责人信息
+ */
+function loadOwner() {
+	doGet('/api/activity/owner', {}).then(response => {
+		if (response.data.code === 200) {
+			ownerList.value = response.data.data
+		}
+	})
 }
 
+/**
+ * 跳转到新增活动页面
+ */
 function addActivity() {
 	router.push('/dashboard/activity/add')
 }
-
+/**
+ * 跳转至修改活动页面
+ */
 function editActivity(id) {
 	router.push('/dashboard/activity/edit/' + id)
 }
