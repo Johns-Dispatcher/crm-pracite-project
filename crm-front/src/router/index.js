@@ -5,6 +5,8 @@ import DashboardView from '../components/dashboard/DashboardView.vue'
 import UserView from '../components/dashboard/user/UserView.vue'
 import UserInfoView from '../components/dashboard/user/UserInfoView.vue'
 import ActivityView from '../components/dashboard/activity/ActivityView.vue'
+import ActivityRecordView from '../components/dashboard/activity/ActivityRecordView.vue'
+
 
 // 创建路由对象
 export default createRouter({
@@ -33,6 +35,14 @@ export default createRouter({
 				{
 					path: "activity",
 					component: ActivityView,
+				},
+				{
+					path: "activity/add",
+					component: ActivityRecordView,
+				},
+				{
+					path: "activity/edit/:id",
+					component: ActivityRecordView,
 				}
 			]
 		},
