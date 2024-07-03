@@ -27,7 +27,8 @@ public enum HttpResultCode {
     TOKEN_VERIFY_FAILED(903, "Token 验证失败，可能是 Token 非法或者已经超时"),
     DATA_ACCESS_EXCEPTION(500, "数据库操作失败"),
     USER_SERVICE_EXCEPTION(500, "用户业务操作失败"),
-    ACTIVITY_SERVICE_EXCEPTION(500, "活动业务操作失败")
+    ACTIVITY_SERVICE_EXCEPTION(500, "活动业务操作失败"),
+    ACTIVITY_REMARK_SERVICE_EXCEPTION(500, "活动备注业务操作失败")
     ;
 
     private final Integer code;
