@@ -1,17 +1,16 @@
 <template>
 	<el-descriptions
-		title="用户信息详细"
-		:column="1"
-		width="50"
+		title="用户详细信息"
+		:column="3"
 		border
 	>
 		<template #extra>
-			<el-button type="danger" @click="goBack">返回</el-button>
+			<el-button type="danger" @click="router.back">返回</el-button>
 		</template>
 
-		<el-descriptions-item width="5px">
+		<el-descriptions-item :width="150" :span="3">
 			<template #label>
-				<el-icon><Document /></el-icon> 用户ID
+				<el-icon><Document /></el-icon> 用户 ID
 			</template>
 			{{ id }}
 		</el-descriptions-item>
@@ -23,7 +22,7 @@
 			{{ name }}
 		</el-descriptions-item>
 
-		<el-descriptions-item>
+		<el-descriptions-item align="center" :span="2">
 			<template #label>
 				<el-icon><Avatar /></el-icon> 账户名称
 			</template>
@@ -37,35 +36,35 @@
 			{{ phone }}
 		</el-descriptions-item>
 
-		<el-descriptions-item>
+		<el-descriptions-item align="center" :span="2">
 			<template #label>
 				<el-icon><Message /></el-icon> 邮箱
 			</template>
 			{{ email }}
 		</el-descriptions-item>
 
-		<el-descriptions-item >
+		<el-descriptions-item :span="3">
 			<template #label>
 				<el-icon><InfoFilled /></el-icon> 账户已启用
 			</template>
 			{{ accountEnabled ? '是' : '否' }}
 		</el-descriptions-item>
 
-		<el-descriptions-item>
+		<el-descriptions-item :span="3">
 			<template #label>
 				<el-icon><InfoFilled /></el-icon> 账户未过期
 			</template>
 			{{ accountNoExpired ? '是' : '否' }}
 		</el-descriptions-item>
 		
-		<el-descriptions-item>
+		<el-descriptions-item :span="3">
 			<template #label>
 				<el-icon><InfoFilled /></el-icon> 账户未锁定
 			</template>
 			{{ accountNoLocked ? '是' : '否' }}
 		</el-descriptions-item>
 		
-		<el-descriptions-item>
+		<el-descriptions-item :span="3">
 			<template #label>
 				<el-icon><InfoFilled /></el-icon> 凭证未过期
 			</template>
@@ -79,7 +78,7 @@
 			{{ createBy }}
 		</el-descriptions-item>
 
-		<el-descriptions-item label-align="left" align="center">
+		<el-descriptions-item align="center" :span="2">
 			<template #label>
 				<el-icon><Timer /></el-icon> 创建时间
 			</template>
@@ -93,7 +92,7 @@
 			{{ editBy }}
 		</el-descriptions-item>
 
-		<el-descriptions-item label-align="left" align="center">
+		<el-descriptions-item align="center" :span="2">
 			<template #label>
 				<el-icon><Timer /></el-icon> 修改时间
 			</template>
@@ -114,7 +113,6 @@
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { doGet } from '../../../http/httpRequestUtils';
-
 /* == 数据 == */
 
 // 路由器
@@ -175,13 +173,6 @@ function getUser(loginAct) {
 			credentialsNoExpired.value = response.data.data.credentialsNoExpired
 		}
 	})
-}
-
-/**
- * 返回上一级
- */
-function goBack() {
-	router.back()
 }
 
 /* == 钩子函数 == */

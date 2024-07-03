@@ -91,7 +91,7 @@
 
 		<el-table-column label="操作">
 			<template #default="scope">
-				<el-button type="primary">详情</el-button>
+				<el-button type="primary" @click="viewActivity(scope.row.id)">详情</el-button>
 				<el-button type="success" @click="editActivity(scope.row.id)">修改</el-button>
 				<el-button type="danger">删除</el-button>
 			</template>
@@ -140,6 +140,7 @@ const router = useRouter()
 
 /**
  * 翻页，修改页数后触发
+ * @param {int} currentPage 跳转页码
  */
 function changePage(currentPage) {
 	// 没有筛选数据就直接查
@@ -152,6 +153,7 @@ function changePage(currentPage) {
 
 /**
  * 查询当前页信息
+ * @param {int} currentPage 跳转页码
  */
 function queryActivies(currentPage) {
 	doGet('/api/activity/page/' + currentPage, {}).then(response => {
@@ -162,6 +164,7 @@ function queryActivies(currentPage) {
 }
 /**
  * 进行搜索查询
+ * @param {int} currentPage 跳转页码
  */
 function onSearch(currentPage) {
 	searchForm.value.validate(isValidated => {
@@ -228,6 +231,10 @@ function addActivity() {
  */
 function editActivity(id) {
 	router.push('/dashboard/activity/edit/' + id)
+}
+
+function viewActivity(id) {
+	router.push('/dashboard/activity/view/' + id)
 }
 
 /* == 钩子函数 == */
