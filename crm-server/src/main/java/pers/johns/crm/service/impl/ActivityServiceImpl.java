@@ -144,6 +144,8 @@ public class ActivityServiceImpl implements ActivityService {
     private ViewActivity convertToViewActivity(Object item) {
         Activity activity = (Activity) item;
         String owner = activity.getOwnerId() == null ? null : userMapper.selectNameById(activity.getOwnerId());
+        String creator = activity.getCreateBy() == null ? null : userMapper.selectNameById(activity.getCreateBy());
+        String editor = activity.getEditBy() == null ? null : userMapper.selectNameById(activity.getEditBy());
         return ViewActivity.builder()
                 .id(activity.getId())
                 .name(activity.getName())
@@ -154,6 +156,9 @@ public class ActivityServiceImpl implements ActivityService {
                 .endTime(activity.getEndTime())
                 .cost(activity.getCost())
                 .createTime(activity.getCreateTime())
+                .creator(creator)
+                .editTime(activity.getEditTime())
+                .editor(editor)
                 .description(activity.getDescription())
                 .build();
     }
