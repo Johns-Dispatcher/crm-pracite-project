@@ -71,5 +71,16 @@ public interface UserService extends UserDetailsService {
      */
     Boolean deleteUser(Integer id);
 
+    /**
+     * 批量删除用户
+     * @param ids 带有 ID 信息的集合
+     * @return 是否删除成功
+     */
     Boolean deleteUsersByIds(List<Integer> ids);
+
+    /**
+     * 获取用户名以及 id
+     * @return 含有用户名和 id 的 {@link ViewUser} 列表
+     */
+    List<ViewUser> getUserWithName();
 }

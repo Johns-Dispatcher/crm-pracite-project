@@ -7,6 +7,7 @@ import pers.johns.crm.model.po.User;
 import pers.johns.crm.query.DataFilterQuery;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * InterfaceName : UserMapper
@@ -123,4 +124,10 @@ public interface UserMapper {
     Integer deleteById(Integer id);
 
     Integer deleteUses(List<Integer> ids);
+
+    @Select("""
+            select id, name
+            from t_user
+            """)
+    List<Map<String, Object>> selectUserWithName();
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.johns.crm.constant.Constants;
 import pers.johns.crm.exception.UserException;
+import pers.johns.crm.manager.RedisManager;
 import pers.johns.crm.mapper.UserMapper;
 import pers.johns.crm.model.po.User;
 import pers.johns.crm.model.vo.SecurityUser;
@@ -19,6 +20,7 @@ import pers.johns.crm.model.vo.ViewUser;
 import pers.johns.crm.query.DataFilterQuery;
 import pers.johns.crm.service.RedisService;
 import pers.johns.crm.service.UserService;
+import pers.johns.crm.utils.CacheUtils;
 import pers.johns.crm.utils.JsonUtils;
 import pers.johns.crm.utils.JwtUtils;
 
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
+    private final RedisManager redisManager;
 
     @Override
     public UserDetails loadUserByUsername(String loginAct)
@@ -96,15 +99,15 @@ public class UserServiceImpl implements UserService {
         );
         // 对将查询出的 User 转换为视图用户对象
         List<Object> viewUsers = userPageInfo.getList().stream().map(user -> {
-                User u = (User) user;
-                return ViewUser.builder()
-                        .id(u.getId())
-                        .loginAct(u.getLoginAct())
-                        .name(u.getName())
-                        .phone(u.getPhone())
-                        .email(u.getEmail())
-                        .createTime(u.getCreateTime())
-                        .build();
+            User u = (User) user;
+            return ViewUser.builder()
+                    .id(u.getId())
+                    .loginAct(u.getLoginAct())
+                    .name(u.getName())
+                    .phone(u.getPhone())
+                    .email(u.getEmail())
+                    .createTime(u.getCreateTime())
+                    .build();
         }).collect(Collectors.toList());
         // 将视图用户对象列表放回分页信息对象中
         userPageInfo.setList(viewUsers);
@@ -214,5 +217,21 @@ public class UserServiceImpl implements UserService {
         if (count != ids.size()) throw new UserException("批量删除失败");
 
         return true;
+    }
+
+    @Override
+    public List<ViewUser> getUserWithName() {
+        return CacheUtils.getCacheData(
+                () -> redisManager.getList(Constants.USER_NAME_REDIS_KEY),
+                () -> userMapper.selectUserWithName()
+                        .stream()
+                        .map(item -> ViewUser
+                                .builder()
+                                .id(((Integer) item.get("id")))
+                                .name(((String) item.get("name")))
+                                .build()
+                        ).toList(),
+                value -> redisManager.saveValue(Constants.USER_NAME_REDIS_KEY, value)
+        );
     }
 }
