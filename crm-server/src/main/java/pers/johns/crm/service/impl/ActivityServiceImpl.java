@@ -116,7 +116,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public Boolean editActivity(ViewActivity viewActivity) {
-        Integer count = activityMapper.insertActivity(Activity
+        Integer count = activityMapper.updateActivity(Activity
                 .builder()
                 .id(viewActivity.getId())
                 .ownerId(viewActivity.getOwnerId())
