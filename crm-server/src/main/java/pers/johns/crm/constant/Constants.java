@@ -88,4 +88,6 @@ public class Constants {
      */
     public static final String ACTIVITY_OWNER_REDIS_KEY = "crm:activity:owners";
 
+    public static final String USER_NAME_REDIS_KEY = "crm:user:names";
+
 }
