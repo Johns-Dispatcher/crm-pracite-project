@@ -98,30 +98,55 @@ public class UserController {
         return HttpResult.OK("添加成功", result);
     }
 
+    /**
+     * 修改用户信息
+     * @param viewUser 接收前端传递信息
+     * @param authentication 获取当前登录用户信息
+     * @return 含有修改结果的响应结果信息
+     */
     @PutMapping("")
     public HttpResult editUser(ViewUser viewUser, Authentication authentication) {
         SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
-        // 为用户增加创建者信息
-        viewUser.setCreateBy(securityUser.getId());
+        // 为用户增加修改者信息
         viewUser.setEditBy(securityUser.getId());
+        // undefined 视为未传入，置为空值
         viewUser.setLoginPwd("undefined".equals(viewUser.getLoginPwd()) ? null : viewUser.getLoginPwd());
 
-        log.info(viewUser.toString());
         Boolean result = userService.editUser(viewUser);
 
         return HttpResult.OK("修改成功", result);
     }
 
+    /**
+     * 根据 id 删除对应用户
+     * @param id 用户 id
+     * @return 含有删除结果的响应结果信息
+     */
     @DeleteMapping("/{id}")
     public HttpResult deleteUser(@PathVariable("id") Integer id) {
         Boolean result = userService.deleteUser(id);
         return HttpResult.OK("删除成功", result);
     }
 
+    /**
+     * 批量删除用户信息
+     * @param ids 要删除的 id 列表，要求前端按照 - 进行分割字符
+     * @return 含有删除结果的响应信息
+     */
     @DeleteMapping("/bulk/{ids}")
     public HttpResult bulkDeleteUsers(@PathVariable("ids") String ids) {
         List<Integer> idList = Arrays.stream(ids.split("-")).map(Integer::parseInt).toList();
         Boolean result = userService.deleteUsersByIds(idList);
         return HttpResult.OK("批量删除成功", result);
+    }
+
+    /**
+     * 获取目前的所有用户名以及 id 信息
+     * @return 含有用户名信息的列表
+     */
+    @GetMapping("/name")
+    public HttpResult getUserWithName() {
+        List<ViewUser> userList = userService.getUserWithName();
+        return HttpResult.OK("获取用户名信息成功", userList);
     }
 }
