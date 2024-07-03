@@ -44,7 +44,7 @@ public class ActivityServiceImpl implements ActivityService {
     public PageInfo<Object> getActivitiesByPage(Integer currentPage) {
         PageHelper.startPage(currentPage, Constants.DEFAULT_PAGE_SIZE);
 
-        PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectAll(DataFilterQuery.builder().build()));
+        PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectAll(new ActivitySearchQuery()));
 
         List<Object> viewActivities = pageInfo.getList()
                 .stream()
@@ -73,7 +73,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public PageInfo<Object> searchActivitiesByPage(ActivitySearchQuery activitySearchQuery) {
         PageHelper.startPage(activitySearchQuery.getCurrent(), Constants.DEFAULT_PAGE_SIZE);
-        PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectActivitiesOnSearchCondition(activitySearchQuery));
+        PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectAll(activitySearchQuery));
 
         List<Object> list = pageInfo.getList().stream()
                 .map(this::convertToViewActivity)
