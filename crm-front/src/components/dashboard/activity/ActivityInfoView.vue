@@ -105,6 +105,39 @@
 			<el-button type="danger" plain @click="router.back">返回</el-button>
 		</el-form-item>
 	</el-form>
+
+	<el-table 
+		:data="activityRemarks" 
+		style="width: 100%" 
+		stripe
+	>
+		<el-table-column type="index" width="50px" :index="startRow"/>
+
+		<el-table-column prop="noteContent" width="150px" label="备注内容" show-overflow-tooltip />
+		
+		<el-table-column prop="createTime" label="备注时间" show-overflow-tooltip />
+
+		<el-table-column prop="creator" width="150px" label="备注人" show-overflow-tooltip />
+
+		<el-table-column prop="editTime" label="编辑时间" show-overflow-tooltip />
+
+		<el-table-column prop="editor" label="编辑人" show-overflow-tooltip />
+
+		<el-table-column label="操作">
+			<template #default="scope">
+				<el-button type="success">修改</el-button>
+				<el-button type="danger">删除</el-button>
+			</template>
+		</el-table-column>
+	</el-table>
+	<br/>
+	<!-- 分页 -->
+	<el-pagination
+		layout="prev, pager, next"
+		:page-size="2"
+		:total="remarkTotal"
+		@current-change="loadActivityRemarks"
+	/>
 </template>
 
 <script setup>
@@ -129,11 +162,23 @@ const activityRemarkRules = reactive({
 	]
 })
 
+const activityRemarks = ref([])
+const remarkTotal = ref(0)
+const startRow = ref(1)
+
 function loadActivity(id) {
 	doGet("/api/activity/" + id, {}).then(response => {
 		if (response.data.code === 200) {
 			activity.value = response.data.data
 		}
+	})
+}
+
+function loadActivityRemarks(current) {
+	doGet("/api/activity/remark/" + id.value + "/" + current, {}).then(response => {
+		activityRemarks.value = response.data.data.list
+		remarkTotal.value = response.data.data.total
+		startRow.value = response.data.data.startRow
 	})
 }
 
@@ -147,6 +192,7 @@ function addActivityRemark() {
 				if (response.data.code) {
 					messageTip("新增备注成功", "success")
 					activityRemarkData.value.noteContent = ""
+					loadActivityRemarks(1)
 				} else {
 					messageTip("新增备注失败，请稍后尝试", "error")
 				}
@@ -155,9 +201,11 @@ function addActivityRemark() {
 	})
 }
 
+
 onMounted(() => {
 	id.value = route.params.id
 	loadActivity(id.value)
+	loadActivityRemarks(1)
 })
 
 </script>
