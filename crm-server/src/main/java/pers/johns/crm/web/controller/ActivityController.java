@@ -11,6 +11,9 @@ import pers.johns.crm.model.vo.ViewActivity;
 import pers.johns.crm.query.ActivitySearchQuery;
 import pers.johns.crm.service.ActivityService;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * ClassName    : ActivityController
  * <br/>
@@ -100,5 +103,16 @@ public class ActivityController {
         viewActivity.setEditBy(securityUser.getId());
 
         return HttpResult.OK("修改活动成功", activityService.editActivity(viewActivity));
+    }
+
+    @DeleteMapping("/{id}")
+    public HttpResult deleteActivity(@PathVariable("id") Integer id) {
+        return HttpResult.OK("删除活动及其备注成功", activityService.deleteActivity(id));
+    }
+
+    @DeleteMapping("/bulk/{ids}")
+    public HttpResult deleteBulkActivity(@PathVariable("ids") String ids) {
+        List<Integer> idList = Arrays.stream(ids.split("-")).map(Integer::parseInt).toList();
+        return HttpResult.OK("批量删除活动及其备注成功", activityService.deleteBulkActivity(idList));
     }
 }
