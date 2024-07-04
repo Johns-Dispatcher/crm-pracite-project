@@ -63,7 +63,7 @@
 	</el-form>
 
 	<el-button type="primary" @click="addActivity">录入市场活动信息</el-button>
-	<el-button type="danger">批量删除市场活动信息</el-button>
+	<el-button type="danger" @click="deleteBulkActivity">批量删除市场活动信息</el-button>
 
 	<br/><br/>
 
@@ -72,6 +72,7 @@
 		:data="activities" 
 		style="width: 100%" 
 		stripe
+		@selection-change="selectChanged"
 	>
 		<el-table-column type="selection" width="50px" />
 
@@ -93,7 +94,7 @@
 			<template #default="scope">
 				<el-button type="primary" @click="viewActivity(scope.row.id)">详情</el-button>
 				<el-button type="success" @click="editActivity(scope.row.id)">修改</el-button>
-				<el-button type="danger">删除</el-button>
+				<el-button type="danger" @click="deleteActivity(scope.row.id)">删除</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -108,9 +109,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { doGet, doPost } from '../../../http/httpRequestUtils';
-import { messageTip } from '../../../utils/utils';
+import { onMounted, ref, inject } from 'vue';
+import { doDelete, doGet, doPost } from '../../../http/httpRequestUtils';
+import { messageConfirm, messageTip } from '../../../utils/utils';
 import { useRouter } from 'vue-router';
 
 /* == 数据 == */
@@ -136,7 +137,14 @@ const searchData = ref({})
 // 路由器
 const router = useRouter()
 
+// 存储选择 id
+let selectedIds = []
+
 /* == 函数 == */
+
+// 重载函数
+const reload = inject('reload')
+
 
 /**
  * 翻页，修改页数后触发
@@ -207,8 +215,6 @@ function updateActivityList(data) {
 	startRow.value = data.startRow
 }
 
-
-
 /**
  * 获取负责人信息
  */
@@ -228,13 +234,78 @@ function addActivity() {
 }
 /**
  * 跳转至修改活动页面
+ * @param id 活动 id
  */
 function editActivity(id) {
 	router.push('/dashboard/activity/edit/' + id)
 }
-
+/**
+ * 跳转至活动详情页面
+ * @param id 活动 id
+ */
 function viewActivity(id) {
 	router.push('/dashboard/activity/view/' + id)
+}
+/**
+ * 删除指定活动
+ * @param id 活动 id
+ */
+function deleteActivity(id) {
+	messageConfirm(
+		"您确认要删除该活动及其所属全部备注信息吗？",
+		"删除确认",
+		"warning",
+		() => {
+			doDelete("/api/activity/" + id, {}).then(response => {
+				if (response.data.code === 200) {
+					messageTip("删除成功", "success")
+					reload()
+				} else {
+					messageTip("删除失败: " + response.data.msg, "error")
+				}
+			})
+		},
+		() => {
+			messageTip("取消删除", "info")
+		}
+	)
+}
+/**
+ * 批量删除活动
+ */
+function deleteBulkActivity() {
+	if (selectedIds.length === 0) {
+		messageTip("您还没有选择数据", "warning")
+	} else {
+		messageConfirm(
+			"您确定要删除目前已选的活动信息及其带有的备注吗？",
+			"批量删除确认",
+			"warning",
+			() => {
+				doDelete("/api/activity/bulk/" + selectedIds.join("-"), {}).then(response => {
+					if (response.data.code === 200) { 
+						messageTip("批量删除成功", "success")
+						reload()
+					} else {
+						messageTip("批量删除失败: " + response.data.msg, "error")
+					}
+				})
+			},
+			() => { 
+				messageTip("取消删除", "info")
+			}
+		)
+	}
+}
+/**
+ * 更新选择 id 列表
+ * @param selectedItems 表格选择项
+ */
+function selectChanged(selectedItems) {
+	selectedIds = []
+	selectedItems.forEach(selceted => {
+		selectedIds.push(selceted.id)
+	});
 }
 
 /* == 钩子函数 == */
