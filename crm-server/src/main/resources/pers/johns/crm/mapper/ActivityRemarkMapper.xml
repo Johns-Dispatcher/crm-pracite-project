@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.johns.crm.mapper.ActivityRemarkMapper">
+    <select id="selectByActivityId" resultMap="ActivityRemarkBaseMap">
+        select
+            id, activity_id, note_content,
+            create_time, create_by,
+            edit_time, edit_by,
+            deleted
+        from t_activity_remark
+        <where>
+            and activity_id = #{activityId}
+            and deleted != 1
+            <if test="filterSQL != null and filterSQL != ''">
+                and ${filterSQL}
+            </if>
+        </where>
+    </select>
+    <update id="updateActivityRemark">
+        update t_activity_remark
+        <set>
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="noteContent != null and noteContent != ''">note_content = #{noteContent},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteBulkRemarks">
+        delete from t_activity_remark
+        where activity_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="countActivitiesRemarks">
+        select count(*)
+        from t_activity_remark
+        where activity_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

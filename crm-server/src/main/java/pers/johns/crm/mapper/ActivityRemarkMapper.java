@@ -1,7 +1,9 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.ActivityRemark;
+import pers.johns.crm.query.ActivityRemarkQuery;
 
 import java.util.List;
 
@@ -50,17 +52,8 @@ public interface ActivityRemarkMapper {
     @ResultMap("ActivityRemarkBaseMap")
     List<ActivityRemark> selectAll();
 
-    @Select("""
-            select
-                id, activity_id, note_content,
-                create_time, create_by,
-                edit_time, edit_by,
-                deleted
-            from t_activity_remark
-            where activity_id = #{activityId}
-            """)
-    @ResultMap("ActivityRemarkBaseMap")
-    List<ActivityRemark> selectByActivityId(Integer activityId);
+    @DataScope(tableField = "create_by")
+    List<ActivityRemark> selectByActivityId(ActivityRemarkQuery activityRemarkQuery);
 
     @Insert("""
             insert into t_activity_remark (
@@ -77,19 +70,19 @@ public interface ActivityRemarkMapper {
             """)
     Integer insertActivityRemark(ActivityRemark activityRemark);
 
-    @Update("""
-            update t_activity_remark
-            set
-                activity_id = #{activityId}, note_content = #{noteContent},
-                create_time = #{createTime}, create_by = #{createBy},
-                edit_time = #{editTime}, edit_by = #{editBy},
-                deleted = #{deleted}
-            where id = #{id}
-            """)
     Integer updateActivityRemark(ActivityRemark activityRemark);
 
     @Delete("""
             delete from t_activity_remark where id = #{id}
             """)
     Integer deleteActivityRemarkById(Integer id);
+
+    @Delete("""
+            delete from t_activity_remark where activity_id = #{id}
+            """)
+    Integer deleteActivityRemarkByActivityId(Integer id);
+
+    Integer deleteBulkRemarks(List<Integer> ids);
+
+    Integer countActivitiesRemarks(List<Integer> ids);
 }
