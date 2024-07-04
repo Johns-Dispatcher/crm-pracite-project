@@ -1,7 +1,6 @@
 package pers.johns.crm.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import pers.johns.crm.service.RedisService;
@@ -49,7 +48,6 @@ public class RedisServiceImpl implements RedisService {
     public void setExpireTime(String key, long expireTime) {
         redisTemplate.expire(key, expireTime, TimeUnit.MILLISECONDS);
     }
-
     @Override
     public Long getExpireTime(String key) {
         return redisTemplate.getExpire(key, TimeUnit.MILLISECONDS);
