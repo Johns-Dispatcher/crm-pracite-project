@@ -38,4 +38,8 @@ public interface ActivityService {
     ViewActivity getActivity(Integer id);
 
     Boolean editActivity(ViewActivity viewActivity);
+
+    Boolean deleteActivity(Integer id);
+
+    Boolean deleteBulkActivity(List<Integer> ids);
 }

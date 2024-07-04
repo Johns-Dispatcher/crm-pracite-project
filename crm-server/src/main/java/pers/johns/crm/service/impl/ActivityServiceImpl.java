@@ -5,10 +5,13 @@ import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pers.johns.crm.constant.Constants;
 import pers.johns.crm.exception.ActivityException;
+import pers.johns.crm.exception.ActivityRemarkException;
 import pers.johns.crm.manager.RedisManager;
 import pers.johns.crm.mapper.ActivityMapper;
+import pers.johns.crm.mapper.ActivityRemarkMapper;
 import pers.johns.crm.mapper.UserMapper;
 import pers.johns.crm.model.po.Activity;
 import pers.johns.crm.model.vo.ViewActivity;
@@ -38,6 +41,7 @@ import java.util.stream.Collectors;
 public class ActivityServiceImpl implements ActivityService {
 
     private final ActivityMapper activityMapper;
+    private final ActivityRemarkMapper activityRemarkMapper;
     private final UserMapper userMapper;
     private final RedisManager redisManager;
 
@@ -86,6 +90,13 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public ViewActivity getActivity(Integer id) {
+        Activity activity = activityMapper.selectById(id);
+        return convertToViewActivity(activity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean addActivity(ViewActivity viewActivity) {
         Integer count = activityMapper.insertActivity(Activity
                 .builder()
@@ -109,12 +120,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public ViewActivity getActivity(Integer id) {
-        Activity activity = activityMapper.selectById(id);
-        return convertToViewActivity(activity);
-    }
-
-    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean editActivity(ViewActivity viewActivity) {
         Integer count = activityMapper.updateActivity(Activity
                 .builder()
@@ -134,6 +140,41 @@ public class ActivityServiceImpl implements ActivityService {
         CacheUtils.removeCacheData(redisManager::deleteValue, Constants.ACTIVITY_OWNER_REDIS_KEY);
 
         return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteActivity(Integer id) {
+        ArrayList<Integer> ids = new ArrayList<>();
+        ids.add(id);
+
+        Integer remarkCount = activityRemarkMapper.countActivitiesRemarks(ids);
+
+        Integer deleteRemarkCount = activityRemarkMapper.deleteActivityRemarkByActivityId(id);
+
+        if (!Objects.equals(remarkCount, deleteRemarkCount)) throw new ActivityRemarkException("删除活动备注失败");
+
+        Integer count = activityMapper.deleteActivityById(id);
+
+        if (count != 1) throw new ActivityException("删除活动失败");
+
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteBulkActivity(List<Integer> ids) {
+        Integer remarkCount = activityRemarkMapper.countActivitiesRemarks(ids);
+
+        Integer deleteRemarkCount = activityRemarkMapper.deleteBulkRemarks(ids);
+
+        if (!Objects.equals(remarkCount, deleteRemarkCount)) throw new ActivityRemarkException("批量删除活动备注失败");
+
+        Integer count = activityMapper.deleteBulkActivities(ids);
+
+        if (count != ids.size()) throw new ActivityException("批量删除活动失败");
+
+        return true;
     }
 
     /**
