@@ -1,11 +1,9 @@
 package pers.johns.crm.web.controller;
 
+import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.SecurityUser;
 import pers.johns.crm.model.vo.ViewActivityRemark;
@@ -37,5 +35,27 @@ public class ActivityRemarkController {
         viewActivityRemark.setEditBy(securityUser.getId());
 
         return HttpResult.OK("添加活动备注成功", activityRemarkService.addActivityRemark(viewActivityRemark));
+    }
+    @GetMapping("/{id}/{page}")
+    public HttpResult getActivityRemark(
+            @PathVariable("id") Integer id,
+            @PathVariable("page") Integer page
+    ) {
+        PageInfo<Object> pageInfo = activityRemarkService.getActivityRemarksByPage(id, page);
+
+        return HttpResult.OK("查询备注成功", pageInfo);
+    }
+
+    @PutMapping("/")
+    public HttpResult editActivityRemark(@RequestBody ViewActivityRemark viewActivityRemark, Authentication authentication) {
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        viewActivityRemark.setEditBy(securityUser.getId());
+
+        return HttpResult.OK("修改活动备注成功", activityRemarkService.editActivityRemark(viewActivityRemark));
+    }
+
+    @DeleteMapping("/{id}")
+    public HttpResult deleteActivityRemark(@PathVariable("id") Integer id) {
+        return HttpResult.OK("删除活动备注成功", activityRemarkService.deleteActivityRemark(id));
     }
 }
