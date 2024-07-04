@@ -1,5 +1,6 @@
 package pers.johns.crm.service;
 
+import com.github.pagehelper.PageInfo;
 import pers.johns.crm.model.vo.ViewActivityRemark;
 
 /**
@@ -15,4 +16,10 @@ import pers.johns.crm.model.vo.ViewActivityRemark;
  */
 public interface ActivityRemarkService {
     Boolean addActivityRemark(ViewActivityRemark viewActivityRemark);
+
+    PageInfo<Object> getActivityRemarksByPage(Integer id, Integer page);
+
+    Boolean editActivityRemark(ViewActivityRemark viewActivityRemark);
+
+    Boolean deleteActivityRemark(Integer id);
 }
