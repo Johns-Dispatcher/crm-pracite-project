@@ -43,11 +43,7 @@ public interface ActivityMapper {
             @Result(column = "create_time", property = "createTime"),
             @Result(column = "create_by", property = "createBy"),
             @Result(column = "edit_time", property = "editTime"),
-            @Result(column = "edit_by", property = "editBy"),
-            @Result(column = "id", property = "activityRemarks", one = @One(
-                    select = "pers.johns.crm.mapper.ActivityRemarkMapper.selectByActivityId",
-                    fetchType = FetchType.LAZY
-            ))
+            @Result(column = "edit_by", property = "editBy")
     })
     Activity selectById(Integer id);
 
@@ -89,4 +85,6 @@ public interface ActivityMapper {
             ON ta.owner_id = tu.id
             """)
     List<Map<String, Object>> selectOwnerHavingActivity();
+
+    Integer deleteBulkActivities(List<Integer> ids);
 }

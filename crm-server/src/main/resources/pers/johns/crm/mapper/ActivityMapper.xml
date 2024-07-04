@@ -50,4 +50,11 @@
         </set>
         where id = #{id}
     </update>
+    <delete id="deleteBulkActivities">
+        delete from t_activity
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
