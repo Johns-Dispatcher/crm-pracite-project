@@ -73,6 +73,11 @@ public class Constants {
      * 默认的分页参数
      */
     public static final Integer DEFAULT_PAGE_SIZE = 10;
+    /**
+     * 默认的备注分页参数
+     */
+    public static final Integer DEFAULT_REMARK_PAGE_SIZE = 2;
+
 
     /* == 角色相关 == */
 
@@ -88,6 +93,9 @@ public class Constants {
      */
     public static final String ACTIVITY_OWNER_REDIS_KEY = "crm:activity:owners";
 
+    /**
+     * 用户名缓存存储字段
+     */
     public static final String USER_NAME_REDIS_KEY = "crm:user:names";
 
 }
