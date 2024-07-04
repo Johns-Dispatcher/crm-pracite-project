@@ -7,6 +7,7 @@ import UserInfoView from '../components/dashboard/user/UserInfoView.vue'
 import ActivityView from '../components/dashboard/activity/ActivityView.vue'
 import ActivityRecordView from '../components/dashboard/activity/ActivityRecordView.vue'
 import ActivityInfoView from '../components/dashboard/activity/ActivityInfoView.vue'
+import ClueView from '../components/dashboard/clue/ClueView.vue'
 
 
 // 创建路由对象
@@ -48,6 +49,10 @@ export default createRouter({
 				{
 					path: "activity/view/:id",
 					component: ActivityInfoView,
+				},
+				{
+					path: "clue",
+					component: ClueView,
 				}
 			]
 		},

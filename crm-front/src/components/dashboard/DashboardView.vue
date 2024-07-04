@@ -26,10 +26,6 @@
 					<el-menu-item index="/dashboard/activity">
 						<el-icon><Suitcase/></el-icon>市场活动
 					</el-menu-item>
-					<el-menu-item index="1-2">
-						<el-icon><TrendCharts/></el-icon>市场统计
-					</el-menu-item>
-
 				</el-sub-menu>
 
 				<!-- 菜单项 线索管理 -->
@@ -40,11 +36,8 @@
 						<span>线索管理</span>
 					</template>
 
-					<el-menu-item index="2-1">
+					<el-menu-item index="/dashboard/clue">
 						<el-icon><DataBoard/></el-icon>线索管理
-					</el-menu-item>
-					<el-menu-item index="2-2">
-						<el-icon><DataAnalysis/></el-icon>线索统计
 					</el-menu-item>
 
 				</el-sub-menu>
