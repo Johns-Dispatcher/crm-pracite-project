@@ -88,6 +88,11 @@ public interface UserMapper {
     Integer countAll();
 
     @Select("""
+            select count(*) from t_user where id = #{id}
+            """)
+    Integer countById(Integer id);
+
+    @Select("""
             select count(*) from t_user
             where login_act = #{loginAct}
             """)
