@@ -2,13 +2,14 @@ package pers.johns.crm.web.controller;
 
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.query.ClueQuery;
 import pers.johns.crm.service.ClueService;
+
+import java.io.IOException;
 
 /**
  * ClassName    : ClueController
@@ -24,6 +25,7 @@ import pers.johns.crm.service.ClueService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clue")
+@Slf4j
 public class ClueController {
 
     private final ClueService clueService;
@@ -39,5 +41,11 @@ public class ClueController {
         PageInfo<Object> pageInfo = clueService.getCluesByPage(new ClueQuery(current));
 
         return HttpResult.OK("获取线索成功", pageInfo);
+    }
+
+    @PostMapping("/importExcel")
+    public HttpResult uploadExcel(@RequestParam("file") MultipartFile file) throws IOException {
+
+        return HttpResult.OK("Excel 导入成功", clueService.importExcel(file));
     }
 }

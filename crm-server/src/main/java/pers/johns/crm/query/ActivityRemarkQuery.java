@@ -22,5 +22,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityRemarkQuery extends DataFilterQuery{
+    // 活动 id
     private Integer activityId;
 }

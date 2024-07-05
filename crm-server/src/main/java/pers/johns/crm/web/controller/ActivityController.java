@@ -105,11 +105,21 @@ public class ActivityController {
         return HttpResult.OK("修改活动成功", activityService.editActivity(viewActivity));
     }
 
+    /**
+     * 删除活动信息
+     * @param id 活动 id
+     * @return 含有成功信息的响应结果对象
+     */
     @DeleteMapping("/{id}")
     public HttpResult deleteActivity(@PathVariable("id") Integer id) {
         return HttpResult.OK("删除活动及其备注成功", activityService.deleteActivity(id));
     }
 
+    /**
+     * 批量删除活动信息
+     * @param ids 活动 id 串，要求使用 "-" 进行分割
+     * @return 含有成功信息的响应结果对象
+     */
     @DeleteMapping("/bulk/{ids}")
     public HttpResult deleteBulkActivity(@PathVariable("ids") String ids) {
         List<Integer> idList = Arrays.stream(ids.split("-")).map(Integer::parseInt).toList();

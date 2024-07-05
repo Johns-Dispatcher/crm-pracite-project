@@ -22,5 +22,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClueQuery extends DataFilterQuery{
+    // 当前页数
     private Integer currentPage;
 }
