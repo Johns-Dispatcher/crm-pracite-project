@@ -1,7 +1,10 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.Clue;
+import pers.johns.crm.query.ClueQuery;
 
 import java.util.List;
 
@@ -58,27 +61,14 @@ public interface ClueMapper {
             @Result(column = "edit_time", property = "editTime"),
             @Result(column = "edit_by", property = "editBy"),
             @Result(column = "id", property = "clueRemarks", one = @One(
-                    select = "pers.johns.crm.mapper.ClueRemarkMapper.selectClueRemarksByClueId"
+                    select = "pers.johns.crm.mapper.ClueRemarkMapper.selectClueRemarksByClueId",
+                    fetchType = FetchType.LAZY
             ))
     })
     Clue selectById(Integer id);
 
-    @Select("""
-            select
-                id, owner_id, activity_id,
-                full_name, appellation,
-                phone, wechat, qq, email,
-                age, job, year_income,
-                address, need_loan,
-                intention_state, intention_product,
-                state, source,
-                description, next_contact_time,
-                create_time, create_by,
-                edit_time, edit_by
-            from t_clue
-            """)
-    @ResultMap("ClueBaseMap")
-    List<Clue> selectAll();
+    @DataScope(tableField = "owner_id")
+    List<Clue> selectAll(ClueQuery clueQuery);
 
     @Insert("""
             insert into t_clue (

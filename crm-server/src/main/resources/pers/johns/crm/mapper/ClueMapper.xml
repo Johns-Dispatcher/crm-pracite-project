@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.johns.crm.mapper.ClueMapper">
+    <select id="selectAll" resultMap="ClueBaseMap">
+        select
+            id, owner_id, activity_id,
+            full_name, appellation,
+            phone, wechat, qq, email,
+            age, job, year_income,
+            address, need_loan,
+            intention_state, intention_product,
+            state, source,
+            description, next_contact_time,
+            create_time, create_by,
+            edit_time, edit_by
+        from t_clue
+        <where>
+            <if test="filterSQL != null and filterSQL != ''">
+                and ${filterSQL}
+            </if>
+        </where>
+    </select>
+</mapper>
