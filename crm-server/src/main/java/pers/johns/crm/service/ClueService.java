@@ -1,7 +1,12 @@
 package pers.johns.crm.service;
 
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.multipart.MultipartFile;
+import pers.johns.crm.model.vo.ViewClue;
 import pers.johns.crm.query.ClueQuery;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * InterfaceName : ClueService
@@ -22,4 +27,19 @@ public interface ClueService {
      * @return 含有分页信息的查询结果
      */
     PageInfo<Object> getCluesByPage(ClueQuery clueQuery);
+
+    /**
+     * 导入 Excel 文件以创建新的线索信息
+     * @param file 接收的文件对象
+     * @return 是否成功导入
+     * @throws IOException IO 异常
+     */
+    Boolean importExcel(MultipartFile file) throws IOException;
+
+    /**
+     * 批量添加线索
+     * @param viewClues 线索列表集合
+     * @return 是否成功导入
+     */
+    Boolean batchAddClues(List<ViewClue> viewClues);
 }
