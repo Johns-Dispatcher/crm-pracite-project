@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * ClassName    : ClueQuery
  * <br/>
- * Description  : TODO
+ * Description  : 线索查询对象，用于查询条件的封装
  * <br/>
  * CreateTime   : 2024/7/4 22:16
  * <br/>
