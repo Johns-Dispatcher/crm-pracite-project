@@ -33,6 +33,11 @@ public interface DicValueMapper {
     DicValue selectById(Integer id);
 
     @Select("""
+            select type_value from t_dic_value where id = #{id}
+            """)
+    String translateByDic(Integer id);
+
+    @Select("""
             select id, type_code, type_value, `order`, remark
             from t_dic_value
             """)
