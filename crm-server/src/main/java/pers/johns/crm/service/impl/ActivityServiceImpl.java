@@ -15,7 +15,7 @@ import pers.johns.crm.mapper.ActivityRemarkMapper;
 import pers.johns.crm.mapper.UserMapper;
 import pers.johns.crm.model.po.Activity;
 import pers.johns.crm.model.vo.ViewActivity;
-import pers.johns.crm.query.ActivitySearchQuery;
+import pers.johns.crm.query.ActivityQuery;
 import pers.johns.crm.service.ActivityService;
 import pers.johns.crm.utils.CacheUtils;
 
@@ -49,7 +49,7 @@ public class ActivityServiceImpl implements ActivityService {
     public PageInfo<Object> getActivitiesByPage(Integer currentPage) {
         PageHelper.startPage(currentPage, Constants.DEFAULT_PAGE_SIZE);
 
-        PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectAll(new ActivitySearchQuery()));
+        PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectAll(new ActivityQuery()));
 
         List<Object> viewActivities = pageInfo.getList()
                 .stream()
@@ -76,7 +76,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public PageInfo<Object> searchActivitiesByPage(ActivitySearchQuery activitySearchQuery) {
+    public PageInfo<Object> searchActivitiesByPage(ActivityQuery activitySearchQuery) {
         PageHelper.startPage(activitySearchQuery.getCurrent(), Constants.DEFAULT_PAGE_SIZE);
         PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectAll(activitySearchQuery));
 

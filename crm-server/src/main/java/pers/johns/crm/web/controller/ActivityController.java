@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.SecurityUser;
 import pers.johns.crm.model.vo.ViewActivity;
-import pers.johns.crm.query.ActivitySearchQuery;
+import pers.johns.crm.query.ActivityQuery;
 import pers.johns.crm.service.ActivityService;
 
 import java.util.Arrays;
@@ -61,7 +61,7 @@ public class ActivityController {
      * @return 含有分页信息的响应结果对象
      */
     @PostMapping("/search")
-    public HttpResult searchActivities(@RequestBody ActivitySearchQuery activitySearchQuery) {
+    public HttpResult searchActivities(@RequestBody ActivityQuery activitySearchQuery) {
         PageInfo<Object> pageInfo = activityService.searchActivitiesByPage(activitySearchQuery);
         return HttpResult.OK("搜索查询活动成功", pageInfo);
     }

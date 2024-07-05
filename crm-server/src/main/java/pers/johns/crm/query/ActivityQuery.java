@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * ClassName    : ActivitySearchQuery
+ * ClassName    : ActivityQuery
  * <br/>
  * Description  : 用于接收前端的搜索参数对象
  * <br/>
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivitySearchQuery extends DataFilterQuery {
+public class ActivityQuery extends DataFilterQuery {
     private Integer ownerId;
     private String name;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

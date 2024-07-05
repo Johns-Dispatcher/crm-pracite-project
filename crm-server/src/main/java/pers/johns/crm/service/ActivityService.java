@@ -2,7 +2,7 @@ package pers.johns.crm.service;
 
 import com.github.pagehelper.PageInfo;
 import pers.johns.crm.model.vo.ViewActivity;
-import pers.johns.crm.query.ActivitySearchQuery;
+import pers.johns.crm.query.ActivityQuery;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public interface ActivityService {
      */
     List<ViewActivity> getActivityOwners();
 
-    PageInfo<Object> searchActivitiesByPage(ActivitySearchQuery activitySearchQuery);
+    PageInfo<Object> searchActivitiesByPage(ActivityQuery activitySearchQuery);
 
     Boolean addActivity(ViewActivity viewActivity);
 

@@ -1,10 +1,9 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.mapping.FetchType;
 import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.Activity;
-import pers.johns.crm.query.ActivitySearchQuery;
+import pers.johns.crm.query.ActivityQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -47,8 +46,13 @@ public interface ActivityMapper {
     })
     Activity selectById(Integer id);
 
+    @Select("""
+            select name from t_activity where id = #{id}
+            """)
+    String selectActivityNameById(Integer id);
+
     @DataScope(tableField = "owner_id")
-    List<Activity> selectAll(ActivitySearchQuery activitySearchQuery);
+    List<Activity> selectAll(ActivityQuery activitySearchQuery);
 
     @Insert("""
             insert into t_activity (
