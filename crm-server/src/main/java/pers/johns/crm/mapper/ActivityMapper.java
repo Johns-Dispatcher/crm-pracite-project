@@ -51,6 +51,11 @@ public interface ActivityMapper {
             """)
     String selectActivityNameById(Integer id);
 
+    @Select("""
+            select count(*) from t_activity where id = #{id}
+            """)
+    Integer countById(Integer id);
+
     @DataScope(tableField = "owner_id")
     List<Activity> selectAll(ActivityQuery activitySearchQuery);
 
