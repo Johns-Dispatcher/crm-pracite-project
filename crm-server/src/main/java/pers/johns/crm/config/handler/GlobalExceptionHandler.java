@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pers.johns.crm.exception.ActivityException;
 import pers.johns.crm.exception.ActivityRemarkException;
+import pers.johns.crm.exception.ClueException;
 import pers.johns.crm.exception.UserException;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.HttpResultCode;
@@ -68,6 +69,17 @@ public class GlobalExceptionHandler {
     public HttpResult handleException(ActivityRemarkException e) {
         log.error("活动备注业务出现异常: {}", e.getMessage());
         return HttpResult.CustomResult(HttpResultCode.ACTIVITY_REMARK_SERVICE_EXCEPTION);
+    }
+
+    /**
+     * 处理线索业务异常
+     * @param e 异常信息
+     * @return 响应前端错误信息
+     */
+    @ExceptionHandler(ClueException.class)
+    public HttpResult handleException(ClueException e) {
+        log.error("线索业务出现异常: {}", e.getMessage());
+        return HttpResult.CustomResult(HttpResultCode.CLUE_SERVICE_EXCEPTION);
     }
 
     /**
