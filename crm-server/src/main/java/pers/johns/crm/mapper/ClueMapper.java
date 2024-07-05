@@ -83,19 +83,21 @@ public interface ClueMapper {
                 create_time, create_by,
                 edit_time, edit_by)
             values (
-                null, #{id}, #{ownerId},
+                null, #{ownerId}, #{activityId},
                 #{fullName}, #{appellation},
                 #{phone}, #{wechat}, #{qq}, #{email},
                 #{age}, #{job}, #{yearIncome},
                 #{address}, #{needLoan},
                 #{intentionState}, #{intentionProduct},
                 #{state}, #{source},
-                #{description}, #{nextContact},
+                #{description}, #{nextContactTime},
                 #{createTime}, #{createBy},
                 #{editTime}, #{editBy}
             )
             """)
     Integer insertClue(Clue clue);
+
+    Integer insertBatchClues(List<Clue> clues);
 
     @Update("""
             update t_clue

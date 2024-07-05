@@ -5,6 +5,25 @@
 <mapper namespace="pers.johns.crm.mapper.ClueMapper">
     <select id="selectAll" resultMap="ClueBaseMap">
         select
+        id, owner_id, activity_id,
+        full_name, appellation,
+        phone, wechat, qq, email,
+        age, job, year_income,
+        address, need_loan,
+        intention_state, intention_product,
+        state, source,
+        description, next_contact_time,
+        create_time, create_by,
+        edit_time, edit_by
+        from t_clue
+        <where>
+            <if test="filterSQL != null and filterSQL != ''">
+                and ${filterSQL}
+            </if>
+        </where>
+    </select>
+    <insert id="insertBatchClues">
+        insert into t_clue (
             id, owner_id, activity_id,
             full_name, appellation,
             phone, wechat, qq, email,
@@ -15,11 +34,20 @@
             description, next_contact_time,
             create_time, create_by,
             edit_time, edit_by
-        from t_clue
-        <where>
-            <if test="filterSQL != null and filterSQL != ''">
-                and ${filterSQL}
-            </if>
-        </where>
-    </select>
+        ) values
+        <foreach collection="clues" item="clue" separator=",">
+            (
+                null, #{clue.ownerId}, #{clue.activityId},
+                #{clue.fullName}, #{clue.appellation},
+                #{clue.phone}, #{clue.wechat}, #{clue.qq}, #{clue.email},
+                #{clue.age}, #{clue.job}, #{clue.yearIncome},
+                #{clue.address}, #{clue.needLoan},
+                #{clue.intentionState}, #{clue.intentionProduct},
+                #{clue.state}, #{clue.source},
+                #{clue.description}, #{clue.nextContactTime},
+                #{clue.createTime}, #{clue.createBy},
+                #{clue.editTime}, #{clue.editBy}
+            )
+        </foreach>
+    </insert>
 </mapper>
