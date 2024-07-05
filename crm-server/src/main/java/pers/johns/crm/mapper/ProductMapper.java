@@ -53,6 +53,11 @@ public interface ProductMapper {
     @ResultMap("ProductBaseMap")
     List<Product> selectAll();
 
+    @Select("""
+            select name from t_product where id = #{id}
+            """)
+    String selectProductNameById(Integer id);
+
     @Insert("""
             insert into t_product (
                 id, name,
