@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @version : 1.0
  */
 
+@Slf4j
 public class JwtUtils {
     private JwtUtils() {}
 
@@ -55,7 +57,7 @@ public class JwtUtils {
             verifier.verify(jwt);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("JWT 验证失败: {}", e.getMessage());
             return false;
         }
     }
@@ -68,10 +70,8 @@ public class JwtUtils {
 
             return decodedJWT.getClaim("data").asString();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("解析 JWT 数据失败: {}", e.getMessage());
             return null;
         }
     }
-
-
 }
