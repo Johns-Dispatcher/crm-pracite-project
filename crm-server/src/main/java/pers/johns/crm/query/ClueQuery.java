@@ -1,0 +1,26 @@
+package pers.johns.crm.query;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+/**
+ * ClassName    : ClueQuery
+ * <br/>
+ * Description  : TODO
+ * <br/>
+ * CreateTime   : 2024/7/4 22:16
+ * <br/>
+ *
+ * @author : JohnS
+ * @version : 1.0
+ */
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClueQuery extends DataFilterQuery{
+    private Integer currentPage;
+}
