@@ -58,6 +58,11 @@ public interface ProductMapper {
             """)
     String selectProductNameById(Integer id);
 
+    @Select("""
+            select id from t_product where name = #{name} and state = 0
+            """)
+    Integer selectProductIdByName(String name);
+
     @Insert("""
             insert into t_product (
                 id, name,
