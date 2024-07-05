@@ -130,7 +130,7 @@ function uploadFile(param) {
 	doPost("/api/clue/importExcel", formData).then(response => {
 		if (response.data.code === 200) {
 			messageTip("导入成功", "success")
-			uploadRef.clearFiles()
+			uploadRef.value.clearFiles()
 			reload()
 		} else {
 			messageTip("导入失败", "error")
