@@ -109,7 +109,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<ViewActivity> getActivityOwners() {
         return CacheUtils.getCacheData(
-                () -> redisManager.getList(Constants.ACTIVITY_OWNER_REDIS_KEY),
+                () -> redisManager.getList(Constants.ACTIVITY_OWNER_REDIS_KEY, ViewActivity.class),
                 () -> activityMapper.selectOwnerHavingActivity().stream()
                         .map(map -> ViewActivity.builder()
                                 .ownerId((Integer) map.get("ownerId"))
