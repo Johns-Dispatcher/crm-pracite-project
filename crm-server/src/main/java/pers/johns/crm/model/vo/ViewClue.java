@@ -41,6 +41,7 @@ public class ViewClue implements Serializable {
     private String fullName;
     @ExcelProperty(ClueExcelHeader.APPELLATION)
     private String appellation;
+    private Integer appellationDicId;
     @ExcelProperty(ClueExcelHeader.PHONE)
     private String phone;
     @ExcelProperty(ClueExcelHeader.WECHAT)
@@ -59,15 +60,19 @@ public class ViewClue implements Serializable {
     private String address;
     @ExcelProperty(ClueExcelHeader.NEED_LOAN)
     private String needLoan;
+    private Integer needLoadDicId;
     @ExcelProperty(ClueExcelHeader.INTENTION_STATE)
     private String intentionState;
+    private Integer intentionStateDicId;
     private Integer intentionProduct;
     @ExcelProperty(ClueExcelHeader.PRODUCT_NAME)
     private String productName;
     @ExcelProperty(ClueExcelHeader.STATE)
     private String state;
+    private Integer stateDicId;
     @ExcelProperty(ClueExcelHeader.SOURCE)
     private String source;
+    private Integer sourceDicId;
     @ExcelProperty(ClueExcelHeader.DESCRIPTION)
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
