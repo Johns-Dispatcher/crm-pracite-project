@@ -98,4 +98,29 @@ public class Constants {
      */
     public static final String USER_NAME_REDIS_KEY = "crm:user:names";
 
+    /**
+     * 活动缓存字段的前缀
+     */
+    public static final String ACTIVITY_PREFIX_REDIS_KEY = "crm:activity:";
+
+    /**
+     * 活动名称缓存字段
+     */
+    public static final String ACTIVITY_NAME_REDIS_KEY = "crm:activity:names";
+
+    /**
+     * 目前正在进行的活动名称的缓存字段
+     */
+    public static final String ACTIVITY_ONGOING_NAME_REDIS_KEY = "crm:activity:ongoing";
+
+    /**
+     * 字典缓存前缀
+     */
+    public static final String DIC_VALUE_PREFIX_REDIS_KEY = "crm:dic:";
+
+    /**
+     * 产品名称缓存字段
+     */
+    public static final String PRODUCT_NAME_REDIS_KEY = "crm:product:names";
+
 }
