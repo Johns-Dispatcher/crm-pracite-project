@@ -28,6 +28,9 @@
             <if test="cost != null">
                 and cost >= #{cost}
             </if>
+            <if test="nowTime != null">
+                and end_time >= #{nowTime} and start_time &lt;= #{nowTime}
+            </if>
             <if test="filterSQL != null and filterSQL != ''">
                 and ${filterSQL}
             </if>
