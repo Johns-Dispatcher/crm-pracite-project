@@ -125,4 +125,24 @@ public class ActivityController {
         List<Integer> idList = Arrays.stream(ids.split("-")).map(Integer::parseInt).toList();
         return HttpResult.OK("批量删除活动及其备注成功", activityService.deleteBulkActivity(idList));
     }
+
+    /**
+     * 获取活动名称的数据列表
+     * @return 含有活动名称的列表信息的响应结果对象
+     */
+    @GetMapping("/names")
+    public HttpResult getActivities() {
+        List<ViewActivity> list = activityService.getAllActivitiesName();
+        return HttpResult.OK("获取活动名称成功", list);
+    }
+
+    /**
+     * 获取目前正在进行的活动名称列表
+     * @return 含有当前正在进行的活动列表信息的响应结果对象
+     */
+    @GetMapping("/ongoing")
+    public HttpResult getOngoingActivities() {
+        List<ViewActivity> list = activityService.getOngoingActivities();
+        return HttpResult.OK("获取仍在进行的活动名称成功", list);
+    }
 }
