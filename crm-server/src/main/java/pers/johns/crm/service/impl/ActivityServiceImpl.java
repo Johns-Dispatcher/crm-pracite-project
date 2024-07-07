@@ -62,20 +62,6 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<ViewActivity> getActivityOwners() {
-
-        return CacheUtils.getCacheData(
-                () -> redisManager.getList(Constants.ACTIVITY_OWNER_REDIS_KEY),
-                () -> activityMapper.selectOwnerHavingActivity().stream()
-                        .map(map -> ViewActivity.builder()
-                                .ownerId((Integer) map.get("ownerId"))
-                                .owner((String) map.get("name"))
-                                .build())
-                        .toList(),
-                list -> redisManager.saveValue(Constants.ACTIVITY_OWNER_REDIS_KEY, list));
-    }
-
-    @Override
     public PageInfo<Object> searchActivitiesByPage(ActivityQuery activitySearchQuery) {
         PageHelper.startPage(activitySearchQuery.getCurrent(), Constants.DEFAULT_PAGE_SIZE);
         PageInfo<Object> pageInfo = new PageInfo<>(activityMapper.selectAll(activitySearchQuery));
@@ -87,6 +73,50 @@ public class ActivityServiceImpl implements ActivityService {
         pageInfo.setList(list);
 
         return pageInfo;
+    }
+
+    @Override
+    public List<ViewActivity> getAllActivitiesName() {
+        return CacheUtils.getCacheData(
+                () -> redisManager.getList(Constants.ACTIVITY_NAME_REDIS_KEY, ViewActivity.class),
+                () -> activityMapper.selectAll(new ActivityQuery()).stream()
+                        .map(activity -> ViewActivity.builder()
+                                .id(activity.getId())
+                                .name(activity.getName())
+                                .build())
+                        .toList(),
+                list -> redisManager.saveValue(Constants.ACTIVITY_NAME_REDIS_KEY, list)
+        );
+    }
+
+    @Override
+    public List<ViewActivity> getOngoingActivities() {
+        ActivityQuery activityQuery = new ActivityQuery();
+        activityQuery.setNowTime(LocalDateTime.now());
+
+        return CacheUtils.getCacheData(
+                () -> redisManager.getList(Constants.ACTIVITY_ONGOING_NAME_REDIS_KEY, ViewActivity.class),
+                () -> activityMapper.selectAll(activityQuery).stream()
+                        .map(activity -> ViewActivity.builder()
+                                .id(activity.getId())
+                                .name(activity.getName())
+                                .build())
+                        .toList(),
+                list -> redisManager.saveValue(Constants.ACTIVITY_ONGOING_NAME_REDIS_KEY, list)
+        );
+    }
+
+    @Override
+    public List<ViewActivity> getActivityOwners() {
+        return CacheUtils.getCacheData(
+                () -> redisManager.getList(Constants.ACTIVITY_OWNER_REDIS_KEY),
+                () -> activityMapper.selectOwnerHavingActivity().stream()
+                        .map(map -> ViewActivity.builder()
+                                .ownerId((Integer) map.get("ownerId"))
+                                .owner((String) map.get("name"))
+                                .build())
+                        .toList(),
+                list -> redisManager.saveValue(Constants.ACTIVITY_OWNER_REDIS_KEY, list));
     }
 
     @Override
@@ -114,7 +144,7 @@ public class ActivityServiceImpl implements ActivityService {
 
         if (count != 1) throw new ActivityException("创建活动出错");
 
-        CacheUtils.removeCacheData(redisManager::deleteValue, Constants.ACTIVITY_OWNER_REDIS_KEY);
+        clearActivityCache();
 
         return true;
     }
@@ -137,7 +167,7 @@ public class ActivityServiceImpl implements ActivityService {
 
         if (count != 1) throw new ActivityException("修改活动出错");
 
-        CacheUtils.removeCacheData(redisManager::deleteValue, Constants.ACTIVITY_OWNER_REDIS_KEY);
+        clearActivityCache();
 
         return null;
     }
@@ -158,6 +188,8 @@ public class ActivityServiceImpl implements ActivityService {
 
         if (count != 1) throw new ActivityException("删除活动失败");
 
+        clearActivityCache();
+
         return true;
     }
 
@@ -173,6 +205,8 @@ public class ActivityServiceImpl implements ActivityService {
         Integer count = activityMapper.deleteBulkActivities(ids);
 
         if (count != ids.size()) throw new ActivityException("批量删除活动失败");
+
+        clearActivityCache();
 
         return true;
     }
@@ -202,5 +236,12 @@ public class ActivityServiceImpl implements ActivityService {
                 .editor(editor)
                 .description(activity.getDescription())
                 .build();
+    }
+
+    /**
+     * 用于清除相关缓存，以便数据更新后重新进行缓存
+     */
+    private void clearActivityCache() {
+        CacheUtils.removeCacheData(redisManager::batchDeleteValues, Constants.ACTIVITY_PREFIX_REDIS_KEY);
     }
 }

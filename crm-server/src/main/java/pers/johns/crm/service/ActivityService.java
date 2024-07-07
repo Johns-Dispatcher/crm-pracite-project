@@ -26,24 +26,21 @@ public interface ActivityService {
     PageInfo<Object> getActivitiesByPage(Integer currentPage);
 
     /**
-     * 查询目前负责项目的项目人列表
-     * @return 视图活动 {@link ViewActivity} 列表，仅含有负责人与负责人 ID
-     */
-    List<ViewActivity> getActivityOwners();
-
-    /**
      * 带有搜索条件的分页查询
      * @param activitySearchQuery 搜索信息
      * @return 含有分页信息的活动列表
      */
     PageInfo<Object> searchActivitiesByPage(ActivityQuery activitySearchQuery);
 
+    List<ViewActivity> getAllActivitiesName();
+
+    List<ViewActivity> getOngoingActivities();
+
     /**
-     * 添加活动
-     * @param viewActivity 视图活动对象
-     * @return 是否添加成功
+     * 查询目前负责项目的项目人列表
+     * @return 视图活动 {@link ViewActivity} 列表，仅含有负责人与负责人 ID
      */
-    Boolean addActivity(ViewActivity viewActivity);
+    List<ViewActivity> getActivityOwners();
 
     /**
      * 获取活动信息
@@ -51,6 +48,13 @@ public interface ActivityService {
      * @return 视图活动对象
      */
     ViewActivity getActivity(Integer id);
+
+    /**
+     * 添加活动
+     * @param viewActivity 视图活动对象
+     * @return 是否添加成功
+     */
+    Boolean addActivity(ViewActivity viewActivity);
 
     /**
      * 修改活动信息
