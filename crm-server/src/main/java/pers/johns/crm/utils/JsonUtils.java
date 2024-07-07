@@ -1,5 +1,6 @@
 package pers.johns.crm.utils;
 
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,9 +64,20 @@ public class JsonUtils {
      */
     public static <T> List<T> toList(String json) {
         try {
-            return OBJECT_MAPPER.readValue(json, new TypeReference<List<T>>() {});
+            return OBJECT_MAPPER.readValue(json, new TypeReference<>() { });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 由于 jackson 反序列化列表出现了一些问题，尚未查明，这里提供使用 fastjson 进行反序列化（目前都能正常使用...）
+     * @param json json 字符串
+     * @param clazz 集合数据类型
+     * @return {@link List} 集合
+     * @param <T> 集合元素类型
+     */
+    public static <T> List<T> toList(String json, Class<T> clazz) {
+        return JSON.parseArray(json, clazz);
     }
 }
