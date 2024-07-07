@@ -1,5 +1,5 @@
 <template>
-	<el-button type="primary">录入线索</el-button>
+	<el-button type="primary" @click="router.push('/dashboard/clue/add')">录入线索</el-button>
 	<el-button type="success" @click="importFile">通过 Excel 批量导入线索</el-button>
 	<el-button type="danger">批量删除</el-button>
 
@@ -99,6 +99,9 @@
 import { onMounted, ref, inject } from 'vue';
 import { doGet, doPost } from '../../../http/httpRequestUtils';
 import { messageTip } from '../../../utils/utils';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const clueList = ref([])
 const totalCount = ref(0)
