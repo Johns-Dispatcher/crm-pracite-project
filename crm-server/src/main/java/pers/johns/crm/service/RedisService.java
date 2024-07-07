@@ -1,5 +1,7 @@
 package pers.johns.crm.service;
 
+import java.util.List;
+
 /**
  * InterfaceName : RedisService
  * <br/>
@@ -55,4 +57,6 @@ public interface RedisService {
      * @return 剩余过期时间
      */
     Long getExpireTime(String key);
+
+    List<String> getKeys(String keyPrefix);
 }
