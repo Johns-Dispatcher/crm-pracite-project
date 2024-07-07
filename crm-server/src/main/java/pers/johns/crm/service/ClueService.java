@@ -42,4 +42,8 @@ public interface ClueService {
      * @return 是否成功导入
      */
     Boolean batchAddClues(List<ViewClue> viewClues);
+
+    Boolean addClue(ViewClue viewClue);
+
+    Boolean checkPhoneExisted(String phone);
 }

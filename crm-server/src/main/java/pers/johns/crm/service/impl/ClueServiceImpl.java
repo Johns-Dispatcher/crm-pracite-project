@@ -8,20 +8,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pers.johns.crm.constant.Constants;
 import pers.johns.crm.exception.ClueException;
 import pers.johns.crm.listener.UploadClueListener;
 import pers.johns.crm.mapper.*;
 import pers.johns.crm.model.po.Clue;
-import pers.johns.crm.model.vo.SecurityUser;
-import pers.johns.crm.model.vo.ViewClue;
+import pers.johns.crm.model.vo.*;
 import pers.johns.crm.query.ClueQuery;
-import pers.johns.crm.service.ClueService;
+import pers.johns.crm.service.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +48,10 @@ public class ClueServiceImpl implements ClueService {
     private final UserMapper userMapper;
     private final DicValueMapper dicValueMapper;
     private final ProductMapper productMapper;
+    private final DicService dicService;
+    private final UserService userService;
+    private final ActivityService activityService;
+    private final ProductService productService;
 
     @Override
     public PageInfo<Object> getCluesByPage(ClueQuery clueQuery) {
@@ -83,6 +89,8 @@ public class ClueServiceImpl implements ClueService {
         viewClues.forEach(viewClue -> {
             viewClue.setCreateBy(userId);
             viewClue.setEditBy(userId);
+            viewClue.setCreateTime(LocalDateTime.now());
+            viewClue.setEditTime(LocalDateTime.now());
         });
 
         List<Clue> clues = viewClues.stream().map(this::convertToClue).toList();
@@ -94,6 +102,20 @@ public class ClueServiceImpl implements ClueService {
         return true;
     }
 
+    @Override
+    public Boolean addClue(ViewClue viewClue) {
+        Integer count = clueMapper.insertClue(convertToClue(viewClue));
+
+        if (count != 1) throw new ClueException("添加线索失败");
+
+        return true;
+    }
+
+    @Override
+    public Boolean checkPhoneExisted(String phone) {
+        return clueMapper.selectByPhone(phone) > 0;
+    }
+
     /**
      * 将视图线索对象转换为线索对象
      * @param viewClue 视图线索对象
@@ -102,24 +124,42 @@ public class ClueServiceImpl implements ClueService {
     private Clue convertToClue(ViewClue viewClue) {
 
         if (userMapper.countById(viewClue.getOwnerId()) != 1) throw new ClueException("负责人非法，请检测 Excel 中的值");
-        if (activityMapper.countById(viewClue.getActivityId()) != 1) throw new ClueException("所属活动非法，请检测 Excel 中的值");
+        if (activityMapper.countById(viewClue.getActivityId()) != 1) log.warn("未能找到对应数据，无法存储活动信息");
 
-        Integer appellation = dicValueMapper.selectDicIdByDicValue(viewClue.getAppellation());
+        Integer appellation = updateNullValue(
+                viewClue.getAppellationDicId(),
+                () -> dicValueMapper.selectDicIdByDicValue(viewClue.getAppellation())
+        );
         if (appellation == null) log.warn("未能找到对应数据，无法存储称呼信息");
 
-        Integer needLoan = dicValueMapper.selectDicIdByDicValue(viewClue.getNeedLoan());
+        Integer needLoan = updateNullValue(
+                viewClue.getNeedLoadDicId(),
+                () -> dicValueMapper.selectDicIdByDicValue(viewClue.getNeedLoan())
+        );
         if (needLoan == null) log.warn("未能找到对应数据，无法存储贷款情况");
 
-        Integer intentionState = dicValueMapper.selectDicIdByDicValue(viewClue.getIntentionState());
+        Integer intentionState = updateNullValue(
+                viewClue.getIntentionStateDicId(),
+                () -> dicValueMapper.selectDicIdByDicValue(viewClue.getIntentionState())
+        );
         if (intentionState == null) log.warn("未能找到对应数据，无法存储意向状态");
 
-        Integer state = dicValueMapper.selectDicIdByDicValue(viewClue.getState());
+        Integer state = updateNullValue(
+                viewClue.getStateDicId(),
+                () -> dicValueMapper.selectDicIdByDicValue(viewClue.getState())
+        );
         if (state == null) log.warn("未能找到对应数据，无法存储线索状态");
 
-        Integer source = dicValueMapper.selectDicIdByDicValue(viewClue.getSource());
+        Integer source = updateNullValue(
+                viewClue.getStateDicId(),
+                () -> dicValueMapper.selectDicIdByDicValue(viewClue.getSource())
+        );
         if (source == null) log.warn("未能找到对应数据，无法存储线索来源");
 
-        Integer intentionProduct = productMapper.selectProductIdByName(viewClue.getProductName());
+        Integer intentionProduct = updateNullValue(
+                viewClue.getIntentionProduct(),
+                () -> productMapper.selectProductIdByName(viewClue.getProductName())
+        );
         if (intentionProduct == null) log.warn("未能找到对应数据，无法存储产品名称");
 
         return Clue
@@ -143,11 +183,23 @@ public class ClueServiceImpl implements ClueService {
                 .source(source)
                 .description(viewClue.getDescription())
                 .nextContactTime(viewClue.getNextContactTime())
-                .createTime(LocalDateTime.now())
+                .createTime(viewClue.getCreateTime())
                 .createBy(viewClue.getCreateBy())
-                .editTime(LocalDateTime.now())
+                .editTime(viewClue.getEditTime())
                 .editBy(viewClue.getEditBy())
                 .build();
+    }
+
+    /**
+     * 将指定字段的空键更新
+     * @param value 原始值，判断是否为空为空则更新
+     * @param supplier 更新提供者，通常是查询数据库
+     * @return 数据最终值
+     * @param <T> 数据类型
+     */
+    private <T> T updateNullValue(T value, Supplier<T> supplier) {
+        if (value != null) return value;
+        else return supplier.get();
     }
 
     /**
@@ -158,17 +210,34 @@ public class ClueServiceImpl implements ClueService {
     private ViewClue convertToViewClue(Object object) {
         Clue clue = (Clue) object;
 
-        String owner = userMapper.selectNameById(clue.getOwnerId());
+        String owner = null;
+        for (ViewUser viewUser : userService.getUserWithName()) {
+            if (Objects.equals(viewUser.getId(), clue.getOwnerId())) {
+                owner = viewUser.getName();
+                break;
+            }
+        }
+        String activity = null;
+        for (ViewActivity viewActivity : activityService.getAllActivitiesName()) {
+            if (Objects.equals(viewActivity.getId(), clue.getActivityId())) {
+                activity = viewActivity.getName();
+                break;
+            }
+        }
 
-        String activity = activityMapper.selectActivityNameById(clue.getActivityId());
+        String productName = null;
+        for (ViewProduct viewProduct : productService.getProductNames()) {
+            if (Objects.equals(viewProduct.getId(), clue.getIntentionProduct())) {
+                productName = viewProduct.getName();
+                break;
+            }
+        }
 
-        String appellation = dicValueMapper.translateByDic(clue.getAppellation());
-        String needLoan = dicValueMapper.translateByDic(clue.getNeedLoan());
-        String intentionState = dicValueMapper.translateByDic(clue.getIntentionState());
-        String state = dicValueMapper.translateByDic(clue.getState());
-        String source = dicValueMapper.translateByDic(clue.getSource());
-
-        String productName = productMapper.selectProductNameById(clue.getIntentionProduct());
+        String appellation = dicService.translateDic(clue.getAppellation());
+        String needLoan = dicService.translateDic(clue.getNeedLoan());
+        String intentionState = dicService.translateDic(clue.getIntentionState());
+        String state = dicService.translateDic(clue.getState());
+        String source = dicService.translateDic(clue.getSource());
 
         return ViewClue
                 .builder()
