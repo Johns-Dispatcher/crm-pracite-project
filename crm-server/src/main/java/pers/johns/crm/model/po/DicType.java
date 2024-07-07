@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * ClassName    : DicType
+ * ClassName    : DicTypeConst
  * <br/>
  * Description  : 字典类型类，对应数据库 t_dic_type
  * <br/>
