@@ -44,6 +44,14 @@ public interface DicValueMapper {
 
     @Select("""
             select id, type_code, type_value, `order`, remark
+            from t_dic_value where type_code = #{typeCode}
+            order by `order`
+            """)
+    @ResultMap("DicValueBaseMap")
+    List<DicValue> selectByTypeCode(String typeCode);
+
+    @Select("""
+            select id, type_code, type_value, `order`, remark
             from t_dic_value
             """)
     @ResultMap("DicValueBaseMap")

@@ -33,6 +33,13 @@ public interface DicTypeMapper {
 
     @Select("""
             select id, type_code, type_name, remark
+            from t_dic_type where type_code = #{typeCode}
+            """)
+    @ResultMap("DicTypeBaseMap")
+    DicType selectByTypeCode(String TypeCode);
+
+    @Select("""
+            select id, type_code, type_name, remark
             from t_dic_type
             """)
     @ResultMap("DicTypeBaseMap")
