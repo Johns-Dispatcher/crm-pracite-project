@@ -222,15 +222,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<ViewUser> getUserWithName() {
         return CacheUtils.getCacheData(
-                () -> redisManager.getList(Constants.USER_NAME_REDIS_KEY),
+                () -> redisManager.getList(Constants.USER_NAME_REDIS_KEY, ViewUser.class),
                 () -> userMapper.selectUserWithName()
                         .stream()
                         .map(item -> ViewUser
                                 .builder()
                                 .id(((Integer) item.get("id")))
                                 .name(((String) item.get("name")))
-                                .build()
-                        ).toList(),
+                                .build())
+                        .toList(),
                 value -> redisManager.saveValue(Constants.USER_NAME_REDIS_KEY, value)
         );
     }
