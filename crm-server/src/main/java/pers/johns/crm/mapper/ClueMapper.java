@@ -99,6 +99,11 @@ public interface ClueMapper {
 
     Integer insertBatchClues(List<Clue> clues);
 
+    @Select("""
+            select count(1) from t_clue where phone = #{phone}
+            """)
+    Integer selectByPhone(String phone);
+
     @Update("""
             update t_clue
             set

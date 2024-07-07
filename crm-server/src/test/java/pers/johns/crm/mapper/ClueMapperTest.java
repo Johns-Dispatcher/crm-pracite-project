@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import pers.johns.crm.model.po.Clue;
 import pers.johns.crm.model.po.ClueRemark;
+import pers.johns.crm.query.ClueQuery;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ClueMapperTest {
     @Test
     public void testGetClues() {
         log.info("测试查询表 t_clue ...");
-        List<Clue> clues = clueMapper.selectAll();
+        List<Clue> clues = clueMapper.selectAll(new ClueQuery(1));
 
         Assertions.assertNotNull(clues);
 
