@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.johns.crm.mapper.ClueRemarkMapper">
+    <select id="selectAll" resultMap="ClueRemarkBaseMap">
+        select
+            id, clue_id,
+            note_way, note_content,
+            create_time, create_by,
+            edit_time, edit_by,
+            deleted
+        from t_clue_remark
+        <where>
+            <if test="filterSQL != null and filterSQL != ''">
+                and ${filterSQL}
+            </if>
+            and (deleted = 0 or deleted is null)
+        </where>
+    </select>
+    <select id="selectAllByClueId" resultMap="ClueRemarkBaseMap">
+        select
+            id, clue_id,
+            note_way, note_content,
+            create_time, create_by,
+            edit_time, edit_by,
+            deleted
+        from t_clue_remark
+        <where>
+            <if test="filterSQL != null and filterSQL != ''">
+                and ${filterSQL}
+            </if>
+            and (deleted = 0 or deleted is null)
+            <if test="clueId != null">
+                and clue_id = #{clueId}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateClueRemark">
+        update t_clue_remark
+        <set>
+            <if test="clueId != null">clue_id = #{clueId},</if>
+            <if test="noteWay != null">note_way = #{noteWay},</if>
+            <if test="noteContent != null and noteContent != ''">note_content = #{noteContent},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="editBy != null">edit_by = #{editBy},</if>
+            <if test="deleted != null">deleted = #{deleted},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

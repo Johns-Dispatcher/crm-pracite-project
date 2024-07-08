@@ -1,7 +1,9 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.ClueRemark;
+import pers.johns.crm.query.ClueRemarkQuery;
 
 import java.util.List;
 
@@ -41,17 +43,9 @@ public interface ClueRemarkMapper {
     })
     ClueRemark selectById(Integer id);
 
-    @Select("""
-            select
-                id, clue_id,
-                note_way, note_content,
-                create_time, create_by,
-                edit_time, edit_by,
-                deleted
-            from t_clue_remark
-            """)
-    @ResultMap("ClueRemarkBaseMap")
-    List<ClueRemark> selectAll();
+    List<ClueRemark> selectAll(ClueRemarkQuery clueRemarkQuery);
+
+    List<ClueRemark> selectAllByClueId(ClueRemarkQuery clueRemarkQuery);
 
     @Select("""
             select
@@ -83,16 +77,6 @@ public interface ClueRemarkMapper {
             """)
     Integer insertClueRemark(ClueRemark clueRemark);
 
-    @Update("""
-            update t_clue_remark
-            set
-                clue_id = #{clueId},
-                note_way = #{noteWay}, note_content = #{noteContent},
-                create_time = #{createTime}, create_by = #{createBy},
-                edit_time = #{editTime}, edit_by = #{editBy},
-                deleted = #{deleted}
-            where id = #{id}
-            """)
     Integer updateClueRemark(ClueRemark clueRemark);
 
     @Delete("""
