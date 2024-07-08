@@ -18,7 +18,18 @@
 
 		<el-table-column prop="activity" label="所属活动" show-overflow-tooltip />
 
-		<el-table-column prop="fullName" label="姓名" width="60" show-overflow-tooltip />
+		<el-table-column prop="fullName" label="姓名" width="60" show-overflow-tooltip>
+			<template #default="scope">
+				<el-link 
+					type="primary" 
+					:underline="false" 
+					href="javacript:void(0);" 
+					@click="router.push('/dashboard/clue/info/' + scope.row.id)"
+				>
+					{{ scope.row.fullName }}
+				</el-link>
+			</template>
+		</el-table-column>
 
 		<el-table-column prop="appellation" label="称呼" width="60" show-overflow-tooltip />
 
@@ -40,9 +51,9 @@
 
 		<el-table-column label="操作" width="250">
 			<template #default="scope">
-				<el-button type="primary">详情</el-button>
+				<el-button type="primary" @click="router.push('/dashboard/clue/info/' + scope.row.id)">详情</el-button>
 
-				<el-button type="success">修改</el-button>
+				<el-button type="success" @click="router.push('/dashboard/clue/edit/' + scope.row.id)">修改</el-button>
 
 				<el-button type="danger">删除</el-button>
 			</template>
