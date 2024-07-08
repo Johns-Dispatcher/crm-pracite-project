@@ -50,4 +50,34 @@
             )
         </foreach>
     </insert>
+
+    <update id="updateClue">
+        update t_clue
+        <set>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="fullName != null and fullName != ''">full_name = #{fullName},</if>
+            <if test="appellation != null">appellation = #{appellation},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="wechat != null and wechat != ''">wechat = #{wechat},</if>
+            <if test="qq != null and qq != ''">qq = #{qq},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="age != null and age != ''">age = #{age},</if>
+            <if test="job != null and job != ''">job = #{job},</if>
+            <if test="yearIncome != null">year_income = #{yearIncome},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="needLoan != null">need_loan = #{needLoan},</if>
+            <if test="intentionState != null">intention_state = #{intentionState},</if>
+            <if test="intentionProduct != null">intention_product = #{intentionProduct},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="nextContactTime != null">next_contact_time = #{nextContactTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="editTime != null">edit_time = #{editTime},</if>
+            <if test="editBy != null">edit_by = #{editBy}</if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>

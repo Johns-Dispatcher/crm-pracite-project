@@ -104,21 +104,6 @@ public interface ClueMapper {
             """)
     Integer selectByPhone(String phone);
 
-    @Update("""
-            update t_clue
-            set
-                owner_id = #{ownerId}, activity_id = #{activityId},
-                full_name = #{fullName}, appellation = #{appellation},
-                phone = #{phone}, wechat = #{wechat}, qq = #{qq}, email = #{email},
-                age = #{age}, job = #{job}, year_income = #{yearIncome},
-                address = #{address}, need_loan = #{needLoan},
-                intention_state = #{intentionState}, intention_product = #{intentionProduct},
-                state = #{state}, source = #{source},
-                description = #{description}, next_contact_time = #{nextContactTime},
-                create_time = #{createTime}, create_by = #{createBy},
-                edit_time = #{editTime}, edit_by = #{editBy}
-            where id = #{id}
-            """)
     Integer updateClue(Clue clue);
 
     @Delete("""
