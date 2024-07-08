@@ -67,6 +67,7 @@ public class ClueServiceImpl implements ClueService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean importExcel(MultipartFile file) throws IOException {
         // 使用 EasyExcel 完成数据的读取
         EasyExcel.read(
@@ -80,7 +81,7 @@ public class ClueServiceImpl implements ClueService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Boolean batchAddClues(List<ViewClue> viewClues) {
 
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -103,6 +104,7 @@ public class ClueServiceImpl implements ClueService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean addClue(ViewClue viewClue) {
         Integer count = clueMapper.insertClue(convertToClue(viewClue));
 
@@ -116,6 +118,22 @@ public class ClueServiceImpl implements ClueService {
         return clueMapper.selectByPhone(phone) > 0;
     }
 
+    @Override
+    public ViewClue getClueInfo(Integer id) {
+        Clue clue = clueMapper.selectById(id);
+        return convertToViewClue(clue);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean editClueInfo(ViewClue viewClue) {
+        Integer count = clueMapper.updateClue(convertToClue(viewClue));
+
+        if (count != 1) throw new ClueException("修改线索失败");
+
+        return true;
+    }
+
     /**
      * 将视图线索对象转换为线索对象
      * @param viewClue 视图线索对象
@@ -123,7 +141,7 @@ public class ClueServiceImpl implements ClueService {
      */
     private Clue convertToClue(ViewClue viewClue) {
 
-        if (userMapper.countById(viewClue.getOwnerId()) != 1) throw new ClueException("负责人非法，请检测 Excel 中的值");
+        if (userMapper.countById(viewClue.getOwnerId()) != 1) throw new ClueException("负责人非法，请检测对应项的值");
         if (activityMapper.countById(viewClue.getActivityId()) != 1) log.warn("未能找到对应数据，无法存储活动信息");
 
         Integer appellation = updateNullValue(
@@ -164,6 +182,7 @@ public class ClueServiceImpl implements ClueService {
 
         return Clue
                 .builder()
+                .id(viewClue.getId())
                 .ownerId(viewClue.getOwnerId())
                 .activityId(viewClue.getActivityId())
                 .fullName(viewClue.getFullName())
@@ -217,6 +236,23 @@ public class ClueServiceImpl implements ClueService {
                 break;
             }
         }
+
+        String creator = null;
+        for (ViewUser viewUser : userService.getUserWithName()) {
+            if (Objects.equals(viewUser.getId(), clue.getCreateBy())) {
+                creator = viewUser.getName();
+                break;
+            }
+        }
+
+        String editor = null;
+        for (ViewUser viewUser : userService.getUserWithName()) {
+            if (Objects.equals(viewUser.getId(), clue.getEditBy())) {
+                editor = viewUser.getName();
+                break;
+            }
+        }
+
         String activity = null;
         for (ViewActivity viewActivity : activityService.getAllActivitiesName()) {
             if (Objects.equals(viewActivity.getId(), clue.getActivityId())) {
@@ -243,17 +279,36 @@ public class ClueServiceImpl implements ClueService {
                 .builder()
                 .id(clue.getId())
                 .owner(owner)
+                .ownerId(clue.getOwnerId())
                 .activity(activity)
+                .activityId(clue.getActivityId())
                 .fullName(clue.getFullName())
+                .appellationDicId(clue.getAppellation())
                 .appellation(appellation)
                 .phone(clue.getPhone())
                 .wechat(clue.getWechat())
+                .qq(clue.getQq())
+                .email(clue.getEmail())
+                .age(clue.getAge())
+                .job(clue.getJob())
+                .yearIncome(clue.getYearIncome())
+                .address(clue.getAddress())
+                .needLoadDicId(clue.getNeedLoan())
                 .needLoan(needLoan)
+                .intentionStateDicId(clue.getIntentionState())
                 .intentionState(intentionState)
+                .intentionProduct(clue.getIntentionProduct())
                 .productName(productName)
+                .stateDicId(clue.getState())
                 .state(state)
+                .sourceDicId(clue.getSource())
                 .source(source)
                 .nextContactTime(clue.getNextContactTime())
+                .description(clue.getDescription())
+                .createTime(clue.getCreateTime())
+                .creator(creator)
+                .editTime(clue.getEditTime())
+                .editor(editor)
                 .build();
     }
 }

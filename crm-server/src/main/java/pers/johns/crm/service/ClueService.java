@@ -43,7 +43,31 @@ public interface ClueService {
      */
     Boolean batchAddClues(List<ViewClue> viewClues);
 
+    /**
+     * 添加线索信息
+     * @param viewClue 线索信息
+     * @return 是否成功导入
+     */
     Boolean addClue(ViewClue viewClue);
 
+    /**
+     * 查询手机号是否已经录入
+     * @param phone 手机号
+     * @return 是否存在
+     */
     Boolean checkPhoneExisted(String phone);
+
+    /**
+     * 查询指定 id 的线索信息
+     * @param id 线索 id
+     * @return 线索对象
+     */
+    ViewClue getClueInfo(Integer id);
+
+    /**
+     * 修改指定的线索信息
+     * @param viewClue 前端的线索信息
+     * @return 是否成功修改
+     */
+    Boolean editClueInfo(ViewClue viewClue);
 }
