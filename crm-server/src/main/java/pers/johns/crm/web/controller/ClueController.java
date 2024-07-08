@@ -86,4 +86,29 @@ public class ClueController {
     public HttpResult checkPhone(@PathVariable("phone") String phone) {
         return HttpResult.OK("查询结果", clueService.checkPhoneExisted(phone));
     }
+
+    /**
+     * 获取指定 id 的线索信息
+     * @param id 线索 id
+     * @return 含有线索信息的响应结果对象
+     */
+    @GetMapping("/{id}")
+    public HttpResult getClueInfo(@PathVariable("id") Integer id) {
+        return HttpResult.OK("线索信息查询成功", clueService.getClueInfo(id));
+    }
+
+    /**
+     * 修改线索信息
+     * @param viewClue 线索信息
+     * @param authentication 认证信息
+     * @return 修改成功的响应结果信息
+     */
+    @PutMapping("/")
+    public HttpResult editClueInfo(@RequestBody ViewClue viewClue, Authentication authentication) {
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        viewClue.setEditBy(securityUser.getId());
+        viewClue.setEditTime(LocalDateTime.now());
+
+        return HttpResult.OK("修改成功", clueService.editClueInfo(viewClue));
+    }
 }
