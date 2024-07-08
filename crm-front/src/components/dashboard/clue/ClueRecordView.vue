@@ -1,7 +1,8 @@
 <template>
 	<div style="width: 85%; margin: auto;">
 
-		<h1>新增线索信息</h1>
+		<h1 v-if="!editMode">新增线索信息</h1>
+		<h1 v-if="editMode">修改线索信息</h1>
 
 		<el-button type="danger" plain @click="router.back()">返回</el-button>
 		
@@ -37,7 +38,7 @@
 			</el-form-item>
 
 			<el-form-item label="手机" prop="phone">
-				<el-input v-model="clueData.phone" placeholder="请填写电话" clearable/>
+				<el-input v-model="clueData.phone" placeholder="请填写电话" clearable :disabled="editMode"/>
 			</el-form-item>
 
 			<el-form-item label="QQ" prop="qq">
@@ -138,8 +139,9 @@
 			</el-form-item>
 
 			<el-form-item label=" ">
-				<el-button type="primary" @click="addClue">新增线索信息</el-button>
-				<el-button type="danger" @click="clueData = {}">重置表单</el-button>
+				<el-button type="primary" @click="addClue" v-if="!editMode">新增线索信息</el-button>
+				<el-button type="primary" @click="editClue" v-if="editMode">修改线索信息</el-button>
+				<el-button type="danger" @click="loadClueInfo">重置表单</el-button>
 			</el-form-item>
 		</el-form>
 	</div>
@@ -147,9 +149,9 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { doGet, doPost } from '../../../http/httpRequestUtils';
+import { doGet, doPost, doPut } from '../../../http/httpRequestUtils';
 import { messageTip } from '../../../utils/utils';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const clueData = ref({})
 const clueForm = ref()
@@ -163,6 +165,10 @@ const clueStates = ref([])
 const sources = ref([])
 
 const router = useRouter()
+const route = useRoute()
+
+const editMode = ref(false)
+const editClueId = ref(0)
 
 const rules = ref({
 	phone: [
@@ -259,7 +265,7 @@ function addClue() {
 }
 
 function validatePhone(rule, value, callback) {
-	if (value) {
+	if (!editMode && value) {
 		doGet("/api/clue/phone/" + value, {}).then(response => {
 			if (response.data.code === 200) {
 				if (response.data.data) {
@@ -274,6 +280,42 @@ function validatePhone(rule, value, callback) {
 	}
 }
 
+function loadClueInfo(id) {
+	if (editMode.value) {
+		doGet("/api/clue/" + id, {}).then(response => {
+			if (response.data.code === 200) {
+				clueData.value = response.data.data
+				if (!checkActivityExist(response.data.data.activityId)) {
+					activityList.value.push({
+						id: response.data.data.activityId,
+						name: response.data.data.activity
+					})
+				}
+			}
+		}) 
+	} else {
+		clueData.value = {}
+	}
+}
+
+function checkActivityExist(id) {
+	activityList.value.forEach(item => {
+		if (item.id === id) return true
+	})
+	return false
+}
+
+function editClue() {
+	doPut("/api/clue/", clueData.value).then(response => {
+		if (response.data.code === 200) {
+			messageTip("修改成功", "success")
+			router.back()
+		} else {
+			messageTip("修改失败，请稍后重试", "error")
+		}
+	})
+}
+
 onMounted(() => {
 	loadActivityNames()
 	loadAppellations()
@@ -282,6 +324,12 @@ onMounted(() => {
 	loadClueState()
 	loadSources()
 	loadProducts()
+
+	if (route.params.id) {
+		editMode.value = true
+		editClueId.value = route.params.id
+		loadClueInfo(editClueId.value)
+	}
 })
 </script>
 
