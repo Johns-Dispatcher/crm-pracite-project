@@ -6,7 +6,7 @@
 
 		<el-button type="danger" plain @click="router.back()">返回</el-button>
 		
-
+		<!-- 线索信息表单 -->
 		<el-form
 			:model="clueData"
 			label-width="auto"
@@ -153,23 +153,37 @@ import { doGet, doPost, doPut } from '../../../http/httpRequestUtils';
 import { messageTip } from '../../../utils/utils';
 import { useRoute, useRouter } from 'vue-router';
 
+// 线索表单数据
 const clueData = ref({})
+// 线索表单对象
 const clueForm = ref()
 
+// 从后端加载的活动信息数据
 const activityList = ref([])
+// 称呼信息数据
 const appellations = ref([])
+// 贷款信息数据
 const needLoans = ref([])
+// 意向状态数据
 const intentionStates = ref([])
+// 产品数据
 const products = ref([])
+// 线索状态数据
 const clueStates = ref([])
+// 线索来源数据
 const sources = ref([])
 
+// 路由器
 const router = useRouter()
+// 路由
 const route = useRoute()
 
+// 是否进入了编辑模式
 const editMode = ref(false)
+// 当前编辑 id
 const editClueId = ref(0)
 
+// 验证规则
 const rules = ref({
 	phone: [
 		{ required: true, message: '请输入电话', trigger: 'blur' },
@@ -192,7 +206,9 @@ const rules = ref({
 	yearIncome: [ { pattern: /^[0-9]+(.[0-9]{1,2})?$/, trigger: 'blur', message: '年收入应该为两位小数' } ]
 })
 
-
+/**
+ * 加载活动信息
+ */
 function loadActivityNames() {
 	doGet("/api/activity/ongoing", {}).then(response => {
 		if (response.data.code === 200) {
@@ -201,6 +217,9 @@ function loadActivityNames() {
 	})
 }
 
+/**
+ * 加载称呼信息
+ */
 function loadAppellations() {
 	doGet("/api/dic/appellation", {}).then(response => {
 		if (response.data.code === 200) {
@@ -209,6 +228,9 @@ function loadAppellations() {
 	})
 }
 
+/**
+ * 加载贷款状态信息
+ */
 function loadNeedLoans() {
 	doGet("/api/dic/needLoan", {}).then(response => {
 		if (response.data.code === 200) {
@@ -217,6 +239,9 @@ function loadNeedLoans() {
 	})
 }
 
+/**
+ * 加载意向状态信息
+ */
 function loadIntentionStates() {
 	doGet("/api/dic/intentionState", {}).then(response => {
 		if (response.data.code === 200) {
@@ -225,6 +250,9 @@ function loadIntentionStates() {
 	})
 }
 
+/**
+ * 加载线索状态信息
+ */
 function loadClueState() {
 	doGet("/api/dic/clueState", {}).then(response => {
 		if (response.data.code === 200) {
@@ -233,6 +261,9 @@ function loadClueState() {
 	})
 }
 
+/**
+ * 加载线索来源信息
+ */
 function loadSources() {
 	doGet("/api/dic/source", {}).then(response => {
 		if (response.data.code === 200) {
@@ -241,6 +272,9 @@ function loadSources() {
 	})
 }
 
+/**
+ * 加载产品信息
+ */
 function loadProducts() {
 	doGet("/api/product/names", {}).then(response => {
 		if (response.data.code === 200) {
@@ -249,6 +283,9 @@ function loadProducts() {
 	})
 }
 
+/**
+ * 添加线索
+ */
 function addClue() {
 	clueForm.value.validate((isValid) => {
 		if (isValid) { 
@@ -264,6 +301,12 @@ function addClue() {
 	})
 }
 
+/**
+ * 验证手机号是否已经录入过
+ * @param rule 规则
+ * @param value 当前值
+ * @param callback 回调
+ */
 function validatePhone(rule, value, callback) {
 	if (!editMode && value) {
 		doGet("/api/clue/phone/" + value, {}).then(response => {
@@ -280,11 +323,18 @@ function validatePhone(rule, value, callback) {
 	}
 }
 
+/**
+ * 加载线索信息	
+ * @param id 线索 id
+ */
 function loadClueInfo(id) {
 	if (editMode.value) {
 		doGet("/api/clue/" + id, {}).then(response => {
 			if (response.data.code === 200) {
 				clueData.value = response.data.data
+				// 默认查询的活动是正在进行的活动
+				// 如果活动不存在，会导致修改时没有对应数据
+				// 这里将已经过期的活动从线索中拿出并添加进活动列表
 				if (!checkActivityExist(response.data.data.activityId)) {
 					activityList.value.push({
 						id: response.data.data.activityId,
@@ -298,6 +348,10 @@ function loadClueInfo(id) {
 	}
 }
 
+/**
+ * 检测活动是否存在于列表中
+ * @param id 活动 id
+ */
 function checkActivityExist(id) {
 	activityList.value.forEach(item => {
 		if (item.id === id) return true
@@ -305,6 +359,9 @@ function checkActivityExist(id) {
 	return false
 }
 
+/**
+ * 修改线索
+ */
 function editClue() {
 	doPut("/api/clue/", clueData.value).then(response => {
 		if (response.data.code === 200) {

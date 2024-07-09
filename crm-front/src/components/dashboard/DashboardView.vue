@@ -50,7 +50,7 @@
 						<span>客户管理</span>
 					</template>
 
-					<el-menu-item index="3-1">
+					<el-menu-item index="/dashboard/customer">
 						<el-icon><List/></el-icon>客户管理
 					</el-menu-item>
 

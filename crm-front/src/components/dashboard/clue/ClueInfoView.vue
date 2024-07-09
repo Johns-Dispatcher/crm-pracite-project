@@ -1,5 +1,5 @@
 <template>
-	<!-- 活动信息展示 -->
+	<!-- 线索信息展示 -->
  	<el-descriptions
 		title="活动详细信息"
 		:column="4"
@@ -179,6 +179,7 @@
 		<el-button type="danger" plain @click="router.back()">返回</el-button>
 	</div>
 
+	<!-- 提交线索跟进信息表单 -->
 	<el-form 
 		:model="clueRemarkData" 
 		ref="clueRemarkForm" 
@@ -206,13 +207,12 @@
 			</el-select>
 		</el-form-item>
 		
-
 		<el-form-item>
 			<el-button type="primary" @click="addClueRemark">录入跟踪方式</el-button>
 		</el-form-item>
 	</el-form>
 
-	<!-- 活动备注展示表格 -->
+	<!-- 线索跟踪信息展示表格 -->
 	<el-table 
 		:data="clueRemarks" 
 		style="width: 100%" 
@@ -248,13 +248,13 @@
 		@current-change="loadClueRemarks"
 	/>
 
-	<!-- 备注修改对话框 -->
+	<!-- 线索跟踪修改对话框 -->
 	<el-dialog
 		v-model="remarkDialogVisable"
 		title="修改活动备注"
 		draggable
 	>
-  		<!-- 备注修改表单 -->
+  		<!-- 线索跟踪信息修改表单 -->
 		<el-form 
 			:model="remarkDialogData" 
 			label-width="auto" 
@@ -293,12 +293,13 @@
 		</template>
 	</el-dialog>
 
+	<!-- 提升为客户对话框 -->
 	<el-dialog
 		v-model="transformDialogVisable"
 		title="将线索提升为客户"
 		draggable
 	>
-  		<!-- 备注修改表单 -->
+  		<!-- 提升为客户表单 -->
 		<el-form 
 			:model="transformData" 
 			label-width="auto" 
@@ -356,18 +357,24 @@ import { doDelete, doGet, doPost, doPut } from '../../../http/httpRequestUtils';
 import { useRoute, useRouter } from 'vue-router';
 import { messageConfirm, messageTip } from '../../../utils/utils';
 
+// 线索信息
 const clue = ref({})
+// 当前线索 id
 const clueId = ref(0)
 
+// 路由
 const route = useRoute()
+// 路由器
 const router = useRouter()
 
+// 线索跟进表单数据
 const clueRemarkData = ref({})
+// 线索跟进表单对象
 const clueRemarkForm = ref()
 
+// 跟踪方式列表
 const noteWays = ref([])
-const startRow = ref(1)
-const remarkTotal = ref(0)
+// 验证规则
 const rules = ref({
 	noteContent: [
 		{ required: true, message: '请输入跟踪信息', trigger: 'blur' },
@@ -376,18 +383,31 @@ const rules = ref({
 	noteWay: [ { required: true, message: '请提供跟踪方式', trigger: 'blur' } ]
 })
 
+// 跟进信息对话框是否可见
 const remarkDialogVisable = ref(false)
 
+// 跟进信息列表
 const clueRemarks = ref([])
+// 当前开始行
+const startRow = ref(1)
+// 跟进信息总数
+const remarkTotal = ref(0)
+// 修改跟进信息表单数据
 const remarkDialogData = ref({})
+// 修改跟进信息表单对象
 const remarkDialogForm = ref()
 
+// 提升客户对话框可见性
 const transformDialogVisable = ref(false)
 
+// 提升客户表单数据
 const transformData = ref({})
+// 提升客户表单对象
 const transformForm = ref()
+// 产品信息
 const products = ref({})
 
+// 验证规则
 const transformRules = ref({
 	description: [
 		{ required: true, message: '请填写客户描述', trigger: 'blur' },
@@ -397,8 +417,13 @@ const transformRules = ref({
 	nextContactTime: [ { required: true, message: '请提供跟踪方式', trigger: 'blur' } ]
 })
 
+// 刷新页面
 const reload = inject("reload")
 
+/**
+ * 加载线索信息
+ * @param id 线索 id
+ */
 function loadClueInfo(id) {
 	doGet("/api/clue/" + id, {}).then(response => { 
 		if (response.data.code === 200) {
@@ -407,6 +432,9 @@ function loadClueInfo(id) {
 	})
 }
 
+/**
+ * 加载跟进方式
+ */
 function loadNoteWays() {
 	doGet("/api/dic/noteWay", {}).then(response => {
 		if (response.data.code === 200) {
@@ -415,6 +443,9 @@ function loadNoteWays() {
 	})
 }
 
+/**
+ * 添加线索跟进信息
+ */
 function addClueRemark() {
 	clueRemarkForm.value.validate(isVaild => {
 		if (isVaild) { 
@@ -435,6 +466,10 @@ function addClueRemark() {
 	})
 }
 
+/**
+ * 加载线索跟进数据，分页查询
+ * @param current 当前页码
+ */
 function loadClueRemarks(current) {
 	doGet("/api/clue/remark/" + current + "/" + clueId.value, {}).then(response => {
 		if (response.data.code === 200) {
@@ -445,6 +480,10 @@ function loadClueRemarks(current) {
 	})
 } 
 
+/**
+ * 打开修改对话框，并查询数据
+ * @param id 线索跟进 id
+ */
 function onEditRemark(id) {
 	doGet("/api/clue/remark/info/" + id, {}).then(response => {
 		if (response.data.code === 200) {
@@ -454,6 +493,9 @@ function onEditRemark(id) {
 	})
 }
 
+/**
+ * 修改跟进数据
+ */
 function editRemark() {
 	doPut("/api/clue/remark/", remarkDialogData.value).then(response => {
 		if (response.data.code === 200) {
@@ -466,6 +508,10 @@ function editRemark() {
 	})
 }
 
+/**
+ * 删除跟进数据
+ * @param id 线索跟进 id
+ */
 function deleteRemark(id) {
 	messageConfirm(
 		"您确认要删除这条跟踪信息吗？",
@@ -487,11 +533,17 @@ function deleteRemark(id) {
 	)
 }
 
+/**
+ * 打开提升客户对话框
+ */
 function onTransform() {
 	loadProducts()
 	transformDialogVisable.value = true
 }
 
+/**
+ * 加载产品信息
+ */
 function loadProducts() {
 	doGet('/api/product/names', {}).then(response => {
 		if (response.data.code === 200) {
@@ -500,6 +552,9 @@ function loadProducts() {
 	})
 }
 
+/**
+ * 提升客户
+ */
 function transformToCustomer() {
 	transformForm.value.validate(isVaild => {
 		if (isVaild) {
