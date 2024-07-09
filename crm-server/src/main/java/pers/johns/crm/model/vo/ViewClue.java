@@ -86,4 +86,5 @@ public class ViewClue implements Serializable {
     private LocalDateTime editTime;
     private Integer editBy;
     private String editor;
+    private Boolean customer;
 }
