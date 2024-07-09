@@ -1,14 +1,13 @@
 package pers.johns.crm.web.controller;
 
+import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.SecurityUser;
 import pers.johns.crm.model.vo.ViewCustomer;
+import pers.johns.crm.query.CustomerQuery;
 import pers.johns.crm.service.CustomerService;
 
 import java.time.LocalDateTime;
@@ -41,5 +40,11 @@ public class CustomerController {
         viewCustomer.setEditTime(LocalDateTime.now());
 
         return HttpResult.OK("提升为客户成功", customerService.addCustomer(viewCustomer));
+    }
+
+    @GetMapping("/page/{current}")
+    public HttpResult getCustomersByPage(@PathVariable("current") Integer current) {
+        PageInfo<Object> pageInfo = customerService.getCustomersByPage(new CustomerQuery(current));
+        return HttpResult.OK("分页查询成功", pageInfo);
     }
 }
