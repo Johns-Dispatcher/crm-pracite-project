@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pers.johns.crm.constant.Constants;
 import pers.johns.crm.exception.ClueException;
+import pers.johns.crm.exception.ClueRemarkException;
 import pers.johns.crm.listener.UploadClueListener;
 import pers.johns.crm.mapper.*;
 import pers.johns.crm.model.po.Clue;
@@ -52,7 +52,7 @@ public class ClueServiceImpl implements ClueService {
     private final UserService userService;
     private final ActivityService activityService;
     private final ProductService productService;
-    private final CustomerService customerService;
+    private final ClueRemarkMapper clueRemarkMapper;
 
     @Override
     public PageInfo<Object> getCluesByPage(ClueQuery clueQuery) {
@@ -131,6 +131,39 @@ public class ClueServiceImpl implements ClueService {
         Integer count = clueMapper.updateClue(convertToClue(viewClue));
 
         if (count != 1) throw new ClueException("修改线索失败");
+
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteClue(Integer id) {
+        Integer remarkNumber = clueRemarkMapper.countByClueId(id);
+
+        if (remarkNumber != null && remarkNumber != 0) {
+            if (!Objects.equals(remarkNumber, clueRemarkMapper.deleteClueRemarkByClueId(id)))
+                throw new ClueRemarkException("清除对应线索跟进信息失败");
+        }
+
+        Integer count = clueMapper.deleteClueById(id);
+
+        if (count != 1) throw new ClueException("清除线索数据失败");
+
+        return true;
+    }
+
+    @Override
+    public Boolean deleteBulkClues(List<Integer> ids) {
+        Integer remarkNumber = clueRemarkMapper.countByClueIds(ids);
+
+        if (remarkNumber != null && remarkNumber != 0) {
+            if (!Objects.equals(remarkNumber, clueRemarkMapper.deleteBulkClueRemarksByClueId(ids)))
+                throw new ClueRemarkException("清除对应线索跟进信息失败");
+        }
+
+        Integer count = clueMapper.deleteBulkCluesBuId(ids);
+
+        if (count != ids.size()) throw new ClueException("清除线索数据失败");
 
         return true;
     }
@@ -276,7 +309,7 @@ public class ClueServiceImpl implements ClueService {
         String state = dicService.translateDic(clue.getState());
         String source = dicService.translateDic(clue.getSource());
 
-        Boolean customer = clue.getState() == -1;
+        Boolean customer = clue.getState() == null ? null : clue.getState() == -1;
 
         return ViewClue
                 .builder()

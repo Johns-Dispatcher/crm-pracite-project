@@ -70,4 +70,8 @@ public interface ClueService {
      * @return 是否成功修改
      */
     Boolean editClueInfo(ViewClue viewClue);
+
+    Boolean deleteClue(Integer id);
+
+    Boolean deleteBulkClues(List<Integer> ids);
 }
