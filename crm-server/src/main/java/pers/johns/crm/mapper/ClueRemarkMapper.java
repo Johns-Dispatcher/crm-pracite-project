@@ -60,6 +60,13 @@ public interface ClueRemarkMapper {
     @ResultMap("ClueRemarkBaseMap")
     List<ClueRemark> selectClueRemarksByClueId(Integer clueId);
 
+    @Select("""
+            select count(1) from t_clue_remark where clue_id = #{clueId}
+            """)
+    Integer countByClueId(Integer clueId);
+
+    Integer countByClueIds(List<Integer> clueIds);
+
     @Insert("""
             insert into t_clue_remark (
                 id, clue_id,
@@ -83,4 +90,11 @@ public interface ClueRemarkMapper {
             delete from t_clue_remark where id = #{id}
             """)
     Integer deleteClueRemarkById(Integer id);
+
+    @Delete("""
+            delete from t_clue_remark where clue_id = #{clueId}
+            """)
+    Integer deleteClueRemarkByClueId(Integer clueId);
+
+    Integer deleteBulkClueRemarksByClueId(List<Integer> clueIds);
 }

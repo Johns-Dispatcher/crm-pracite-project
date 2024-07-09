@@ -51,4 +51,21 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="countByClueIds">
+        select count(*)
+        from t_clue_remark
+        where clue_id in
+        <foreach collection="clueIds" item="clueId" separator="," open="(" close=")">
+            #{clueId}
+        </foreach>
+    </select>
+
+    <delete id="deleteBulkClueRemarksByClueId">
+        delete from t_clue_remark
+        where clue_id in
+        <foreach collection="clueIds" item="clueId" separator="," open="(" close=")">
+            #{clueId}
+        </foreach>
+    </delete>
 </mapper>
