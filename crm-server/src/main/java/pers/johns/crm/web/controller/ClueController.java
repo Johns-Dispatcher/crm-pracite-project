@@ -14,6 +14,8 @@ import pers.johns.crm.service.ClueService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * ClassName    : ClueController
@@ -109,6 +111,17 @@ public class ClueController {
         viewClue.setEditBy(securityUser.getId());
         viewClue.setEditTime(LocalDateTime.now());
 
-        return HttpResult.OK("修改成功", clueService.editClueInfo(viewClue));
+        return HttpResult.OK("修改线索成功", clueService.editClueInfo(viewClue));
+    }
+
+    @DeleteMapping("/{id}")
+    public HttpResult deleteClue(@PathVariable("id") Integer id) {
+        return HttpResult.OK("删除线索成功", clueService.deleteClue(id));
+    }
+
+    @DeleteMapping("/bulk/{ids}")
+    public HttpResult deleteBulkClues(@PathVariable("ids") String ids) {
+        List<Integer> idList = Arrays.stream(ids.split("-")).map(Integer::parseInt).toList();
+        return HttpResult.OK("批量删除线索成功", clueService.deleteBulkClues(idList));
     }
 }
