@@ -1,14 +1,17 @@
 <template>
+
 	<el-button type="primary" @click="router.push('/dashboard/clue/add')">录入线索</el-button>
 	<el-button type="success" @click="importFile">通过 Excel 批量导入线索</el-button>
-	<el-button type="danger">批量删除</el-button>
+	<el-button type="danger" @click="bulkDelete">批量删除</el-button>
 
   	<br><br>
 
+	<!-- 线索展示表格 -->
 	<el-table 
 		:data="clueList" 
 		style="width: 100%" 
 		stripe
+		@selection-change="updateSelected"
 	>
 		<el-table-column type="selection" width="30" />
 
@@ -55,7 +58,7 @@
 
 				<el-button type="success" @click="router.push('/dashboard/clue/edit/' + scope.row.id)">修改</el-button>
 
-				<el-button type="danger">删除</el-button>
+				<el-button type="danger" @click="deleteClue(scope.row.id)">删除</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -70,7 +73,7 @@
 		@current-change="loadClues"
 	/>
 
-	<!-- 备注修改对话框 -->
+	<!-- 上传 Excel 对话框 -->
 	<el-dialog
 		v-model="importDialogVisable"
 		title="上传 Excel 文件"
@@ -103,26 +106,42 @@
 
 		<el-button type="primary" @click="uploadSubmit">提交文件</el-button>
 		<el-button type="danger" plain @click="importDialogVisable = false">关闭</el-button>
+
   	</el-dialog>
+
 </template>
 
 <script setup>
 import { onMounted, ref, inject } from 'vue';
-import { doGet, doPost } from '../../../http/httpRequestUtils';
-import { messageTip } from '../../../utils/utils';
+import { doDelete, doGet, doPost } from '../../../http/httpRequestUtils';
+import { messageConfirm, messageTip } from '../../../utils/utils';
 import { useRouter } from 'vue-router';
 
+// 路由器
 const router = useRouter()
 
+// 线索列表
 const clueList = ref([])
+// 总计查询条数
 const totalCount = ref(0)
+// 当前开始行数
 const startRow = ref(1)
 
+// 导入对话框是否可见
 const importDialogVisable = ref(false)
+// 上传表单对象
 const uploadRef = ref()
 
+// 刷新主页面
 const reload = inject('reload')
 
+// 临时存储选择的 id
+let ids = []
+
+/**
+ * 加载信息数据，分页查询
+ * @param current 当前页数
+ */
 function loadClues(current) {
 	doGet("/api/clue/page/" + current, {}).then(response => {
 		if (response.data.code === 200) { 
@@ -133,10 +152,17 @@ function loadClues(current) {
 	})
 }
 
+/**
+ * 打开上传文件对话框
+ */
 function importFile() {
 	importDialogVisable.value = true
 }
 
+/**
+ * 上传文件
+ * @param param 文件参数
+ */
 function uploadFile(param) {
 	let formData = new FormData()
 	formData.append("file", param.file)
@@ -152,11 +178,79 @@ function uploadFile(param) {
 	})
 }
 
+/**
+ * 收到上传提交
+ */
 function uploadSubmit() {
 	if (uploadRef.value) { 
 		uploadRef.value.submit()
 	} else {
 		messageTip("您还没有选择文件", "warning")
+	}
+}
+
+/**
+ * 删除指定线索
+ * @param id 线索 id
+ */
+function deleteClue(id) {
+	messageConfirm(
+		"您确认要删除这条线索及其跟进信息吗？",
+		"删除确认",
+		"warning",
+		() => { 
+			doDelete("/api/clue/" + id, {}).then(response => { 
+				if (response.data.code === 200) {
+					messageTip("删除成功", "success")
+					reload()
+				} else {
+					messageTip("删除失败: " + response.data.msg, "error")
+				}
+			})
+		},
+		() => { 
+			messageTip("取消删除", "info")
+		}
+	)
+}
+
+/**
+ * 更新所选信息
+ * @param selectedItems 当前选择项
+ */
+function updateSelected(selectedItems) {
+	ids = []
+	selectedItems.forEach(selceted => {
+		ids.push(selceted.id)
+	});
+}
+
+/**
+ * 批量删除
+ */
+function bulkDelete() {
+	
+	if (ids.length <= 0) {
+		messageTip("您还没有选择数据", "warning")
+	} else { 
+		messageConfirm(
+			"您确认要删除这些线索及其跟进信息吗？",
+			"删除确认",
+			"warning",
+			() => { 
+				doDelete("/api/clue/bulk/" + ids.join("-"), {}).then(response => {
+					if (response.data.code === 200) {
+						messageTip("删除成功", "success")
+						reload()
+					} else { 
+						messageTip("删除失败: " + response.data.msg, "error")
+					}
+				})
+			},
+			() => { 
+				messageTip("取消删除", "info")
+			}
+		)
 	}
 }
 
