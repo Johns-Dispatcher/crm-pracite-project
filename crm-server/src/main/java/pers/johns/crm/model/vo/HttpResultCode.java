@@ -30,6 +30,8 @@ public enum HttpResultCode {
     ACTIVITY_SERVICE_EXCEPTION(500, "活动业务操作失败"),
     ACTIVITY_REMARK_SERVICE_EXCEPTION(500, "活动备注业务操作失败"),
     CLUE_SERVICE_EXCEPTION(500, "线索业务操作失败"),
+    CLUE_REMARK_SERVICE_EXCEPTION(500, "线索跟踪业务操作失败"),
+    CUSTOMER_SERVICE_EXCEPTION(500, "客户业务操作失败"),
     ;
 
     private final Integer code;
