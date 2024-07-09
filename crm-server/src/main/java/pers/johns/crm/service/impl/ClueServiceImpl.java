@@ -52,6 +52,7 @@ public class ClueServiceImpl implements ClueService {
     private final UserService userService;
     private final ActivityService activityService;
     private final ProductService productService;
+    private final CustomerService customerService;
 
     @Override
     public PageInfo<Object> getCluesByPage(ClueQuery clueQuery) {
@@ -275,6 +276,8 @@ public class ClueServiceImpl implements ClueService {
         String state = dicService.translateDic(clue.getState());
         String source = dicService.translateDic(clue.getSource());
 
+        Boolean customer = clue.getState() == -1;
+
         return ViewClue
                 .builder()
                 .id(clue.getId())
@@ -309,6 +312,7 @@ public class ClueServiceImpl implements ClueService {
                 .creator(creator)
                 .editTime(clue.getEditTime())
                 .editor(editor)
+                .customer(customer)
                 .build();
     }
 }
