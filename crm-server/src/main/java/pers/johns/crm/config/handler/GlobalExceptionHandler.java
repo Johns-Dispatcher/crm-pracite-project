@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pers.johns.crm.exception.ActivityException;
-import pers.johns.crm.exception.ActivityRemarkException;
-import pers.johns.crm.exception.ClueException;
-import pers.johns.crm.exception.UserException;
+import pers.johns.crm.exception.*;
 import pers.johns.crm.model.vo.HttpResult;
 import pers.johns.crm.model.vo.HttpResultCode;
 
@@ -80,6 +77,28 @@ public class GlobalExceptionHandler {
     public HttpResult handleException(ClueException e) {
         log.error("线索业务出现异常: {}", e.getMessage());
         return HttpResult.CustomResult(HttpResultCode.CLUE_SERVICE_EXCEPTION);
+    }
+
+    /**
+     * 处理线索跟踪业务异常
+     * @param e 异常信息
+     * @return 响应前端错误信息
+     */
+    @ExceptionHandler(ClueRemarkException.class)
+    public HttpResult handleException(ClueRemarkException e) {
+        log.error("线索跟踪业务出现异常: {}", e.getMessage());
+        return HttpResult.CustomResult(HttpResultCode.CLUE_REMARK_SERVICE_EXCEPTION);
+    }
+
+    /**
+     * 处理客户踪业务异常
+     * @param e 异常信息
+     * @return 响应前端错误信息
+     */
+    @ExceptionHandler(CustomerException.class)
+    public HttpResult handleException(CustomerException e) {
+        log.error("客户业务出现异常: {}", e.getMessage());
+        return HttpResult.CustomResult(HttpResultCode.CUSTOMER_SERVICE_EXCEPTION);
     }
 
     /**
