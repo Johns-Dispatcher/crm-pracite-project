@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.johns.crm.mapper.CustomerMapper">
+    <select id="selectAll" resultMap="CustomerBaseMap">
+        select
+            tcu.id, tcu.clue_id,
+            tcu.product, tcu.description,
+            tcu.next_contact_time,
+            tcu.create_time, tcu.create_by,
+            tcu.edit_time, tcu.edit_by
+        from t_customer tcu
+        inner join t_clue tcl
+        on tcu.clue_id = tcl.id
+        <where>
+            <if test="filterSQL != null and filterSQL != ''">
+                and ${filterSQL}
+            </if>
+        </where>
+    </select>
+</mapper>

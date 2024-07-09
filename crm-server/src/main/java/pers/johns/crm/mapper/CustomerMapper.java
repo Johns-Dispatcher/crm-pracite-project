@@ -1,7 +1,10 @@
 package pers.johns.crm.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+import pers.johns.crm.annotation.DataScope;
 import pers.johns.crm.model.po.Customer;
+import pers.johns.crm.query.CustomerQuery;
 
 import java.util.List;
 
@@ -39,22 +42,14 @@ public interface CustomerMapper {
             @Result(column = "edit_time", property = "editTime"),
             @Result(column = "edit_by", property = "editBy"),
             @Result(column = "id", property = "customerRemarks", one = @One(
-                    select = "pers.johns.crm.mapper.CustomerRemarkMapper.selectCustomerRemarksByCustomerId"
+                    select = "pers.johns.crm.mapper.CustomerRemarkMapper.selectCustomerRemarksByCustomerId",
+                    fetchType = FetchType.LAZY
             ))
     })
     Customer selectById(Integer id);
 
-    @Select("""
-            select
-                id, clue_id,
-                product, description,
-                next_contact_time,
-                create_time, create_by,
-                edit_time, edit_by
-            from t_customer
-            """)
-    @ResultMap("CustomerBaseMap")
-    List<Customer> selectAll();
+    @DataScope(tableField = "tcl.owner_id")
+    List<Customer> selectAll(CustomerQuery customerQuery);
 
     @Insert("""
             insert into t_customer (
