@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 public class ViewCustomer implements Serializable {
     private Integer id;
     private Integer clueId;
-    private String fullName;
+    private ViewClue viewClue;
     private Integer product;
     private String productName;
     private String description;
