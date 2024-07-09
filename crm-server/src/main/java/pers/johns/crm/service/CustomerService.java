@@ -1,6 +1,8 @@
 package pers.johns.crm.service;
 
+import com.github.pagehelper.PageInfo;
 import pers.johns.crm.model.vo.ViewCustomer;
+import pers.johns.crm.query.CustomerQuery;
 
 /**
  * InterfaceName : CustomerService
@@ -17,4 +19,6 @@ public interface CustomerService {
     Boolean checkCustomer(Integer clueId);
 
     Boolean addCustomer(ViewCustomer viewCustomer);
+
+    PageInfo<Object> getCustomersByPage(CustomerQuery customerQuery);
 }
