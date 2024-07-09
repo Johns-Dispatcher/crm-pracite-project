@@ -73,6 +73,11 @@ public interface CustomerMapper {
             """)
     Integer insertCustomer(Customer customer);
 
+    @Select("""
+            select count(0) from t_customer where clue_id = #{clueId}
+            """)
+    Integer countExistClue(Integer clueId);
+
     @Update("""
             update t_customer
             set
