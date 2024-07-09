@@ -110,4 +110,6 @@ public interface ClueMapper {
             delete from t_clue where id = #{id}
             """)
     Integer deleteClueById(Integer id);
+
+    Integer deleteBulkCluesBuId(List<Integer> ids);
 }

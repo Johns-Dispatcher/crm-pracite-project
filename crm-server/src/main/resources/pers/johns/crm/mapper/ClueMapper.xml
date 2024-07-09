@@ -80,4 +80,12 @@
         </set>
         where id = #{id}
     </update>
+
+    <delete id="deleteBulkCluesBuId">
+        delete from t_clue
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
