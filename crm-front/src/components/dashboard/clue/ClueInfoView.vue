@@ -174,6 +174,11 @@
 		</el-descriptions-item>
 	</el-descriptions>
 
+	<div class="ops">
+		<el-button type="primary" @click="onTransform" :disabled="clue.customer">转换为客户</el-button>
+		<el-button type="danger" plain @click="router.back()">返回</el-button>
+	</div>
+
 	<el-form 
 		:model="clueRemarkData" 
 		ref="clueRemarkForm" 
@@ -277,7 +282,7 @@
 						:value="noteWay.id">
 					</el-option>
 				</el-select>
-		</el-form-item>
+			</el-form-item>
 		</el-form>
 
 		<template #footer>
@@ -286,11 +291,67 @@
 				<el-button type="primary" @click="editRemark">确认修改</el-button>
 			</div>
 		</template>
-  </el-dialog>
+	</el-dialog>
+
+	<el-dialog
+		v-model="transformDialogVisable"
+		title="将线索提升为客户"
+		draggable
+	>
+  		<!-- 备注修改表单 -->
+		<el-form 
+			:model="transformData" 
+			label-width="auto" 
+			style="padding: auto; margin: 20px;"
+  			:rules="transformRules"
+			ref="transformForm"
+		>
+			<el-form-item label="选择意向产品" prop="product">
+				<el-select 
+					v-model="transformData.product"
+					placeholder="请选择意向产品" 
+					clearable
+				>
+					<el-option v-for="product in products"
+						:key="product.id"
+						:label="product.name"
+						:value="product.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+
+			<el-form-item label="添加客户描述" prop="description">
+				<el-input 
+					v-model="transformData.description" 
+					type="textarea"
+					:autosize="{ minRows: 5, maxRows: 10 }"
+				/>
+			</el-form-item>
+
+			<el-form-item label="下次见面时间" prop="nextContactTime">
+				<el-date-picker
+					v-model="transformData.nextContactTime"
+					type="datetime"
+					placeholder="选择下次见面时间"
+					format="YYYY-MM-DD HH:mm:ss"
+					date-format="MMM DD, YYYY"
+					time-format="HH:mm"
+					value-format="YYYY-MM-DD HH:mm:ss"
+				/>
+			</el-form-item>
+		</el-form>
+
+		<template #footer>
+			<div class="dialog-footer">
+				<el-button @click="transformDialogVisable = false">取消</el-button>
+				<el-button type="primary" @click="transformToCustomer">确认转换</el-button>
+			</div>
+		</template>
+	</el-dialog>
 	
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import { doDelete, doGet, doPost, doPut } from '../../../http/httpRequestUtils';
 import { useRoute, useRouter } from 'vue-router';
 import { messageConfirm, messageTip } from '../../../utils/utils';
@@ -310,9 +371,9 @@ const remarkTotal = ref(0)
 const rules = ref({
 	noteContent: [
 		{ required: true, message: '请输入跟踪信息', trigger: 'blur' },
-		{ min: 5, max: 255, message: '备注信息的长度应在 5 - 255 字符内', trigger: 'blur' }
+		{ min: 5, max: 255, message: '跟踪信息的长度应在 5 - 255 字符内', trigger: 'blur' }
 	],
-	noteWay: [ { required: true, message: '请提供跟踪方式', trigger: 'blur' }, ]
+	noteWay: [ { required: true, message: '请提供跟踪方式', trigger: 'blur' } ]
 })
 
 const remarkDialogVisable = ref(false)
@@ -320,6 +381,23 @@ const remarkDialogVisable = ref(false)
 const clueRemarks = ref([])
 const remarkDialogData = ref({})
 const remarkDialogForm = ref()
+
+const transformDialogVisable = ref(false)
+
+const transformData = ref({})
+const transformForm = ref()
+const products = ref({})
+
+const transformRules = ref({
+	description: [
+		{ required: true, message: '请填写客户描述', trigger: 'blur' },
+		{ min: 5, max: 255, message: '客户描述的长度应在 5 - 255 字符内', trigger: 'blur' }
+	],
+	product: [ { required: true, message: '请选择意向产品', trigger: 'blur' } ],
+	nextContactTime: [ { required: true, message: '请提供跟踪方式', trigger: 'blur' } ]
+})
+
+const reload = inject("reload")
 
 function loadClueInfo(id) {
 	doGet("/api/clue/" + id, {}).then(response => { 
@@ -348,6 +426,7 @@ function addClueRemark() {
 				if (response.data.code === 200) {
 					messageTip("添加成功", "success")
 					clueRemarkData.value = {}
+					loadClueRemarks(1)
 				} else {
 					messageTip("添加失败", "error")
 				}
@@ -408,16 +487,53 @@ function deleteRemark(id) {
 	)
 }
 
+function onTransform() {
+	loadProducts()
+	transformDialogVisable.value = true
+}
+
+function loadProducts() {
+	doGet('/api/product/names', {}).then(response => {
+		if (response.data.code === 200) {
+			products.value = response.data.data
+		}
+	})
+}
+
+function transformToCustomer() {
+	transformForm.value.validate(isVaild => {
+		if (isVaild) {
+			doPost("/api/customer/", {
+				clueId: clueId.value,
+				product: transformData.value.product,
+				description: transformData.value.description,
+				nextContactTime: transformData.value.nextContactTime,
+			}).then(response => {
+				if (response.data.code === 200) {
+					messageTip("提升为客户成功", "success")
+					reload()
+				} else {
+					messageTip("提升失败", "error")
+				}
+			})
+		}
+	})
+}
+
 onMounted(() => {
 	clueId.value = route.params.id
 	loadClueInfo(route.params.id)
 	loadNoteWays()
 	loadClueRemarks(1)
 })
+
 </script>
 <style scoped>
 .el-icon {
 	margin: auto;
 	padding: auto;
+}
+.ops {
+	margin: 20px 10px;
 }
 </style>
